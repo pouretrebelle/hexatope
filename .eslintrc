@@ -55,9 +55,6 @@
       "error",
       "prefer-single"
     ],
-    "newline-before-return": [
-      "error"
-    ],
     "no-trailing-spaces": [
       "error"
     ]
