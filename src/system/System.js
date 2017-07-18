@@ -11,9 +11,11 @@ class System {
     this.rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
     this.internalWidth = undefined;
     this.internalHeight = undefined;
-    this.mouseTargetHex = undefined;
     this.canvas = canvas;
     this.c = undefined;
+    this.mouseTargetHex = undefined;
+    this.mouseTargetHexLast = undefined;
+    this.isDrawing = false;
     this.setup();
   }
 
@@ -92,18 +94,54 @@ class System {
   // Global Update
   //======================================
 
-  update({ windowWidth, windowHeight, mouseX, mouseY }) {
-
+  updateDimensions({ windowWidth, windowHeight }) {
     this.canvas.width = windowWidth;
     this.canvas.height = windowHeight;
-    this.relativeMousePos.x = mouseX - (windowWidth - this.internalWidth) / 2;
-    this.relativeMousePos.y = mouseY - (windowHeight - this.internalHeight) / 2;
+  }
 
+  updateMousePos({ mouseX, mouseY }) {
+    this.relativeMousePos.x = mouseX - (this.canvas.width - this.internalWidth) / 2;
+    this.relativeMousePos.y = mouseY - (this.canvas.height - this.internalHeight) / 2;
+  }
+
+  updateHexagons() {
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
         this.hexagons[x][y].update();
       }
     }
+  }
+
+  render({ isMouseDown, lastMouseButton, ...props }) {
+    this.updateDimensions(props);
+    this.updateMousePos(props);
+
+    if (isMouseDown && !this.isDrawing) {
+      // start drawing
+      this.isDrawing = true;
+    }
+
+    if (!isMouseDown && this.isDrawing) {
+      // end drawing
+      this.isDrawing = false;
+    }
+
+    if (this.isDrawing &&
+        this.mouseTargetHexLast !== this.mouseTargetHex) {
+      // increment and loop on left mouse button
+      if (lastMouseButton == 0) {
+        this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
+      }
+      // decrement on right mouse button
+      else if (lastMouseButton == 2 && this.mouseTargetHex.nextActive > 0) {
+        this.mouseTargetHex.nextActive--;
+      }
+
+      this.mouseTargetHexLast = this.mouseTargetHex;
+    }
+
+    this.updateHexagons();
+    this.draw();
   }
 }
 

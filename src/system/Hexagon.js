@@ -132,10 +132,10 @@ class Hexagon {
     // even if drawHex is inactive we need to draw them blank
     // if drawGrid is active
     if (settings.drawHex && this.active) {
-      let brightness = this.neighbours;
-      let r = 255 - 5 * brightness;
-      let g = 255 - 5 * brightness;
-      let b = 255 - 5 * brightness;
+      let brightness = this.active * 15;
+      let r = 255 - brightness;
+      let g = 255 - brightness;
+      let b = 255 - brightness;
       // add colour to visualise which layout it is
       if (this.countActiveNeighbours() > 3) {
         // blue
@@ -178,7 +178,7 @@ class Hexagon {
       // no neighbours
       if (activeNeighboursCount == 0) {
         if (settings.drawPoints && this.active == 2) {
-          this.c.ellipse(0, 0, settings.hexDoubleLineOffset, settings.hexDoubleLineOffset, 0, Math.PI*2);
+          this.c.ellipse(0, 0, settings.hexDoubleLineOffset, settings.hexDoubleLineOffset, 0, 0, Math.PI*2);
         }
       }
 

@@ -14,23 +14,18 @@ class Hexatope extends Component {
 
   componentDidMount() {
     this.system = new System(this.canvasElement, this.props.UIStore);
-    this.updateCanvas();
-  }
-
-  updateCanvas = () => {
-    if (!this.system) return;
-    this.system.update(this.props.UIStore);
-    this.drawCanvas();
-  }
-
-  drawCanvas = () => {
-    if (!this.system) return;
+    this.system.updateDimensions(this.props.UIStore);
     this.system.draw();
+  }
+
+  renderCanvas = () => {
+    if (!this.system) return;
+    this.system.render(this.props.UIStore);
   }
 
   render() {
     const UIStore = this.props.UIStore;
-    this.updateCanvas();
+    this.renderCanvas();
 
     return (
       <div>
