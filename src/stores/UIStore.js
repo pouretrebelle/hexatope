@@ -19,8 +19,11 @@ class UIStore {
   createListeners() {
     window.addEventListener('resize', this.onWindowResized);
     window.addEventListener('mousemove', this.onMouseMoved);
-    window.addEventListener('mousedown', this.onClickStarted);
-    window.addEventListener('mouseup', this.onClickEnded);
+    window.addEventListener('mousedown', this.onPointStarted);
+    window.addEventListener('mouseup', this.onPointEnded);
+    window.addEventListener('touchmove', this.onTouchMoved);
+    window.addEventListener('touchstart', this.onPointStarted);
+    window.addEventListener('touchend', this.onPointEnded);
 
     // don't open menu on right click, for manual dragging
     window.addEventListener('contextmenu', (e) => {
@@ -45,20 +48,21 @@ class UIStore {
   }
 
   @action
-  startClick = (e) => {
-    this.lastMouseButton = e.button;
+  startPoint = (e) => {
+    this.lastMouseButton = e.button || 0; // default to left button
     this.isMouseDown = true;
   }
 
   @action
-  endClick = () => {
+  endPoint = () => {
     this.isMouseDown = false;
   }
 
   onWindowResized = () => this.updateDimensions();
   onMouseMoved = (e) => this.updateMousePosition(e);
-  onClickStarted = (e) => this.startClick(e);
-  onClickEnded = () => this.endClick();
+  onTouchMoved = (e) => this.updateMousePosition(e.touches[0]);
+  onPointStarted = (e) => this.startPoint(e);
+  onPointEnded = () => this.endPoint();
 }
 
 export default UIStore;
