@@ -1,5 +1,7 @@
 # Hexatope
 
+[![Build Status](https://travis-ci.org/pouretrebelle/hexatope.svg?branch=master)](https://travis-ci.org/pouretrebelle/hexatope)
+
 ## :raised_hands: Make it work
 
 We like [Yarn](https://github.com/yarnpkg/yarn) for dependency management, installation instructions can be found [here](https://yarnpkg.com/en/docs/install).
