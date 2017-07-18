@@ -9,4 +9,5 @@ export default {
   drawGrid: true,
   drawLines: true,
   drawPoints: true,
+  drawMouse: true,
 };

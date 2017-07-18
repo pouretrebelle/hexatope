@@ -1,15 +1,17 @@
 import Vector2 from 'utils/Vector2';
 import settings from './settings';
+import { drawHexagon } from 'utils/hexagonUtils';
 import Hexagon from './Hexagon';
 
 class System {
   constructor(canvas, { windowWidth, windowHeight }) {
-    this.mousePos = new Vector2();
+    this.relativeMousePos = new Vector2();
     this.hexagons = [];
     this.columns = Math.ceil(windowWidth / (settings.hexRadius * 3));
     this.rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
     this.internalWidth = undefined;
     this.internalHeight = undefined;
+    this.mouseTargetHex = undefined;
     this.canvas = canvas;
     this.c = undefined;
     this.setup();
@@ -67,7 +69,7 @@ class System {
     }
 
     // draw hexagon at mouse position
-    // if (drawMouse) drawMouseHexagon();
+    if (settings.drawMouse) this.drawMouseHexagon();
 
     if (settings.drawLines) {
       for (let y = 0; y < this.rows; y++) {
@@ -80,6 +82,12 @@ class System {
     this.c.restore();
   }
 
+  drawMouseHexagon() {
+    this.c.fillStyle = 'crimson';
+    if (this.mouseTargetHex) {
+      drawHexagon(this.c, this.mouseTargetHex.pixelPos);
+    }
+  }
 
   // Global Update
   //======================================
@@ -88,8 +96,8 @@ class System {
 
     this.canvas.width = windowWidth;
     this.canvas.height = windowHeight;
-    this.mousePos.x = mouseX;
-    this.mousePos.y = mouseY;
+    this.relativeMousePos.x = mouseX - (windowWidth - this.internalWidth) / 2;
+    this.relativeMousePos.y = mouseY - (windowHeight - this.internalHeight) / 2;
 
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {

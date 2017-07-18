@@ -136,6 +136,10 @@ class Vector2 {
   isMagGreaterThan(distance) {
     return (this.magnitudeSquared() > distance * distance);
   }
+
+  dist(v) {
+    return this.minusNew(v).magnitude();
+  }
 }
 
 const Vector2Const = {

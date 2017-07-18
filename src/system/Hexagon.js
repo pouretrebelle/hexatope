@@ -95,9 +95,9 @@ class Hexagon {
 
     // roughly check whether the mouse is inside the hexagon
     // update mouse target if so
-    // if (mousePos.dist(this.pixelPos) < hexRadius) {
-    //   mouseTargetHex = this;
-    // }
+    if (this.system.relativeMousePos.dist(this.pixelPos) < settings.hexRadius) {
+      this.system.mouseTargetHex = this;
+    }
   }
 
   countActiveNeighbours() {
