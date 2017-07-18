@@ -97,13 +97,13 @@ class Vector2 {
     return (this.x * v.x) + (this.y * v.y);
   }
 
-  angle(useRadians) {
-    return Math.atan2(this.y, this.x) * (useRadians ? 1 : Vector2Const.TO_DEGREES);
+  angle(useDegrees) {
+    return Math.atan2(this.y, this.x) * (useDegrees ? Vector2Const.TO_DEGREES : 1);
   }
 
-  rotate(angle, useRadians) {
-    const cosRY = Math.cos(angle * (useRadians ? 1 : Vector2Const.TO_RADIANS));
-    const sinRY = Math.sin(angle * (useRadians ? 1 : Vector2Const.TO_RADIANS));
+  rotate(angle, useDegrees) {
+    const cosRY = Math.cos(angle * (useDegrees ? Vector2Const.TO_RADIANS : 1));
+    const sinRY = Math.sin(angle * (useDegrees ? Vector2Const.TO_RADIANS : 1));
     Vector2Const.temp.copyFrom(this);
     this.x = (Vector2Const.temp.x * cosRY) - (Vector2Const.temp.y * sinRY);
     this.y = (Vector2Const.temp.x * sinRY) + (Vector2Const.temp.y * cosRY);
@@ -121,10 +121,10 @@ class Vector2 {
     return (Vector2Const.temp.magnitudeSquared() < tolerance * tolerance);
   }
 
-  rotateAroundPoint(point, angle, useRadians) {
+  rotateAroundPoint(point, angle, useDegrees) {
     Vector2Const.temp.copyFrom(this);
     Vector2Const.temp.minusEq(point);
-    Vector2Const.temp.rotate(angle, useRadians);
+    Vector2Const.temp.rotate(angle, useDegrees);
     Vector2Const.temp.plusEq(point);
     this.copyFrom(Vector2Const.temp);
   }

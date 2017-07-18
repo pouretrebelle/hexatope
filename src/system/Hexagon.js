@@ -183,6 +183,7 @@ class Hexagon {
             this.c.beginPath();
             this.c.moveTo(pos1.x, pos1.y);
             this.c.bezierCurveTo(control1.x, control1.y, control2.x, control2.y, pos2.x, pos2.y);
+            this.c.stroke();
             this.c.closePath();
           }
         }
@@ -423,6 +424,7 @@ class Hexagon {
     this.c.beginPath();
     this.c.moveTo(pos1.x, pos1.y);
     this.c.quadraticCurveTo(origin.x, origin.y, pos2.x, pos2.y);
+    this.c.stroke();
     this.c.closePath();
   }
 }
