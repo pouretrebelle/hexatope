@@ -7,9 +7,10 @@ const hexWidth = settings.hexRadius * 2;
 const hexHeight = settings.hexRadius * Math.sqrt(3);
 
 class Hexagon {
-  constructor(c, hexagons, x, y) {
-    this.c = c;
-    this.hexagons = hexagons;
+  constructor(system, x, y) {
+    this.system = system;
+    this.c = system.c;
+    this.hexagons = system.hexagons;
 
     // establish grid position
     this.pos = new Vector2(x, y);
@@ -49,25 +50,25 @@ class Hexagon {
 
     // top right
     if (y >= 1) {
-      if (!odd || x < settings.columns - 1) {
+      if (!odd || x < this.system.columns - 1) {
         n[1] = this.hexagons[x + odd][y - 1];
       }
     }
 
     // bottom right
-    if (y < settings.rows - 1) {
-      if (!odd || x < settings.columns - 1) {
+    if (y < this.system.rows - 1) {
+      if (!odd || x < this.system.columns - 1) {
         n[2] = this.hexagons[x + odd][y + 1];
       }
     }
 
     // bottom
-    if (y < settings.rows - 2) {
+    if (y < this.system.rows - 2) {
       n[3] = this.hexagons[x][y + 2];
     }
 
     // bottom left
-    if (y < settings.rows - 1) {
+    if (y < this.system.rows - 1) {
       if (odd || x >= 1) {
         n[4] = this.hexagons[x - 1 + odd][y + 1];
       }

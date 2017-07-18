@@ -13,13 +13,40 @@ class Hexatope extends Component {
   }
 
   componentDidMount() {
-    this.system = new System(this.canvasElement);
+    this.system = new System(this.canvasElement, this.props.UIStore);
+    this.updateCanvas();
+  }
+
+  updateCanvas = () => {
+    if (!this.system) return;
+    this.system.update(this.props.UIStore);
+    this.drawCanvas();
+  }
+
+  drawCanvas = () => {
+    if (!this.system) return;
+    this.system.draw();
   }
 
   render() {
+    const UIStore = this.props.UIStore;
+    this.updateCanvas();
+
     return (
       <div>
-        <canvas ref={element => this.canvasElement = element} />
+        <canvas
+          ref={element => this.canvasElement = element}
+        />
+        <dl>
+          <dt>Window Width</dt>
+          <dd>{UIStore.windowWidth}</dd>
+          <dt>Window Height</dt>
+          <dd>{UIStore.windowHeight}</dd>
+          <dt>Mouse X</dt>
+          <dd>{UIStore.mouseX}</dd>
+          <dt>Mouse Y</dt>
+          <dd>{UIStore.mouseY}</dd>
+        </dl>
       </div>
     );
   }
