@@ -32,6 +32,8 @@ class Hexagon {
     // chose random layout (1-3) for dense (4/5/6 neighbours) display
     // regenerated when hex goes from inactive to active
     this.denseLayout = Math.ceil(random(3));
+
+    this.curves = [];
   }
 
   initialiseNeighbours(x, y) {
@@ -98,6 +100,9 @@ class Hexagon {
     if (this.system.relativeMousePos.dist(this.pixelPos) < settings.hexRadius) {
       this.system.mouseTargetHex = this;
     }
+
+    // update the curves to draw
+    this.planCurves();
   }
 
   countActiveNeighbours() {
@@ -145,177 +150,192 @@ class Hexagon {
     drawHexagon(this.c, this.pixelPos);
   }
 
-  drawLines() {
-    // called in global draw
+  drawCurves() {
+    // don't do anything if it's not in an active state
+    if (!this.active) return;
+
     this.c.save();
     this.c.translate(this.pixelPos.x, this.pixelPos.y);
-    if (this.active) { // truthy
-      let activeNeighboursCount = this.countActiveNeighbours();
-      let activeNeighbours = this.getActiveNeighbours();
-      this.c.strokeStyle = '#000';
-      this.c.lineWidth = settings.hexLineWeight;
+    this.c.strokeStyle = '#000';
+    this.c.lineWidth = settings.hexLineWeight;
 
-      // no neighbours
-      if (activeNeighboursCount == 0) {
-        if (settings.drawPoints && this.active == 2) {
-          this.c.ellipse(0, 0, settings.hexDoubleLineOffset, settings.hexDoubleLineOffset, 0, 0, Math.PI*2);
+    this.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
+      this.c.beginPath();
+      this.c.moveTo(pos1.x, pos1.y);
+      this.c.bezierCurveTo(
+        pos1Control.x,
+        pos1Control.y,
+        pos2Control.x,
+        pos2Control.y,
+        pos2.x,
+        pos2.y,
+      );
+      this.c.stroke();
+      this.c.closePath();
+    });
+
+    this.c.restore();
+  }
+
+  planCurves() {
+    // reset curves property
+    this.curves = [];
+
+    let activeNeighboursCount = this.countActiveNeighbours();
+    let activeNeighbours = this.getActiveNeighbours();
+
+    // one neighbour
+    if (activeNeighboursCount == 1) {
+      let activeEdge = activeNeighbours.indexOf(true);
+      let activeNeighbour = this.neighbours[activeEdge];
+      // if it is double active
+      // or the active neighbour is double active
+      if (activeNeighbour.active == 2 ||
+        this.active == 2) {
+        // the neighbour must have > 1 active neighbour to avoid ellipses on an active edge
+        if (activeNeighbour.countActiveNeighbours() > 1) {
+          // get two edge points
+          const pos1 = getEdgePos(activeEdge, 1);
+          const pos2 = getEdgePos(activeEdge, -1);
+          // get two control points
+          const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset * settings.hexRadius);
+          let pos1Control = pos1.minusNew(controlOffset);
+          let pos2Control = pos2.minusNew(controlOffset);
+
+          // add to curves property
+          this.curves.push({
+            pos1,
+            pos1Control,
+            pos2Control,
+            pos2,
+          });
         }
       }
+    }
 
-      // one neighbour
-      else if (activeNeighboursCount == 1) {
-        let activeEdge = activeNeighbours.indexOf(true);
-        let activeNeighbour = this.neighbours[activeEdge];
-        // if it is double active
-        // or the active neighbour is double active
-        if (activeNeighbour.active == 2 ||
-          this.active == 2) {
-          // if drawPoints is inactive the neighbour must have > 1 active neighbour
-          // to avoid ellipses on an active edge
-          if (settings.drawPoints || activeNeighbour.countActiveNeighbours() > 1) {
-            // get two edge points
-            const pos1 = getEdgePos(activeEdge, 1);
-            const pos2 = getEdgePos(activeEdge, -1);
-            // get two control points
-            const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset * settings.hexRadius);
-            let pos1Control = pos1.minusNew(controlOffset);
-            let pos2Control = pos2.minusNew(controlOffset);
-            // draw bezier curve for arc cap
-            this.c.beginPath();
-            this.c.moveTo(pos1.x, pos1.y);
-            this.c.bezierCurveTo(pos1Control.x, pos1Control.y, pos2Control.x, pos2Control.y, pos2.x, pos2.y);
-            this.c.stroke();
-            this.c.closePath();
-          }
-        }
-      }
-
-      // two or three neighbours
-      else if (activeNeighboursCount == 2 || activeNeighboursCount == 3) {
-        // link up all the active neighbours
-        for (let i = 0; i < 6; i++) {
-          if (activeNeighbours[i]) {
-            for (let j = i + 1; j < 6; j++) {
-              if (activeNeighbours[j]) {
-                this.drawCurveBetweenEdges(i, j);
-              }
+    // two or three neighbours
+    else if (activeNeighboursCount == 2 || activeNeighboursCount == 3) {
+      // link up all the active neighbours
+      for (let i = 0; i < 6; i++) {
+        if (activeNeighbours[i]) {
+          for (let j = i + 1; j < 6; j++) {
+            if (activeNeighbours[j]) {
+              this.addCurveBetweenEdges(i, j);
             }
           }
         }
       }
+    }
 
-      // four neighbours
-      else if (activeNeighboursCount == 4) {
-        // get the index of each inactive edge
-        let skipped1 = activeNeighbours.indexOf(false);
-        let skipped2 = activeNeighbours.slice(skipped1 + 1).indexOf(false) + skipped1 + 1;
+    // four neighbours
+    else if (activeNeighboursCount == 4) {
+      // get the index of each inactive edge
+      let skipped1 = activeNeighbours.indexOf(false);
+      let skipped2 = activeNeighbours.slice(skipped1 + 1).indexOf(false) + skipped1 + 1;
 
-        // make list of active edge positions
-        // making sure to loop from the most clockwise edge to avoid 0/5 problem
-        let positions = [];
-        let skippedClockwise = (skipped1 == 0) ? skipped1 : skipped2;
-        for (let i = skippedClockwise; i < skippedClockwise + 6; i++) {
-          if (wrap6(i) != skipped1 && wrap6(i) != skipped2) {
-            positions.push(wrap6(i));
-          }
-        }
-
-        // skips are adjacent
-        if ((skipped2 == wrap6(skipped1 + 1))
-          || (skipped1 == 0 && skipped2 == 5)) {
-          if (this.denseLayout == 3) {
-            // connect edges to adjacent edges, ignore straight line
-            this.drawCurveBetweenEdges(positions[0], positions[1]);
-            this.drawCurveBetweenEdges(positions[1], positions[2]);
-            this.drawCurveBetweenEdges(positions[2], positions[3]);
-          }
-          else if (this.denseLayout == 2) {
-            // cross over curves
-            this.drawCurveBetweenEdges(positions[0], positions[2]);
-            this.drawCurveBetweenEdges(positions[1], positions[3]);
-          }
-          else {
-            // pair edges with adjacent edges
-            this.drawCurveBetweenEdges(positions[0], positions[1]);
-            this.drawCurveBetweenEdges(positions[2], positions[3]);
-          }
-        }
-
-        // 1 and 3 situation
-        // or 2 and 2
-        else {
-          if (this.denseLayout == 3) {
-            // connect edges to adjacent edges
-            this.drawCurveBetweenEdges(positions[0], positions[1]);
-            this.drawCurveBetweenEdges(positions[1], positions[2]);
-            this.drawCurveBetweenEdges(positions[2], positions[3]);
-            this.drawCurveBetweenEdges(positions[3], positions[0]);
-          }
-          else if (this.denseLayout == 2) {
-            // pair edges with adjacent edges
-            this.drawCurveBetweenEdges(positions[3], positions[0]);
-            this.drawCurveBetweenEdges(positions[1], positions[2]);
-          }
-          else {
-            // pair edges with opposite adjacent edges
-            this.drawCurveBetweenEdges(positions[0], positions[1]);
-            this.drawCurveBetweenEdges(positions[2], positions[3]);
-          }
+      // make list of active edge positions
+      // making sure to loop from the most clockwise edge to avoid 0/5 problem
+      let positions = [];
+      let skippedClockwise = (skipped1 == 0) ? skipped1 : skipped2;
+      for (let i = skippedClockwise; i < skippedClockwise + 6; i++) {
+        if (wrap6(i) != skipped1 && wrap6(i) != skipped2) {
+          positions.push(wrap6(i));
         }
       }
 
-      // five neighbours
-      else if (activeNeighboursCount == 5) {
-        let skipped = activeNeighbours.indexOf(false);
+      // skips are adjacent
+      if ((skipped2 == wrap6(skipped1 + 1))
+        || (skipped1 == 0 && skipped2 == 5)) {
         if (this.denseLayout == 3) {
-          // connect edges to adjacent edges
-          for (let i = skipped; i < 5 + skipped; i++) {
-            const edge1 = (i == skipped) ? i + 5 : i;
-            this.drawCurveBetweenEdges(edge1, i + 1);
-          }
+          // connect edges to adjacent edges, ignore straight line
+          this.addCurveBetweenEdges(positions[0], positions[1]);
+          this.addCurveBetweenEdges(positions[1], positions[2]);
+          this.addCurveBetweenEdges(positions[2], positions[3]);
         }
         else if (this.denseLayout == 2) {
-          // batman logo
-          // curve between the two skipped-adjacent edges
-          this.drawCurveBetweenEdges(skipped + 1, skipped + 5);
-          // connect other 3 to eachother
-          this.drawCurveBetweenEdges(skipped + 2, skipped + 3);
-          this.drawCurveBetweenEdges(skipped + 3, skipped + 4);
-        }
-        else if (this.denseLayout == 1) {
-          // evil M
-          // curve the two skipped-adjacent edges to the skipped-opposite edge
-          this.drawCurveBetweenEdges(skipped + 1, skipped + 3);
-          this.drawCurveBetweenEdges(skipped + 5, skipped + 3);
-          // curve the other two edges to the skipped-adjacent edges
-          this.drawCurveBetweenEdges(skipped + 1, skipped + 2);
-          this.drawCurveBetweenEdges(skipped + 5, skipped + 4);
-        }
-      }
-
-      // 6 neighbours
-      else {
-        if (this.denseLayout == 3) {
-          // connect edges to adjacent edges
-          for (let i = 0; i < 6; i++) {
-            this.drawCurveBetweenEdges(i, i + 1);
-          }
+          // cross over curves
+          this.addCurveBetweenEdges(positions[0], positions[2]);
+          this.addCurveBetweenEdges(positions[1], positions[3]);
         }
         else {
           // pair edges with adjacent edges
-          // alternate using denseLayout == 2 or 1
-          for (let i = this.denseLayout - 1; i < 6; i += 2) {
-            this.drawCurveBetweenEdges(i, i + 1);
-          }
+          this.addCurveBetweenEdges(positions[0], positions[1]);
+          this.addCurveBetweenEdges(positions[2], positions[3]);
         }
       }
 
+      // 1 and 3 situation
+      // or 2 and 2
+      else {
+        if (this.denseLayout == 3) {
+          // connect edges to adjacent edges
+          this.addCurveBetweenEdges(positions[0], positions[1]);
+          this.addCurveBetweenEdges(positions[1], positions[2]);
+          this.addCurveBetweenEdges(positions[2], positions[3]);
+          this.addCurveBetweenEdges(positions[3], positions[0]);
+        }
+        else if (this.denseLayout == 2) {
+          // pair edges with adjacent edges
+          this.addCurveBetweenEdges(positions[3], positions[0]);
+          this.addCurveBetweenEdges(positions[1], positions[2]);
+        }
+        else {
+          // pair edges with opposite adjacent edges
+          this.addCurveBetweenEdges(positions[0], positions[1]);
+          this.addCurveBetweenEdges(positions[2], positions[3]);
+        }
+      }
     }
-    this.c.restore();
+
+    // five neighbours
+    else if (activeNeighboursCount == 5) {
+      let skipped = activeNeighbours.indexOf(false);
+      if (this.denseLayout == 3) {
+        // connect edges to adjacent edges
+        for (let i = skipped; i < 5 + skipped; i++) {
+          const edge1 = (i == skipped) ? i + 5 : i;
+          this.addCurveBetweenEdges(edge1, i + 1);
+        }
+      }
+      else if (this.denseLayout == 2) {
+        // batman logo
+        // curve between the two skipped-adjacent edges
+        this.addCurveBetweenEdges(skipped + 1, skipped + 5);
+        // connect other 3 to eachother
+        this.addCurveBetweenEdges(skipped + 2, skipped + 3);
+        this.addCurveBetweenEdges(skipped + 3, skipped + 4);
+      }
+      else if (this.denseLayout == 1) {
+        // evil M
+        // curve the two skipped-adjacent edges to the skipped-opposite edge
+        this.addCurveBetweenEdges(skipped + 1, skipped + 3);
+        this.addCurveBetweenEdges(skipped + 5, skipped + 3);
+        // curve the other two edges to the skipped-adjacent edges
+        this.addCurveBetweenEdges(skipped + 1, skipped + 2);
+        this.addCurveBetweenEdges(skipped + 5, skipped + 4);
+      }
+    }
+
+    // 6 neighbours
+    else if (activeNeighboursCount == 6) {
+      if (this.denseLayout == 3) {
+        // connect edges to adjacent edges
+        for (let i = 0; i < 6; i++) {
+          this.addCurveBetweenEdges(i, i + 1);
+        }
+      }
+      else {
+        // pair edges with adjacent edges
+        // alternate using denseLayout == 2 or 1
+        for (let i = this.denseLayout - 1; i < 6; i += 2) {
+          this.addCurveBetweenEdges(i, i + 1);
+        }
+      }
+    }
   }
 
-  drawCurveBetweenEdges(edge1, edge2) {
-    // called by drawLines()
+  addCurveBetweenEdges(edge1, edge2) {
+    // called by planCurves()
     // used to determine whether they should be single, double, or diverging
     // also used to set curve offsets for inner/outer lines
 
@@ -334,8 +354,8 @@ class Hexagon {
     }
     if (double) {
       // double rainbow
-      this.drawCurveWithOffset(edge1, edge2, 1, 1);
-      this.drawCurveWithOffset(edge1, edge2, -1, -1);
+      this.addCurveWithOffset(edge1, edge2, 1, 1);
+      this.addCurveWithOffset(edge1, edge2, -1, -1);
     }
 
     // if tile is single active
@@ -343,23 +363,23 @@ class Hexagon {
     else {
       // if edge1 hexagon exists and is double active
       if ((this.neighbours[edge1] && this.neighbours[edge1].active == 2)) {
-        this.drawCurveWithOffset(edge1, edge2, 1, 0);
-        this.drawCurveWithOffset(edge1, edge2, -1, 0);
+        this.addCurveWithOffset(edge1, edge2, 1, 0);
+        this.addCurveWithOffset(edge1, edge2, -1, 0);
       }
       // if edge2 hexagon exists and is double active
       else if ((this.neighbours[edge2] && this.neighbours[edge2].active == 2)) {
-        this.drawCurveWithOffset(edge1, edge2, 0, 1);
-        this.drawCurveWithOffset(edge1, edge2, 0, -1);
+        this.addCurveWithOffset(edge1, edge2, 0, 1);
+        this.addCurveWithOffset(edge1, edge2, 0, -1);
       }
       // if everything is single
       else {
-        this.drawCurveWithOffset(edge1, edge2, 0, 0);
+        this.addCurveWithOffset(edge1, edge2, 0, 0);
       }
     }
   }
 
-  drawCurveWithOffset(edge1, edge2, offset1, offset2) {
-    // called by drawCurveBetweenEdges()
+  addCurveWithOffset(edge1, edge2, offset1, offset2) {
+    // called by addCurveBetweenEdges()
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
 
@@ -428,19 +448,12 @@ class Hexagon {
       pos2Control = pos2;
     }
 
-    // draw the line
-    this.c.beginPath();
-    this.c.moveTo(pos1.x, pos1.y);
-    this.c.bezierCurveTo(
-      pos1Control.x,
-      pos1Control.y,
-      pos2Control.x,
-      pos2Control.y,
-      pos2.x,
-      pos2.y,
-    );
-    this.c.stroke();
-    this.c.closePath();
+    this.curves.push({
+      pos1,
+      pos1Control,
+      pos2Control,
+      pos2,
+    });
   }
 }
 

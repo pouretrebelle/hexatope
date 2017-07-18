@@ -69,10 +69,10 @@ class System {
     // draw hexagon at mouse position
     if (settings.drawMouse) this.drawMouseHexagon();
 
-    if (settings.drawLines) {
+    if (settings.drawCurves) {
       for (let y = 0; y < this.rows; y++) {
         for (let x = 0; x < this.columns; x++) {
-          this.hexagons[x][y].drawLines();
+          this.hexagons[x][y].drawCurves();
         }
       }
     }
