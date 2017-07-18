@@ -10,4 +10,9 @@ export default {
   drawLines: true,
   drawPoints: true,
   drawMouse: true,
+  gridColor: '#ffffff',
+  mouseColor: '#e5e6e8',
+  inactiveColor: '#ffffff',
+  activeColor: '#f6f7f8',
+  doubleActiveColor: '#eaebed',
 };

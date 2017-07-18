@@ -47,11 +47,7 @@ class System {
   //======================================
 
   draw() {
-    if (settings.drawGrid) {
-      this.c.fillStyle = '#eee';
-    } else {
-      this.c.fillStyle = '#fff';
-    }
+    this.c.fillStyle = settings.gridColor,
     this.c.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.c.save();
@@ -61,7 +57,7 @@ class System {
       (this.canvas.height - this.internalHeight) / 2,
     );
 
-    // important to draw all hexagons before lines to avoid overlap
+    // draw all hexagons before lines to avoid overlap
     if (settings.drawHex || settings.drawGrid) {
       for (let y = 0; y < this.rows; y++) {
         for (let x = 0; x < this.columns; x++) {
@@ -85,7 +81,7 @@ class System {
   }
 
   drawMouseHexagon() {
-    this.c.fillStyle = 'crimson';
+    this.c.fillStyle = settings.mouseColor;
     if (this.mouseTargetHex) {
       drawHexagon(this.c, this.mouseTargetHex.pixelPos);
     }

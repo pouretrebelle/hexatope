@@ -131,36 +131,16 @@ class Hexagon {
     // called in global draw
     // even if drawHex is inactive we need to draw them blank
     // if drawGrid is active
-    if (settings.drawHex && this.active) {
-      let brightness = this.active * 15;
-      let r = 255 - brightness;
-      let g = 255 - brightness;
-      let b = 255 - brightness;
-      // add colour to visualise which layout it is
-      if (this.countActiveNeighbours() > 3) {
-        // blue
-        if (this.denseLayout == 1) {
-          r -= 25;
-          g += 5;
-          b += 20;
-        }
-        // pink
-        else if (this.denseLayout == 2) {
-          r += 20;
-          g -= 25;
-          b += 5;
-        }
-        // green
-        else if (this.denseLayout == 3) {
-          r += 5;
-          g += 20;
-          b -= 25;
-        }
-      }
-      this.c.fillStyle = `rgb(${r}, ${g}, ${b})`;
-    }
-    else if (settings.drawHex) {
-      this.c.fillStyle = '#fff';
+    switch (this.active) {
+      case 0:
+        this.c.fillStyle = settings.inactiveColor;
+        break;
+      case 1:
+        this.c.fillStyle = settings.activeColor;
+        break;
+      case 2:
+        this.c.fillStyle = settings.doubleActiveColor;
+        break;
     }
     drawHexagon(this.c, this.pixelPos);
   }
