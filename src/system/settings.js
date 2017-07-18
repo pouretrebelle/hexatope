@@ -1,7 +1,7 @@
 export default {
   hexRadius: 40,
   hexLineWeight: 3,
-  hexDoubleLineOffset: 14,
+  hexDoubleLineOffset: 0.3, // multiplied by radius
   hexMargin: 4,
   rows: 10,
   columns: 10,

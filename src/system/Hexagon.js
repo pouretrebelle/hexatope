@@ -1,6 +1,6 @@
 import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
-import { drawHexagon, getEdgePos } from 'utils/hexagonUtils';
+import { drawHexagon, getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import settings from './settings';
 
 const hexWidth = settings.hexRadius * 2;
@@ -177,12 +177,13 @@ class Hexagon {
             const pos1 = getEdgePos(activeEdge, 1);
             const pos2 = getEdgePos(activeEdge, -1);
             // get two control points
-            const control1 = new Vector2(settings.hexDoubleLineOffset * 0.5, -hexHeight / 2 + settings.hexDoubleLineOffset).rotate(activeEdge * Math.PI / 3);
-            const control2 = new Vector2(-settings.hexDoubleLineOffset * 0.5, -hexHeight / 2 + settings.hexDoubleLineOffset).rotate(activeEdge * Math.PI / 3);
+            const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset * settings.hexRadius);
+            let pos1Control = pos1.minusNew(controlOffset);
+            let pos2Control = pos2.minusNew(controlOffset);
             // draw bezier curve for arc cap
             this.c.beginPath();
             this.c.moveTo(pos1.x, pos1.y);
-            this.c.bezierCurveTo(control1.x, control1.y, control2.x, control2.y, pos2.x, pos2.y);
+            this.c.bezierCurveTo(pos1Control.x, pos1Control.y, pos2Control.x, pos2Control.y, pos2.x, pos2.y);
             this.c.stroke();
             this.c.closePath();
           }
@@ -332,11 +333,9 @@ class Hexagon {
       double = true;
     }
     if (double) {
-      // set outer control point slightly further than offset width
-      // to create even margin
-      // cos bezier curves, son
-      this.drawCurveWithOffset(edge1, edge2, 1, 1, -settings.hexDoubleLineOffset * 0.8);
-      this.drawCurveWithOffset(edge1, edge2, -1, -1, settings.hexDoubleLineOffset * 0.5);
+      // double rainbow
+      this.drawCurveWithOffset(edge1, edge2, 1, 1);
+      this.drawCurveWithOffset(edge1, edge2, -1, -1);
     }
 
     // if tile is single active
@@ -344,17 +343,13 @@ class Hexagon {
     else {
       // if edge1 hexagon exists and is double active
       if ((this.neighbours[edge1] && this.neighbours[edge1].active == 2)) {
-        // use half offset width for midpoint of diverging lines
-        // set outer control point slightly further to create even margin
-        this.drawCurveWithOffset(edge1, edge2, 1, 0, -settings.hexDoubleLineOffset * 0.4);
-        this.drawCurveWithOffset(edge1, edge2, -1, 0, settings.hexDoubleLineOffset * 0.25);
+        this.drawCurveWithOffset(edge1, edge2, 1, 0);
+        this.drawCurveWithOffset(edge1, edge2, -1, 0);
       }
       // if edge2 hexagon exists and is double active
       else if ((this.neighbours[edge2] && this.neighbours[edge2].active == 2)) {
-        // use half offset width for midpoint between single and double
-        // set outer control point slightly further to create even margin
-        this.drawCurveWithOffset(edge1, edge2, 0, 1, -settings.hexDoubleLineOffset * 0.4);
-        this.drawCurveWithOffset(edge1, edge2, 0, -1, settings.hexDoubleLineOffset * 0.25);
+        this.drawCurveWithOffset(edge1, edge2, 0, 1);
+        this.drawCurveWithOffset(edge1, edge2, 0, -1);
       }
       // if everything is single
       else {
@@ -363,7 +358,7 @@ class Hexagon {
     }
   }
 
-  drawCurveWithOffset(edge1, edge2, offset1, offset2, originOffset) {
+  drawCurveWithOffset(edge1, edge2, offset1, offset2) {
     // called by drawCurveBetweenEdges()
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
@@ -371,13 +366,12 @@ class Hexagon {
     // originOffset is the distance we move the origin point
     // in the opposite direction of the average angle of the two points
     let origin = new Vector2();
-    if (originOffset) {
-      origin.y = originOffset;
-    }
 
     // set up positions as per offsets
     let pos1 = getEdgePos(edge1, offset1);
     let pos2 = getEdgePos(edge2, offset2);
+    let pos1ControlMagnitude = 0;
+    let pos2ControlMagnitude = 0;
 
     // if edge 2 is one clockwise from edge 1
     if (edge1 == wrap6(edge2 - 1)) {
@@ -386,6 +380,8 @@ class Hexagon {
       // brings offset in smooth curve
       origin.y -= settings.hexRadius * 0.25;
       origin.rotate((edge1 + 0.5) * Math.PI / 3);
+      pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
+      pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
     }
     // if edge 2 is one anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 1)) {
@@ -394,6 +390,8 @@ class Hexagon {
       // brings offset in smooth curve
       origin.y -= settings.hexRadius * 0.25;
       origin.rotate((edge1 - 0.5) * Math.PI / 3);
+      pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
+      pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
     }
 
     // if edge 2 is two clockwise from edge 1
@@ -401,13 +399,23 @@ class Hexagon {
       // flips offset 2
       pos2 = getEdgePos(edge2, -offset2);
       origin.rotate((edge1 + 1) * Math.PI / 3);
+      pos1ControlMagnitude = getControlMagnitudeWide(offset1);
+      pos2ControlMagnitude = getControlMagnitudeWide(offset2);
     }
     // if edge 2 is two anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 2)) {
       // flips offset 1
       pos1 = getEdgePos(edge1, -offset1);
       origin.rotate((edge1 - 1) * Math.PI / 3);
+      pos1ControlMagnitude = getControlMagnitudeWide(offset1);
+      pos2ControlMagnitude = getControlMagnitudeWide(offset2);
     }
+
+    // average magnitude of control points
+    const controlMagnitude = (pos1ControlMagnitude + pos2ControlMagnitude) / 2;
+    // generate control points by taking them away from the points
+    let pos1Control = pos1.minusNew(getEdgePos(edge1, 0).normalise().multiplyEq(controlMagnitude));
+    let pos2Control = pos2.minusNew(getEdgePos(edge2, 0).normalise().multiplyEq(controlMagnitude));
 
     // if edges are opposites
     // using the line function everything is 1px off
@@ -415,15 +423,22 @@ class Hexagon {
     if (Math.abs(edge2 - edge1) == 3) {
       // flip the offset 2 to create parallel lines
       pos2 = getEdgePos(edge2, -offset2);
-      // reset origin offset so line is straight
-      origin.y = (settings.hexDoubleLineOffset * 0.5) * (offset1 + offset2) * 0.5 * (edge1 - edge2) / 3;
-      origin.rotate((edge1 + 1.5) * Math.PI / 3);
+      // make control points the start and end of line
+      pos1Control = pos1;
+      pos2Control = pos2;
     }
 
     // draw the line
     this.c.beginPath();
     this.c.moveTo(pos1.x, pos1.y);
-    this.c.quadraticCurveTo(origin.x, origin.y, pos2.x, pos2.y);
+    this.c.bezierCurveTo(
+      pos1Control.x,
+      pos1Control.y,
+      pos2Control.x,
+      pos2Control.y,
+      pos2.x,
+      pos2.y,
+    );
     this.c.stroke();
     this.c.closePath();
   }
