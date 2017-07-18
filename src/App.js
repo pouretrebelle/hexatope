@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
-import System from 'system/System';
+import { Provider } from 'mobx-react';
+import UIStore from 'stores/UIStore';
 
-export default class App extends Component {
+import Hexatope from './Hexatope';
+
+class App extends Component {
 
   constructor(props) {
     super(props);
-    this.canvasElement = undefined;
-    this.hexSystem = undefined;
-  }
-
-  componentDidMount() {
-    this.system = new System(this.canvasElement);
+    this.UIStore = new UIStore();
   }
 
   render() {
     return (
-      <div>
-        <canvas ref={element => this.canvasElement = element} />
-      </div>
+      <Provider
+        UIStore={this.UIStore}>
+        <Hexatope />
+      </Provider>
     );
   }
 }
+
+export default App;
