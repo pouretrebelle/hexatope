@@ -120,6 +120,8 @@ class System {
     if (!isMouseDown && this.isDrawing) {
       // end drawing
       this.isDrawing = false;
+      // reset last target for multiple clicks on the same hexagon
+      this.mouseTargetHexLast = undefined;
     }
 
     if (this.isDrawing &&
