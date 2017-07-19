@@ -1,26 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import System from 'system/System';
 import { inject, observer } from 'mobx-react';
 
 @inject('UIStore') @observer
-class Hexatope extends Component {
+class Canvas extends Component {
 
   constructor(props) {
     super(props);
     this.canvasElement = undefined;
-    this.hexSystem = undefined;
   }
 
   componentDidMount() {
-    this.system = new System(this.canvasElement, this.props.UIStore);
-    this.system.updateDimensions(this.props.UIStore);
-    this.system.draw();
+    this.props.system.setupCanvas(this.canvasElement, this.props.UIStore);
+    this.props.system.draw();
   }
 
   renderCanvas = () => {
-    if (!this.system) return;
-    this.system.render(this.props.UIStore);
+    if (!this.props.system || !this.props.system.canvas) return;
+    this.props.system.render(this.props.UIStore);
   }
 
   render() {
@@ -47,8 +44,9 @@ class Hexatope extends Component {
   }
 }
 
-Hexatope.propTypes = {
+Canvas.propTypes = {
+  system: PropTypes.object,
   UIStore: PropTypes.object,
 };
 
-export default Hexatope;
+export default Canvas;
