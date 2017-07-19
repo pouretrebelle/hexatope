@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 
+import styles from 'styles/layout.css';
+
 import System from 'system/System';
-import Canvas from 'components/Canvas';
+import CanvasWrapper from 'components/CanvasWrapper';
+import DemoWrapper from 'components/DemoWrapper';
 
 @inject('UIStore') @observer
 class App extends Component {
@@ -15,8 +18,11 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        <Canvas
+      <div className={styles.content}>
+        <CanvasWrapper
+          system={this.system}
+        />
+        <DemoWrapper
           system={this.system}
         />
       </div>

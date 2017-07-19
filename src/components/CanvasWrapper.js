@@ -11,12 +11,12 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.props.system.setupCanvas(this.canvasElement, this.props.UIStore);
-    this.props.system.draw();
+    this.props.system.canvas.setup(this.canvasElement, this.props.UIStore);
+    this.renderCanvas();
   }
 
   renderCanvas = () => {
-    if (!this.props.system || !this.props.system.canvas) return;
+    if (!this.props.system || !this.props.system.canvas.c) return;
     this.props.system.render(this.props.UIStore);
   }
 
