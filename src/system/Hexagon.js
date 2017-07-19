@@ -1,6 +1,6 @@
 import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
-import { drawHexagon, getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
+import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import settings from './settings';
 
 const hexWidth = settings.hexRadius * 2;
@@ -96,7 +96,7 @@ class Hexagon {
 
     // roughly check whether the mouse is inside the hexagon
     // update mouse target if so
-    if (this.system.relativeMousePos.dist(this.pixelPos) < settings.hexRadius) {
+    if (this.system.canvas.relativeMousePos.dist(this.pixelPos) < settings.hexRadius) {
       this.system.mouseTargetHex = this;
     }
 
@@ -129,51 +129,6 @@ class Hexagon {
     }
 
     return activeNeighbours;
-  }
-
-  drawHex() {
-    // called in global draw
-    // even if drawHex is inactive we need to draw them blank
-    // if drawGrid is active
-    switch (this.active) {
-      case 0:
-        this.system.c.fillStyle = settings.inactiveColor;
-        break;
-      case 1:
-        this.system.c.fillStyle = settings.activeColor;
-        break;
-      case 2:
-        this.system.c.fillStyle = settings.doubleActiveColor;
-        break;
-    }
-    drawHexagon(this.system.c, this.pixelPos);
-  }
-
-  drawCurves() {
-    // don't do anything if it's not in an active state
-    if (!this.active) return;
-
-    this.system.c.save();
-    this.system.c.translate(this.pixelPos.x, this.pixelPos.y);
-    this.system.c.strokeStyle = '#000';
-    this.system.c.lineWidth = settings.hexLineWeight;
-
-    this.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
-      this.system.c.beginPath();
-      this.system.c.moveTo(pos1.x, pos1.y);
-      this.system.c.bezierCurveTo(
-        pos1Control.x,
-        pos1Control.y,
-        pos2Control.x,
-        pos2Control.y,
-        pos2.x,
-        pos2.y,
-      );
-      this.system.c.stroke();
-      this.system.c.closePath();
-    });
-
-    this.system.c.restore();
   }
 
   planCurves() {
