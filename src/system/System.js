@@ -4,14 +4,14 @@ import { drawHexagon } from 'utils/hexagonUtils';
 import Hexagon from './Hexagon';
 
 class System {
-  constructor(canvas, { windowWidth, windowHeight }) {
+  constructor({ windowWidth, windowHeight }) {
     this.relativeMousePos = new Vector2();
     this.hexagons = [];
     this.columns = Math.ceil(windowWidth / (settings.hexRadius * 3));
     this.rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
     this.internalWidth = undefined;
     this.internalHeight = undefined;
-    this.canvas = canvas;
+    this.canvas = undefined;
     this.c = undefined;
     this.mouseTargetHex = undefined;
     this.mouseTargetHexLast = undefined;
@@ -23,8 +23,7 @@ class System {
     // calculate width and height of hexagons
     const hexHeight = Math.sqrt(3)*settings.hexRadius;
 
-    // set up canvas
-    this.c = this.canvas.getContext('2d');
+    // setup sizing
     this.internalWidth = (this.columns + 1 / 4) * (settings.hexRadius * 3);
     this.internalHeight = (this.rows + 1) * (hexHeight / 2);
 
@@ -35,12 +34,19 @@ class System {
         this.hexagons[x].push(new Hexagon(this, x, y));
       }
     }
+
     // neighbouring needs to be done after they're all initialised
     for (let x = 0; x < this.columns; x++) {
       for (let y = 0; y < this.rows; y++) {
         this.hexagons[x][y].initialiseNeighbours(x, y);
       }
     }
+  }
+
+  setupCanvas(canvas, UIStore) {
+    this.canvas = canvas;
+    this.c = this.canvas.getContext('2d');
+    this.updateDimensions(UIStore);
   }
 
   // Global Draw

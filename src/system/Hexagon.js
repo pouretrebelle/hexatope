@@ -9,7 +9,6 @@ const hexHeight = settings.hexRadius * Math.sqrt(3);
 class Hexagon {
   constructor(system, x, y) {
     this.system = system;
-    this.c = system.c;
     this.hexagons = system.hexagons;
 
     // establish grid position
@@ -138,31 +137,31 @@ class Hexagon {
     // if drawGrid is active
     switch (this.active) {
       case 0:
-        this.c.fillStyle = settings.inactiveColor;
+        this.system.c.fillStyle = settings.inactiveColor;
         break;
       case 1:
-        this.c.fillStyle = settings.activeColor;
+        this.system.c.fillStyle = settings.activeColor;
         break;
       case 2:
-        this.c.fillStyle = settings.doubleActiveColor;
+        this.system.c.fillStyle = settings.doubleActiveColor;
         break;
     }
-    drawHexagon(this.c, this.pixelPos);
+    drawHexagon(this.system.c, this.pixelPos);
   }
 
   drawCurves() {
     // don't do anything if it's not in an active state
     if (!this.active) return;
 
-    this.c.save();
-    this.c.translate(this.pixelPos.x, this.pixelPos.y);
-    this.c.strokeStyle = '#000';
-    this.c.lineWidth = settings.hexLineWeight;
+    this.system.c.save();
+    this.system.c.translate(this.pixelPos.x, this.pixelPos.y);
+    this.system.c.strokeStyle = '#000';
+    this.system.c.lineWidth = settings.hexLineWeight;
 
     this.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
-      this.c.beginPath();
-      this.c.moveTo(pos1.x, pos1.y);
-      this.c.bezierCurveTo(
+      this.system.c.beginPath();
+      this.system.c.moveTo(pos1.x, pos1.y);
+      this.system.c.bezierCurveTo(
         pos1Control.x,
         pos1Control.y,
         pos2Control.x,
@@ -170,11 +169,11 @@ class Hexagon {
         pos2.x,
         pos2.y,
       );
-      this.c.stroke();
-      this.c.closePath();
+      this.system.c.stroke();
+      this.system.c.closePath();
     });
 
-    this.c.restore();
+    this.system.c.restore();
   }
 
   planCurves() {
