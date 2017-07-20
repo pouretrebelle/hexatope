@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
+import { saveAs } from 'file-saver';
+import STLExporter from 'utils/STLExporter';
 
 class Demo {
   constructor(system) {
@@ -105,6 +107,13 @@ class Demo {
   render = () => {
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
+  }
+
+  downloadSTL() {
+    const exporter = new STLExporter();
+    const stlString = exporter.parse(this.scene);
+    const blob = new Blob([stlString], { type: 'text/plain' });
+    saveAs(blob, 'hexatope.stl');
   }
 }
 
