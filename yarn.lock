@@ -4507,6 +4507,10 @@ text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
 
+three-orbitcontrols@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/three-orbitcontrols/-/three-orbitcontrols-1.2.1.tgz#ce10a6b094c208b7f8fbf0d0cae3f856e2385e32"
+
 three@0.86.0:
   version "0.86.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.86.0.tgz#1c33e476a1537e9a8a18f5792d024b1046cd2000"
