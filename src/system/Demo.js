@@ -8,11 +8,12 @@ class Demo {
     this.scene = undefined;
     this.camera = undefined;
     this.renderer = undefined;
+    this.material = undefined;
+    this.mesh = undefined;
   }
 
   setup(canvas, UIStore) {
     this.canvas = canvas;
-
 
     // scene
     this.scene = new THREE.Scene();
@@ -20,8 +21,8 @@ class Demo {
 
     // camera
     // (fov, aspect, near, far)
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.z = window.innerHeight * 0.13;
+    this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
+    this.camera.position.z = UIStore.windowHeight * 1.5;
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
@@ -46,8 +47,12 @@ class Demo {
     const ambLight = new THREE.AmbientLight(0xaaaaaa);
     this.scene.add(ambLight);
 
-    // initialise geometry
-    this.setupGeometry();
+    // material
+    this.material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.6,
+      metalness: 0.6,
+    });
 
     // initialise render loop
     this.render();
@@ -58,30 +63,34 @@ class Demo {
   }
 
   updateCurves() {
-    // console.log('update curves');
+    this.scene.remove(this.mesh);
+
+    let geometry = new THREE.Geometry();
+    const curves = this.system.getAllCurves();
+
+    curves.forEach(curve => {
+      const bezier = new THREE.CubicBezierCurve3(
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
+      );
+      const tube = new THREE.TubeGeometry(bezier, 20, 3, 8, false);
+      geometry.merge(tube);
+    });
+
+    this.mesh = new THREE.Mesh(geometry, this.material);
+    this.scene.add(this.mesh);
+  }
+
+  getVec3PointMerge(one, two) {
+    // we have to flip the x-axis, no idea why
+    return new THREE.Vector3(one.x+two.x, -one.y-two.y, 0);
   }
 
   render = () => {
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
-  }
-
-  setupGeometry() {
-    const curve = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(-10, 0, 0),
-      new THREE.Vector3(-5, 15, 0),
-      new THREE.Vector3(20, 15, 0),
-      new THREE.Vector3(10, 0, 0)
-    );
-
-    const geometry = new THREE.TubeGeometry(curve, 20, 3, 8, false);
-    const material = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 0.6,
-      metalness: 0.6,
-    });
-    const mesh = new THREE.Mesh(geometry, material);
-    this.scene.add(mesh);
   }
 }
 
