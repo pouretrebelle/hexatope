@@ -12,17 +12,9 @@ class Demo extends Component {
 
   componentDidMount() {
     this.props.system.demo.setup(this.demoElement, this.props.UIStore);
-    this.renderDemo();
-  }
-
-  renderDemo = () => {
-    if (!this.props.system || !this.props.system.demo.c) return;
-    this.props.system.demo.draw();
   }
 
   render() {
-    this.renderDemo();
-
     return (
       <div>
         <canvas

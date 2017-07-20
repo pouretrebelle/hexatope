@@ -57,15 +57,12 @@ class Demo {
     this.renderer.setSize(windowWidth / 2, windowHeight);
   }
 
-  draw() {
-  }
-
-  update() {
+  updateCurves() {
+    // console.log('update curves');
   }
 
   render = () => {
     requestAnimationFrame(this.render);
-    this.update();
     this.renderer.render(this.scene, this.camera);
   }
 

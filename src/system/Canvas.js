@@ -10,6 +10,7 @@ class Canvas {
     this.internalWidth = undefined;
     this.internalHeight = undefined;
     this.relativeMousePos = new Vector2();
+    this.isMouseInside = false;
   }
 
   setup(canvas, UIStore) {
@@ -26,6 +27,11 @@ class Canvas {
   updateMousePos({ mouseX, mouseY }) {
     this.relativeMousePos.x = mouseX - (this.canvas.width - this.internalWidth) / 2;
     this.relativeMousePos.y = mouseY - (this.canvas.height - this.internalHeight) / 2;
+
+    let mouseInside = true;
+    if (mouseX > this.canvas.width) mouseInside = false;
+    if (mouseY > this.canvas.height) mouseInside = false;
+    this.isMouseInside = mouseInside;
   }
 
   updateDimensions({ windowWidth, windowHeight }) {
@@ -56,7 +62,7 @@ class Canvas {
     }
 
     // draw hexagon at mouse position
-    if (settings.drawMouse) this.drawMouseHexagon();
+    if (settings.drawMouse && this.isMouseInside) this.drawMouseHexagon();
 
     if (settings.drawCurves) {
       for (let y = 0; y < this.system.rows; y++) {

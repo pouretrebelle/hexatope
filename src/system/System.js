@@ -13,6 +13,7 @@ class System {
     this.mouseTargetHex = undefined;
     this.mouseTargetHexLast = undefined;
     this.isDrawing = false;
+    this.hasChange = false;
     this.setup();
   }
 
@@ -39,11 +40,16 @@ class System {
         this.hexagons[x][y].update();
       }
     }
+
+    // update the demo
+    if (this.hasChanged) {
+      this.demo.updateCurves();
+      this.hasChanged = false;
+    }
   }
 
   render({ isMouseDown, lastMouseButton, ...props }) {
     this.canvas.updateMousePos(props);
-    this.updateHexagons();
 
     if (isMouseDown && !this.isDrawing) {
       // start drawing
@@ -57,22 +63,34 @@ class System {
       this.mouseTargetHexLast = undefined;
     }
 
-    if (this.isDrawing &&
+    // don't do anything if the mouse is outside of bounds
+    if (this.canvas.isMouseInside &&
+        this.isDrawing &&
         this.mouseTargetHexLast !== this.mouseTargetHex) {
+
       // increment and loop on left mouse button
       if (lastMouseButton == 0) {
+
+        // update global change value to propagate 3d redraw
+        this.hasChanged = true;
+
         this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
       }
       // decrement on right mouse button
       else if (lastMouseButton == 2 && this.mouseTargetHex.nextActive > 0) {
+
+        // update global change value to propagate 3d redraw
+        // only if it's actually removing lines
+        this.hasChanged = true;
+
         this.mouseTargetHex.nextActive--;
       }
 
       this.mouseTargetHexLast = this.mouseTargetHex;
     }
 
+    this.updateHexagons();
     this.canvas.draw();
-    this.demo.draw();
   }
 }
 
