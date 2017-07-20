@@ -70,30 +70,29 @@ class Demo {
     this.scene.remove(this.mesh);
 
     let geometry = new THREE.Geometry();
-    const curves = this.system.getAllCurves();
+    const data = this.system.getHexagonData();
 
-    curves.forEach(curve => {
-      const startPoint = this.getVec3PointMerge(curve.hexagonPosition, curve.pos1);
-      const endPoint = this.getVec3PointMerge(curve.hexagonPosition, curve.pos2);
-
+    // draw each curve as a tube
+    data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        startPoint,
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
-        endPoint
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
       );
       const tube = new THREE.TubeGeometry(bezier, 20, 3, 8, false);
       geometry.merge(tube);
-
-      const startCap = new THREE.SphereGeometry(3);
-      startCap.translate(startPoint.x, startPoint.y, 0);
-      geometry.merge(startCap);
-
-      const endCap = new THREE.SphereGeometry(3);
-      endCap.translate(endPoint.x, endPoint.y, 0);
-      geometry.merge(endCap);
     });
 
+    // draw each cap as a sphere
+    data.caps.forEach(cap => {
+      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos);
+      const sphere = new THREE.SphereGeometry(3);
+      sphere.translate(point.x, point.y, 0);
+      geometry.merge(sphere);
+    });
+
+    // center geometry in viewport
     geometry.center();
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.scene.add(this.mesh);

@@ -2,6 +2,7 @@ import settings from './settings';
 import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
+import { getEdgePos } from 'utils/hexagonUtils';
 
 class System {
   constructor({ windowWidth, windowHeight }) {
@@ -95,28 +96,56 @@ class System {
     this.canvas.draw();
   }
 
-  getAllCurves() {
+  getHexagonData() {
     let curves = [];
+    let caps = [];
 
     for (let x = 0; x < this.columns; x++) {
       for (let y = 0; y < this.rows; y++) {
         const hexagon = this.hexagons[x][y];
-        // don't include cuves if it's not active
+        // don't include curves if it's not active
         if (hexagon.active) {
+
+          // make normalised position of hexagon center
+          const hexagonPosition = {
+            x: hexagon.pixelPos.x - this.canvas.internalWidth / 2,
+            y: hexagon.pixelPos.y - this.canvas.internalHeight / 2,
+          };
+
+          // add each curve to the curves array
           hexagon.curves.forEach((curve) => {
-            const hexagonPosition = {
-              x: hexagon.pixelPos.x - this.canvas.internalWidth / 2,
-              y: hexagon.pixelPos.y - this.canvas.internalHeight / 2,
-            };
             curves.push(
               Object.assign({}, curve, {hexagonPosition: hexagonPosition})
             );
           });
+
+          // search for caps
+          // check that it has no curves
+          if (hexagon.curves.length === 0) {
+            const activeNeighbourIndex = hexagon.getActiveNeighbours().indexOf(true);
+            const activeNeighbour = hexagon.neighbours[activeNeighbourIndex];
+            // check that it has one neighbour
+            // and that neighbour has more than one too, otherwise it won't have curves
+            if (activeNeighbourIndex !== -1 &&
+                activeNeighbour.countActiveNeighbours() > 1) {
+              // add to caps array
+              caps.push(
+                Object.assign(
+                  {},
+                  {pos: getEdgePos(activeNeighbourIndex)},
+                  {hexagonPosition: hexagonPosition},
+                )
+              );
+            }
+          }
         }
       }
     }
 
-    return curves;
+    return {
+      curves,
+      caps,
+    };
   }
 
 }
