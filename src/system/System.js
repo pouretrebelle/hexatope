@@ -92,6 +92,31 @@ class System {
     this.updateHexagons();
     this.canvas.draw();
   }
+
+  getAllCurves() {
+    let curves = [];
+
+    for (let x = 0; x < this.columns; x++) {
+      for (let y = 0; y < this.rows; y++) {
+        const hexagon = this.hexagons[x][y];
+        // don't include cuves if it's not active
+        if (hexagon.active) {
+          hexagon.curves.forEach((curve) => {
+            const hexagonPosition = {
+              x: hexagon.pixelPos.x - this.canvas.internalWidth / 2,
+              y: hexagon.pixelPos.y - this.canvas.internalHeight / 2,
+            };
+            curves.push(
+              Object.assign({}, curve, {hexagonPosition: hexagonPosition})
+            );
+          });
+        }
+      }
+    }
+
+    return curves;
+  }
+
 }
 
 export default System;
