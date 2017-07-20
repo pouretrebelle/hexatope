@@ -28,6 +28,7 @@ class Canvas extends Component {
       <div>
         <canvas
           ref={element => this.canvasElement = element}
+          style={{ cursor: 'crosshair' }}
         />
         <dl>
           <dt>Window Width</dt>
