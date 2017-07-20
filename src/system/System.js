@@ -86,6 +86,8 @@ class System {
         this.mouseTargetHex.nextActive--;
       }
 
+      // update current hex before general update so neighbours can propagate
+      this.mouseTargetHex.update();
       this.mouseTargetHexLast = this.mouseTargetHex;
     }
 
