@@ -90,6 +90,7 @@ class Demo {
       geometry.merge(endCap);
     });
 
+    geometry.center();
     this.mesh = new THREE.Mesh(geometry, this.material);
     this.scene.add(this.mesh);
   }
