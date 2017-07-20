@@ -69,14 +69,25 @@ class Demo {
     const curves = this.system.getAllCurves();
 
     curves.forEach(curve => {
+      const startPoint = this.getVec3PointMerge(curve.hexagonPosition, curve.pos1);
+      const endPoint = this.getVec3PointMerge(curve.hexagonPosition, curve.pos2);
+
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1),
+        startPoint,
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
+        endPoint
       );
       const tube = new THREE.TubeGeometry(bezier, 20, 3, 8, false);
       geometry.merge(tube);
+
+      const startCap = new THREE.SphereGeometry(3);
+      startCap.translate(startPoint.x, startPoint.y, 0);
+      geometry.merge(startCap);
+
+      const endCap = new THREE.SphereGeometry(3);
+      endCap.translate(endPoint.x, endPoint.y, 0);
+      geometry.merge(endCap);
     });
 
     this.mesh = new THREE.Mesh(geometry, this.material);
