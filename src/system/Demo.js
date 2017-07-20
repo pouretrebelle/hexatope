@@ -16,6 +16,7 @@ class Demo {
 
     // scene
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xeeeeee);
 
     // camera
     // (fov, aspect, near, far)
@@ -33,13 +34,16 @@ class Demo {
     this.updateDimensions(UIStore);
 
     // lights
-    const light = new THREE.PointLight(0xFFFFFF, 1);
-    light.position.set(50, 0, 20);
-    this.scene.add(light);
-    const lightTwo = new THREE.PointLight(0xFFFFFF, 1);
-    lightTwo.position.set(-50, 0, 20);
-    this.scene.add(lightTwo);
-    const ambLight = new THREE.AmbientLight(0x666666);
+    const light1 = new THREE.PointLight(0xffffff, 1);
+    light1.position.set(100, 0, 0);
+    this.scene.add(light1);
+    const light2 = new THREE.PointLight(0xffffff, 1);
+    light2.position.set(-100, 0, 0);
+    this.scene.add(light2);
+    const light3 = new THREE.PointLight(0xffffff, 0.5);
+    light3.position.set(0, -20, 50);
+    this.scene.add(light3);
+    const ambLight = new THREE.AmbientLight(0xaaaaaa);
     this.scene.add(ambLight);
 
     // initialise geometry
@@ -74,7 +78,11 @@ class Demo {
     );
 
     const geometry = new THREE.TubeGeometry(curve, 20, 3, 8, false);
-    const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      roughness: 0.6,
+      metalness: 0.6,
+    });
     const mesh = new THREE.Mesh(geometry, material);
     this.scene.add(mesh);
   }
