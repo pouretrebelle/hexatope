@@ -30,7 +30,9 @@ class Demo {
     // renderer
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
+      antialias: true,
     });
+    this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 
     this.updateDimensions(UIStore);
 
