@@ -7,9 +7,14 @@ export default {
   drawGrid: true,
   drawCurves: true,
   drawMouse: true,
-  gridColor: '#ffffff',
+  gridColor: '#fafafa',
   mouseColor: '#e5e6e8',
   inactiveColor: '#ffffff',
   activeColor: '#f6f7f8',
   doubleActiveColor: '#eaebed',
+
+  demoBackgroundColor: 0xeeeeee,
+  tubeThickness: 5,
+  tubeSegments: 20,
+  tubeRadiusSegments: 8,
 };

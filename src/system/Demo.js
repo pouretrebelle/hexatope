@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
 import { saveAs } from 'file-saver';
 import STLExporter from 'utils/STLExporter';
+import settings from './settings';
 
 class Demo {
   constructor(system) {
@@ -19,7 +20,7 @@ class Demo {
 
     // scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0xeeeeee);
+    this.scene.background = new THREE.Color(settings.demoBackgroundColor);
 
     // camera
     // (fov, aspect, near, far)
@@ -80,14 +81,14 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
       );
-      const tube = new THREE.TubeGeometry(bezier, 20, 3, 8, false);
+      const tube = new THREE.TubeGeometry(bezier, settings.tubeSegments, settings.tubeThickness/2, settings.tubeRadiusSegments, false);
       geometry.merge(tube);
     });
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
       const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos);
-      const sphere = new THREE.SphereGeometry(3);
+      const sphere = new THREE.SphereGeometry(settings.tubeThickness/2);
       sphere.translate(point.x, point.y, 0);
       geometry.merge(sphere);
     });
