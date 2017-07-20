@@ -27,6 +27,7 @@ class Demo extends Component {
       <div>
         <canvas
           ref={element => this.demoElement = element}
+          style={{ cursor: 'pointer' }}
         />
       </div>
     );
