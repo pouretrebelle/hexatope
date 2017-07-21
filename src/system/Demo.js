@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
 import { saveAs } from 'file-saver';
 import STLExporter from 'utils/STLExporter';
-import settings from './settings';
+import settings, { demoModelSettings, exportModelSettings } from './settings';
 
 class Demo {
   constructor(system) {
@@ -69,7 +69,11 @@ class Demo {
 
   updateCurves() {
     this.scene.remove(this.mesh);
+    this.mesh = this.generateMesh(demoModelSettings);
+    this.scene.add(this.mesh);
+  }
 
+  generateMesh(modelSettings) {
     let geometry = new THREE.Geometry();
     const data = this.system.getHexagonData();
 
@@ -81,7 +85,7 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
       );
-      const tube = new THREE.TubeGeometry(bezier, settings.tubeSegments, settings.tubeThickness/2, settings.tubeRadiusSegments, false);
+      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, settings.tubeThickness/2, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
     });
 
@@ -95,8 +99,7 @@ class Demo {
 
     // center geometry in viewport
     geometry.center();
-    this.mesh = new THREE.Mesh(geometry, this.material);
-    this.scene.add(this.mesh);
+    return new THREE.Mesh(geometry, this.material);
   }
 
   getVec3PointMerge(one, two) {
@@ -111,7 +114,8 @@ class Demo {
 
   downloadSTL() {
     const exporter = new STLExporter();
-    const stlString = exporter.parse(this.scene);
+    const exportMesh = this.generateMesh(exportModelSettings);
+    const stlString = exporter.parse(exportMesh);
     const blob = new Blob([stlString], { type: 'text/plain' });
     saveAs(blob, 'hexatope.stl');
   }

@@ -12,9 +12,16 @@ export default {
   inactiveColor: '#ffffff',
   activeColor: '#f6f7f8',
   doubleActiveColor: '#eaebed',
-
   demoBackgroundColor: 0xeeeeee,
   tubeThickness: 5,
+};
+
+export const demoModelSettings = {
   tubeSegments: 20,
   tubeRadiusSegments: 8,
+};
+
+export const exportModelSettings = {
+  tubeSegments: 30,
+  tubeRadiusSegments: 20,
 };
