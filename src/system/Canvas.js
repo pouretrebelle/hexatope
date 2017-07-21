@@ -7,15 +7,21 @@ class Canvas {
     this.system = system;
     this.canvas = undefined;
     this.c = undefined;
+
     this.internalWidth = undefined;
     this.internalHeight = undefined;
+    this.externalWidth = undefined;
+    this.externalHeight = undefined;
+
     this.relativeMousePos = new Vector2();
     this.isMouseInside = false;
+    this.pixelRatio = window.devicePixelRatio || 1;
   }
 
   setup(canvas, UIStore) {
     this.canvas = canvas;
     this.c = canvas.getContext('2d');
+    this.c.scale(this.pixelRatio, this.pixelRatio);
 
     const hexHeight = Math.sqrt(3) * settings.hexRadius;
     this.internalWidth = (this.system.columns + 1 / 4) * (settings.hexRadius * 3);
@@ -25,18 +31,22 @@ class Canvas {
   }
 
   updateMousePos({ mouseX, mouseY }) {
-    this.relativeMousePos.x = mouseX - (this.canvas.width - this.internalWidth) / 2;
-    this.relativeMousePos.y = mouseY - (this.canvas.height - this.internalHeight) / 2;
+    this.relativeMousePos.x = mouseX - (this.externalWidth - this.internalWidth) / (2 * this.pixelRatio);
+    this.relativeMousePos.y = mouseY - (this.externalHeight - this.internalHeight) / (2 * this.pixelRatio);
 
     let mouseInside = true;
-    if (mouseX > this.canvas.width) mouseInside = false;
-    if (mouseY > this.canvas.height) mouseInside = false;
+    if (mouseX > this.externalWidth) mouseInside = false;
+    if (mouseY > this.externalHeight) mouseInside = false;
     this.isMouseInside = mouseInside;
   }
 
   updateDimensions({ windowWidth, windowHeight }) {
-    this.canvas.width = windowWidth / 2;
-    this.canvas.height = windowHeight;
+    this.externalWidth = windowWidth / 2;
+    this.externalHeight = windowHeight;
+    this.canvas.width = this.externalWidth * this.pixelRatio;
+    this.canvas.style.width = `${this.externalWidth}px`;
+    this.canvas.height = this.externalHeight * this.pixelRatio;
+    this.canvas.style.height = `${this.externalHeight}px`;
   }
 
   draw() {
@@ -48,8 +58,8 @@ class Canvas {
     this.c.save();
     // center hexagons in canvas
     this.c.translate(
-      (this.canvas.width - this.internalWidth) / 2,
-      (this.canvas.height - this.internalHeight) / 2,
+      (this.externalWidth - this.internalWidth) / 2,
+      (this.externalHeight - this.internalHeight) / 2,
     );
 
     // draw all hexagons before lines to avoid overlap
@@ -78,7 +88,7 @@ class Canvas {
   drawMouseHexagon() {
     this.c.fillStyle = settings.mouseColor;
     if (this.system.mouseTargetHex) {
-      drawHexagon(this.c, this.system.mouseTargetHex.pixelPos);
+      drawHexagon(this.c, this.system.mouseTargetHex.pixelPos, this.pixelRatio);
     }
   }
 
@@ -96,7 +106,7 @@ class Canvas {
         this.c.fillStyle = settings.doubleActiveColor;
         break;
     }
-    drawHexagon(this.c, hex.pixelPos);
+    drawHexagon(this.c, hex.pixelPos, this.pixelRatio);
   }
 
   drawHexCurves(hex) {
@@ -104,20 +114,21 @@ class Canvas {
     if (!hex.active) return;
 
     this.c.save();
-    this.c.translate(hex.pixelPos.x, hex.pixelPos.y);
+    this.c.translate(hex.pixelPos.x * this.pixelRatio, hex.pixelPos.y * this.pixelRatio);
     this.c.strokeStyle = '#000';
-    this.c.lineWidth = settings.hexLineWeight;
+    const scalar = this.pixelRatio;
+    this.c.lineWidth = settings.hexLineWeight * scalar;
 
     hex.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
       this.c.beginPath();
-      this.c.moveTo(pos1.x, pos1.y);
+      this.c.moveTo(pos1.x * scalar, pos1.y * scalar);
       this.c.bezierCurveTo(
-        pos1Control.x,
-        pos1Control.y,
-        pos2Control.x,
-        pos2Control.y,
-        pos2.x,
-        pos2.y,
+        pos1Control.x * scalar,
+        pos1Control.y * scalar,
+        pos2Control.x * scalar,
+        pos2Control.y * scalar,
+        pos2.x * scalar,
+        pos2.y * scalar,
       );
       this.c.stroke();
       this.c.closePath();

@@ -1,13 +1,15 @@
 import Vector2 from 'utils/Vector2';
 import settings from 'system/settings';
 
-export const drawHexagon = (c, pixelPos) => {
+export const drawHexagon = (c, pixelPos, pixelRatio) => {
   // draws hexagon with the center pixelPos
+  const hexRadius = settings.hexRadius * pixelRatio;
+  const hexMargin = settings.hexMargin * pixelRatio;
   c.save();
-  c.translate(pixelPos.x, pixelPos.y);
+  c.translate(pixelPos.x * pixelRatio, pixelPos.y * pixelRatio);
   c.beginPath();
   for (let i = 0; i < 6; i++) {
-    c.lineTo((settings.hexRadius - settings.hexMargin / 2) * Math.cos(i * Math.PI / 3), (settings.hexRadius - settings.hexMargin / 2) * Math.sin(i * Math.PI / 3));
+    c.lineTo((hexRadius - hexMargin / 2) * Math.cos(i * Math.PI / 3), (hexRadius - hexMargin / 2) * Math.sin(i * Math.PI / 3));
   }
   c.closePath();
   c.fill();

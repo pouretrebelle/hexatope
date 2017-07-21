@@ -386,7 +386,7 @@ class Hexagon {
     }
 
     // if edges are opposites we add weak control points perpendicular to the point's edge
-    // this is so converging/diverging lines to meet perpendicularly
+    // this is so converging/diverging lines meet perpendicularly
     if (Math.abs(edge2 - edge1) == 3) {
       // flip the offset 2 to create parallel lines
       pos2 = getEdgePos(edge2, -offset2);

@@ -7,7 +7,7 @@ import { getEdgePos } from 'utils/hexagonUtils';
 class System {
   constructor({ windowWidth, windowHeight }) {
     this.hexagons = [];
-    this.columns = Math.ceil(windowWidth / (settings.hexRadius * 3));
+    this.columns = Math.ceil(windowWidth / 2 / (settings.hexRadius * 3));
     this.rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
     this.canvas = new Canvas(this);
     this.demo = new Demo(this);
