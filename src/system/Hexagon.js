@@ -385,22 +385,21 @@ class Hexagon {
       pos2ControlMagnitude = getControlMagnitudeWide(offset2);
     }
 
+    // if edges are opposites we add weak control points perpendicular to the point's edge
+    // this is so converging/diverging lines to meet perpendicularly
+    if (Math.abs(edge2 - edge1) == 3) {
+      // flip the offset 2 to create parallel lines
+      pos2 = getEdgePos(edge2, -offset2);
+      // make control points the start and end of line
+      pos1ControlMagnitude = settings.hexRadius * 0.5;
+      pos2ControlMagnitude = settings.hexRadius * 0.5;
+    }
+
     // average magnitude of control points
     const controlMagnitude = (pos1ControlMagnitude + pos2ControlMagnitude) / 2;
     // generate control points by taking them away from the points
     let pos1Control = pos1.minusNew(getEdgePos(edge1, 0).normalise().multiplyEq(controlMagnitude));
     let pos2Control = pos2.minusNew(getEdgePos(edge2, 0).normalise().multiplyEq(controlMagnitude));
-
-    // if edges are opposites
-    // using the line function everything is 1px off
-    // so we just use the quadratic bezier
-    if (Math.abs(edge2 - edge1) == 3) {
-      // flip the offset 2 to create parallel lines
-      pos2 = getEdgePos(edge2, -offset2);
-      // make control points the start and end of line
-      pos1Control = pos1;
-      pos2Control = pos2;
-    }
 
     this.curves.push({
       pos1,
