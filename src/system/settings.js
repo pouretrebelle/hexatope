@@ -17,11 +17,11 @@ export default {
 };
 
 export const demoModelSettings = {
-  tubeSegments: 20,
+  tubeSegments: 25,
   tubeRadiusSegments: 8,
 };
 
 export const exportModelSettings = {
-  tubeSegments: 30,
-  tubeRadiusSegments: 20,
+  tubeSegments: 35,
+  tubeRadiusSegments: 10,
 };

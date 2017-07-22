@@ -77,6 +77,14 @@ class Demo {
     let geometry = new THREE.Geometry();
     const data = this.system.getHexagonData();
 
+    let shape = new THREE.Shape();
+    const circleRadius = settings.tubeThickness / 2;
+    shape.moveTo(0, circleRadius);
+    shape.quadraticCurveTo(circleRadius, circleRadius, circleRadius, 0);
+    shape.quadraticCurveTo(circleRadius, - circleRadius, 0, - circleRadius);
+    shape.quadraticCurveTo(- circleRadius, - circleRadius, - circleRadius, 0);
+    shape.quadraticCurveTo(- circleRadius, circleRadius, 0, circleRadius);
+
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
@@ -85,9 +93,18 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
       );
-      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, settings.tubeThickness/2, modelSettings.tubeRadiusSegments, false);
+
+      var extrudeSettings = {
+        steps: modelSettings.tubeSegments,
+        curveSegments: modelSettings.tubeRadiusSegments,
+        bevelEnabled: false,
+        extrudePath: bezier,
+      };
+      var tube = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
       geometry.merge(tube);
     });
+
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
