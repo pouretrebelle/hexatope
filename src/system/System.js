@@ -108,8 +108,8 @@ class System {
 
           // make normalised position of hexagon center
           const hexagonPosition = {
-            x: hexagon.pixelPos.x - this.canvas.internalWidth / 2,
-            y: hexagon.pixelPos.y - this.canvas.internalHeight / 2,
+            x: hexagon.layoutPos.x - this.canvas.internalWidth / (2 * settings.hexRadius),
+            y: hexagon.layoutPos.y - this.canvas.internalHeight / (2 * settings.hexRadius),
           };
 
           // add each curve to the curves array

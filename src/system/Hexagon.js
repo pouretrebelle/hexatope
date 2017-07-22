@@ -3,9 +3,6 @@ import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import settings from './settings';
 
-const hexWidth = settings.hexRadius * 2;
-const hexHeight = settings.hexRadius * Math.sqrt(3);
-
 class Hexagon {
   constructor(system, x, y) {
     this.system = system;
@@ -14,10 +11,10 @@ class Hexagon {
     // establish grid position
     this.pos = new Vector2(x, y);
 
-    // establish pixel position
-    this.pixelPos = new Vector2();
-    this.pixelPos.x = hexWidth * (1.5 * x + 0.5 + y % 2 * 0.75);
-    this.pixelPos.y = hexHeight * (y * 0.5 + 0.5);
+    // establish position in layout
+    this.layoutPos = new Vector2();
+    this.layoutPos.x = 3 * x + 0.5 + y % 2 * 1.5;
+    this.layoutPos.y = Math.sqrt(3) * (y * 0.5 + 0.5);
 
     // establish state
     // active can be 0, 1, 2
@@ -96,7 +93,7 @@ class Hexagon {
 
     // roughly check whether the mouse is inside the hexagon
     // update mouse target if so
-    if (this.system.canvas.relativeMousePos.dist(this.pixelPos) < settings.hexRadius) {
+    if (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius) {
       this.system.mouseTargetHex = this;
     }
 
@@ -152,7 +149,7 @@ class Hexagon {
           const pos1 = getEdgePos(activeEdge, 1);
           const pos2 = getEdgePos(activeEdge, -1);
           // get two control points
-          const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset * settings.hexRadius);
+          const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset);
           let pos1Control = pos1.minusNew(controlOffset);
           let pos2Control = pos2.minusNew(controlOffset);
 
@@ -352,7 +349,7 @@ class Hexagon {
       // flips offset 2
       pos2 = getEdgePos(edge2, -offset2);
       // brings offset in smooth curve
-      origin.y -= settings.hexRadius * 0.25;
+      origin.y -= 0.25;
       origin.rotate((edge1 + 0.5) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
@@ -362,7 +359,7 @@ class Hexagon {
       // flips offset 1
       pos1 = getEdgePos(edge1, -offset1);
       // brings offset in smooth curve
-      origin.y -= settings.hexRadius * 0.25;
+      origin.y -= 0.25;
       origin.rotate((edge1 - 0.5) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
@@ -391,8 +388,8 @@ class Hexagon {
       // flip the offset 2 to create parallel lines
       pos2 = getEdgePos(edge2, -offset2);
       // make control points the start and end of line
-      pos1ControlMagnitude = settings.hexRadius * 0.5;
-      pos2ControlMagnitude = settings.hexRadius * 0.5;
+      pos1ControlMagnitude = 0.5;
+      pos2ControlMagnitude = 0.5;
     }
 
     // average magnitude of control points

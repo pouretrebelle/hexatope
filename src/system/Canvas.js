@@ -88,7 +88,7 @@ class Canvas {
   drawMouseHexagon() {
     this.c.fillStyle = settings.mouseColor;
     if (this.system.mouseTargetHex) {
-      drawHexagon(this.c, this.system.mouseTargetHex.pixelPos, this.pixelRatio);
+      drawHexagon(this.c, this.system.mouseTargetHex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
     }
   }
 
@@ -106,7 +106,7 @@ class Canvas {
         this.c.fillStyle = settings.doubleActiveColor;
         break;
     }
-    drawHexagon(this.c, hex.pixelPos, this.pixelRatio);
+    drawHexagon(this.c, hex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
   }
 
   drawHexCurves(hex) {
@@ -114,10 +114,12 @@ class Canvas {
     if (!hex.active) return;
 
     this.c.save();
-    this.c.translate(hex.pixelPos.x * this.pixelRatio, hex.pixelPos.y * this.pixelRatio);
+    const startX = hex.layoutPos.x * this.pixelRatio * settings.hexRadius;
+    const startY = hex.layoutPos.y * this.pixelRatio * settings.hexRadius;
+    this.c.translate(startX, startY);
     this.c.strokeStyle = '#000';
-    const scalar = this.pixelRatio;
-    this.c.lineWidth = settings.hexLineWeight * scalar;
+    const scalar = this.pixelRatio * settings.hexRadius;
+    this.c.lineWidth = settings.hexLineWeight * this.pixelRatio;
 
     hex.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
       this.c.beginPath();

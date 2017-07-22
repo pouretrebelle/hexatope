@@ -25,7 +25,7 @@ class Demo {
     // camera
     // (fov, aspect, near, far)
     this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
-    this.camera.position.z = UIStore.windowHeight * 1.5;
+    this.camera.position.z = UIStore.windowHeight * 0.05;
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
@@ -76,6 +76,7 @@ class Demo {
   generateMesh(modelSettings) {
     let geometry = new THREE.Geometry();
     const data = this.system.getHexagonData();
+    const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
 
     // draw each curve as a tube
     data.curves.forEach(curve => {
@@ -85,14 +86,14 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
         this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
       );
-      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, settings.tubeThickness/2, modelSettings.tubeRadiusSegments, false);
+      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
     });
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
       const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos);
-      const sphere = new THREE.SphereGeometry(settings.tubeThickness/2);
+      const sphere = new THREE.SphereGeometry(tubeRadius);
       sphere.translate(point.x, point.y, 0);
       geometry.merge(sphere);
     });
