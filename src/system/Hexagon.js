@@ -26,9 +26,14 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
+    this.isHovering = false;
+
     // chose random layout seed
     // regenerated when hex goes from inactive to active
     this.layoutSeed = random();
+    // to return to layout on mouse out
+    this.initialLayoutSeed = this.layoutSeed;
+    this.layoutProgressionTimer = undefined;
 
     this.curves = [];
   }
@@ -92,14 +97,54 @@ class Hexagon {
     // update active from next active
     this.active = this.nextActive;
 
-    // roughly check whether the mouse is inside the hexagon
-    // update mouse target if so
-    if (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius) {
-      this.system.mouseTargetHex = this;
-    }
+    // check whether the mouse is in this hex
+    this.checkMouseTarget();
 
     // update the curves to draw
     this.planCurves();
+  }
+
+  checkMouseTarget() {
+    // roughly check whether the mouse is inside the hexagon
+    const mouseIsInside = (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
+
+    if (mouseIsInside && this.isHovering === false) {
+      // mouse enter
+      this.isHovering = true;
+
+      // set system target to this hex
+      this.system.mouseTargetHex = this;
+
+      // set initial layout seed
+      this.initialLayoutSeed = this.layoutSeed;
+      this.layoutProgressionTimer = setInterval(() => {
+        this.progressLayout();
+      }, 500);
+    }
+
+    else if (!mouseIsInside && this.isHovering === true) {
+      // mouse leave
+      this.isHovering = false;
+
+      // reset current layout to initial
+      this.layoutSeed = this.initialLayoutSeed;
+      clearInterval(this.layoutProgressionTimer);
+    }
+  }
+
+  progressLayout = () => {
+    const formation = this.getFormation();
+    if (formation > 0) {
+
+      const layoutCount = curveLayouts[formation].layouts.length;
+      // increment is enough to forward the layout by 7/6ths of a layout
+      // the extra is so the rotation that relies on seeds also progresses
+      const increment = 1 / (layoutCount + 1 / (6 * layoutCount));
+      this.layoutSeed = (this.layoutSeed + increment) % 1;
+
+      this.planCurves();
+      this.system.canvas.draw();
+    }
   }
 
   countActiveNeighbours() {
@@ -142,7 +187,7 @@ class Hexagon {
     }).filter(pos => pos !== undefined);
 
     // one neighbour
-    if (formation === -1) {
+    if (formation === 0) {
       let activeEdge = activeNeighbours.indexOf(true);
       let activeNeighbour = this.neighbours[activeEdge];
       // if it is double active
@@ -171,17 +216,17 @@ class Hexagon {
     }
 
     // two neighbours
-    else if (formation === 0) {
-      this.addCurves(formation, edgePositionsArray);
-    }
-
-    // three neighbours
     else if (formation === 1) {
       this.addCurves(formation, edgePositionsArray);
     }
 
+    // three neighbours
+    else if (formation === 2) {
+      this.addCurves(formation, edgePositionsArray);
+    }
+
     // four neighbours
-    else if (formation === 2 || formation === 3) {
+    else if (formation === 3 || formation === 4) {
       // get the index of each inactive edge
       let skipped1 = activeNeighbours.indexOf(false);
       let skipped2 = activeNeighbours.slice(skipped1 + 1).indexOf(false) + skipped1 + 1;
@@ -197,19 +242,19 @@ class Hexagon {
       }
 
       // skips are adjacent
-      if (formation === 2) {
+      if (formation === 3) {
         this.addCurves(formation, orderedEdgePositionsArray);
       }
 
       // 1 and 3 situation
       // or 2 and 2
-      else if (formation === 3) {
+      else if (formation === 4) {
         this.addCurves(formation, orderedEdgePositionsArray);
       }
     }
 
     // five neighbours
-    else if (formation === 4) {
+    else if (formation === 5) {
       let skipped = activeNeighbours.indexOf(false);
       const positions = [
         skipped + 1,
@@ -222,7 +267,7 @@ class Hexagon {
     }
 
     // 6 neighbours
-    else if (formation === 5) {
+    else if (formation === 6) {
       // make an array of 1-6 that start at a random value
       // start position determined by layout seed
       const randomStart = Math.floor((this.layoutSeed * 10 - 9) * 6);
@@ -236,17 +281,17 @@ class Hexagon {
 
     // one neighbour
     if (activeNeighboursCount == 1) {
-      return -1;
+      return 0;
     }
 
     // two neighbours
     else if (activeNeighboursCount == 2) {
-      return 0;
+      return 1;
     }
 
     // three neighbours
     else if (activeNeighboursCount == 3) {
-      return 1;
+      return 2;
     }
 
     // four neighbours
@@ -265,18 +310,18 @@ class Hexagon {
       // 1 and 3 situation
       // or 2 and 2
       else {
-        return 3;
+        return 4;
       }
     }
 
     // five neighbours
     else if (activeNeighboursCount == 5) {
-      return 4;
+      return 5;
     }
 
     // 6 neighbours
     else if (activeNeighboursCount == 6) {
-      return 5;
+      return 6;
     }
 
     return false;

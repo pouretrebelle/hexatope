@@ -1,5 +1,5 @@
 export default {
-  0: { // two neighbours
+  1: { // two neighbours
     layouts: [
       { // attach all
         pairs: [
@@ -8,7 +8,7 @@ export default {
       },
     ],
   },
-  1: { // three neighbours
+  2: { // three neighbours
     layouts: [
       { // attach all
         pairs: [
@@ -37,7 +37,7 @@ export default {
       },
     ],
   },
-  2: { // 4 neighbours, all adjacent
+  3: { // 4 neighbours, all adjacent
     layouts: [
       { // connect adjacent edges, ignore straight line
         pairs: [
@@ -60,7 +60,7 @@ export default {
       },
     ],
   },
-  3: { // 4 neighbours, 1 and 3 or in pairs
+  4: { // 4 neighbours, 1 and 3 or in pairs
     layouts: [
       { // connect adjacent edges
         pairs: [
@@ -84,7 +84,7 @@ export default {
       },
     ],
   },
-  4: { // 5 neighbours
+  5: { // 5 neighbours
     layouts: [
       { // connect adjacent edges
         pairs: [
@@ -120,7 +120,7 @@ export default {
       },
     ],
   },
-  5: { // 6 neighbours
+  6: { // 6 neighbours
     layouts: [
       { // connect adjacent edges
         pairs: [
