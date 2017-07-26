@@ -133,11 +133,16 @@ class Hexagon {
     // reset curves property
     this.curves = [];
 
-    let activeNeighboursCount = this.countActiveNeighbours();
-    let activeNeighbours = this.getActiveNeighbours();
+    const activeNeighbours = this.getActiveNeighbours();
+    const formation = this.getFormation();
+
+    // get array of active neighbour indexes
+    const edgePositionsArray = activeNeighbours.map((pos, i) => {
+      if (pos) return i;
+    }).filter(pos => pos !== undefined);
 
     // one neighbour
-    if (activeNeighboursCount == 1) {
+    if (formation === -1) {
       let activeEdge = activeNeighbours.indexOf(true);
       let activeNeighbour = this.neighbours[activeEdge];
       // if it is double active
@@ -166,56 +171,45 @@ class Hexagon {
     }
 
     // two neighbours
-    else if (activeNeighboursCount == 2) {
-      // get array of active neighbour indexes
-      let positions = activeNeighbours.map((pos, i) => {
-        if (pos) return i;
-      }).filter(pos => pos !== undefined);
-
-      this.addCurves(0, positions);
+    else if (formation === 0) {
+      this.addCurves(formation, edgePositionsArray);
     }
 
     // three neighbours
-    else if (activeNeighboursCount == 3) {
-      // get array of active neighbour indexes
-      let positions = activeNeighbours.map((pos, i) => {
-        if (pos) return i;
-      }).filter(pos => pos !== undefined);
-
-      this.addCurves(1, positions);
+    else if (formation === 1) {
+      this.addCurves(formation, edgePositionsArray);
     }
 
     // four neighbours
-    else if (activeNeighboursCount == 4) {
+    else if (formation === 2 || formation === 3) {
       // get the index of each inactive edge
       let skipped1 = activeNeighbours.indexOf(false);
       let skipped2 = activeNeighbours.slice(skipped1 + 1).indexOf(false) + skipped1 + 1;
 
       // make list of active edge positions
       // making sure to loop from the most clockwise edge to avoid 0/5 problem
-      let positions = [];
+      let orderedEdgePositionsArray = [];
       let skippedClockwise = (skipped1 == 0) ? skipped1 : skipped2;
       for (let i = skippedClockwise; i < skippedClockwise + 6; i++) {
         if (wrap6(i) != skipped1 && wrap6(i) != skipped2) {
-          positions.push(wrap6(i));
+          orderedEdgePositionsArray.push(wrap6(i));
         }
       }
 
       // skips are adjacent
-      if ((skipped2 == wrap6(skipped1 + 1))
-        || (skipped1 == 0 && skipped2 == 5)) {
-        this.addCurves(2, positions);
+      if (formation === 2) {
+        this.addCurves(formation, orderedEdgePositionsArray);
       }
 
       // 1 and 3 situation
       // or 2 and 2
-      else {
-        this.addCurves(3, positions);
+      else if (formation === 3) {
+        this.addCurves(formation, orderedEdgePositionsArray);
       }
     }
 
     // five neighbours
-    else if (activeNeighboursCount == 5) {
+    else if (formation === 4) {
       let skipped = activeNeighbours.indexOf(false);
       const positions = [
         skipped + 1,
@@ -224,22 +218,78 @@ class Hexagon {
         skipped + 4,
         skipped + 5,
       ];
-      this.addCurves(4, positions);
+      this.addCurves(formation, positions);
+    }
+
+    // 6 neighbours
+    else if (formation === 5) {
+      // make an array of 1-6 that start at a random value
+      // start position determined by layout seed
+      const randomStart = Math.floor((this.layoutSeed * 10 - 9) * 6);
+      const randomPositions = Array.from({ length: 6 }, (v, i) => wrap6(i + randomStart));
+      this.addCurves(formation, randomPositions);
+    }
+  }
+
+  getFormation() {
+    const activeNeighboursCount = this.countActiveNeighbours();
+
+    // one neighbour
+    if (activeNeighboursCount == 1) {
+      return -1;
+    }
+
+    // two neighbours
+    else if (activeNeighboursCount == 2) {
+      return 0;
+    }
+
+    // three neighbours
+    else if (activeNeighboursCount == 3) {
+      return 1;
+    }
+
+    // four neighbours
+    else if (activeNeighboursCount == 4) {
+      // get the index of each inactive edge
+      const activeNeighbours = this.getActiveNeighbours();
+      let skipped1 = activeNeighbours.indexOf(false);
+      let skipped2 = activeNeighbours.slice(skipped1 + 1).indexOf(false) + skipped1 + 1;
+
+      // skips are adjacent
+      if ((skipped2 == wrap6(skipped1 + 1))
+        || (skipped1 == 0 && skipped2 == 5)) {
+        return 3;
+      }
+
+      // 1 and 3 situation
+      // or 2 and 2
+      else {
+        return 3;
+      }
+    }
+
+    // five neighbours
+    else if (activeNeighboursCount == 5) {
+      return 4;
     }
 
     // 6 neighbours
     else if (activeNeighboursCount == 6) {
-      // make an array of 1-6 that start at a random value
-      // start position determined by layout seed
-      const randomStart = Math.floor((this.layoutSeed * 10 - 9) * 6);
-      const randomPositions = Array.from({ length: 6 }, (v, i) => wrap6(i+randomStart));
-      this.addCurves(5, randomPositions);
+      return 5;
     }
+
+    return false;
   }
 
   addCurves(formation, edgeOrder) {
+    // get potential layouts from formation
     const layouts = curveLayouts[formation].layouts;
+
+    // chose layout based on seed
     const layoutChoice = Math.floor(layouts.length * this.layoutSeed);
+
+    // loop through chosen layout's pairs
     layouts[layoutChoice].pairs.forEach(pair => {
       // use order array to map edges if it exists
       // otherwise just use the numbers
