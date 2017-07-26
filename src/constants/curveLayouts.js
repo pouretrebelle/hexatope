@@ -110,6 +110,14 @@ export default {
           [3, 4],
         ],
       },
+      { // fountain
+        joins: [
+          [0, 2],
+          [1, 2],
+          [3, 2],
+          [4, 2],
+        ],
+      },
     ],
   },
   5: { // 6 neighbours
