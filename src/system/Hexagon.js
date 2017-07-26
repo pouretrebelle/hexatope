@@ -28,7 +28,7 @@ class Hexagon {
 
     // chose random layout seed
     // regenerated when hex goes from inactive to active
-    this.layoutSeed = Math.random();
+    this.layoutSeed = random();
 
     this.curves = [];
   }
@@ -229,7 +229,11 @@ class Hexagon {
 
     // 6 neighbours
     else if (activeNeighboursCount == 6) {
-      this.addCurves(5);
+      // make an array of 1-6 that start at a random value
+      // start position determined by layout seed
+      const randomStart = Math.floor((this.layoutSeed * 10 - 9) * 6);
+      const randomPositions = Array.from({ length: 6 }, (v, i) => wrap6(i+randomStart));
+      this.addCurves(5, randomPositions);
     }
   }
 
