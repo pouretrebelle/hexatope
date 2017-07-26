@@ -2,6 +2,7 @@ import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import settings from './settings';
+import curveLayouts from 'constants/curveLayouts';
 
 class Hexagon {
   constructor(system, x, y) {
@@ -25,9 +26,9 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
-    // chose random layout (1-3) for dense (4/5/6 neighbours) display
+    // chose random layout seed
     // regenerated when hex goes from inactive to active
-    this.denseLayout = Math.ceil(random(3));
+    this.layoutSeed = Math.random();
 
     this.curves = [];
   }
@@ -83,9 +84,9 @@ class Hexagon {
   }
 
   update() {
-    // increment layout if hex is becoming active
+    // ransomise layout if hex is becoming active
     if (!this.active && this.nextActive) {
-      this.denseLayout = (this.denseLayout == 3) ? 1 : this.denseLayout + 1;
+      this.layoutSeed = Math.random();
     }
 
     // update active from next active
@@ -164,18 +165,24 @@ class Hexagon {
       }
     }
 
-    // two or three neighbours
-    else if (activeNeighboursCount == 2 || activeNeighboursCount == 3) {
-      // link up all the active neighbours
-      for (let i = 0; i < 6; i++) {
-        if (activeNeighbours[i]) {
-          for (let j = i + 1; j < 6; j++) {
-            if (activeNeighbours[j]) {
-              this.addCurveBetweenEdges(i, j);
-            }
-          }
-        }
-      }
+    // two neighbours
+    else if (activeNeighboursCount == 2) {
+      // get array of active neighbour indexes
+      let positions = activeNeighbours.map((pos, i) => {
+        if (pos) return i;
+      }).filter(pos => pos !== undefined);
+
+      this.addCurves(0, positions);
+    }
+
+    // three neighbours
+    else if (activeNeighboursCount == 3) {
+      // get array of active neighbour indexes
+      let positions = activeNeighbours.map((pos, i) => {
+        if (pos) return i;
+      }).filter(pos => pos !== undefined);
+
+      this.addCurves(1, positions);
     }
 
     // four neighbours
@@ -197,92 +204,45 @@ class Hexagon {
       // skips are adjacent
       if ((skipped2 == wrap6(skipped1 + 1))
         || (skipped1 == 0 && skipped2 == 5)) {
-        if (this.denseLayout == 3) {
-          // connect edges to adjacent edges, ignore straight line
-          this.addCurveBetweenEdges(positions[0], positions[1]);
-          this.addCurveBetweenEdges(positions[1], positions[2]);
-          this.addCurveBetweenEdges(positions[2], positions[3]);
-        }
-        else if (this.denseLayout == 2) {
-          // cross over curves
-          this.addCurveBetweenEdges(positions[0], positions[2]);
-          this.addCurveBetweenEdges(positions[1], positions[3]);
-        }
-        else {
-          // pair edges with adjacent edges
-          this.addCurveBetweenEdges(positions[0], positions[1]);
-          this.addCurveBetweenEdges(positions[2], positions[3]);
-        }
+        this.addCurves(2, positions);
       }
 
       // 1 and 3 situation
       // or 2 and 2
       else {
-        if (this.denseLayout == 3) {
-          // connect edges to adjacent edges
-          this.addCurveBetweenEdges(positions[0], positions[1]);
-          this.addCurveBetweenEdges(positions[1], positions[2]);
-          this.addCurveBetweenEdges(positions[2], positions[3]);
-          this.addCurveBetweenEdges(positions[3], positions[0]);
-        }
-        else if (this.denseLayout == 2) {
-          // pair edges with adjacent edges
-          this.addCurveBetweenEdges(positions[3], positions[0]);
-          this.addCurveBetweenEdges(positions[1], positions[2]);
-        }
-        else {
-          // pair edges with opposite adjacent edges
-          this.addCurveBetweenEdges(positions[0], positions[1]);
-          this.addCurveBetweenEdges(positions[2], positions[3]);
-        }
+        this.addCurves(3, positions);
       }
     }
 
     // five neighbours
     else if (activeNeighboursCount == 5) {
       let skipped = activeNeighbours.indexOf(false);
-      if (this.denseLayout == 3) {
-        // connect edges to adjacent edges
-        for (let i = skipped; i < 5 + skipped; i++) {
-          const edge1 = (i == skipped) ? i + 5 : i;
-          this.addCurveBetweenEdges(edge1, i + 1);
-        }
-      }
-      else if (this.denseLayout == 2) {
-        // batman logo
-        // curve between the two skipped-adjacent edges
-        this.addCurveBetweenEdges(skipped + 1, skipped + 5);
-        // connect other 3 to eachother
-        this.addCurveBetweenEdges(skipped + 2, skipped + 3);
-        this.addCurveBetweenEdges(skipped + 3, skipped + 4);
-      }
-      else if (this.denseLayout == 1) {
-        // evil M
-        // curve the two skipped-adjacent edges to the skipped-opposite edge
-        this.addCurveBetweenEdges(skipped + 1, skipped + 3);
-        this.addCurveBetweenEdges(skipped + 5, skipped + 3);
-        // curve the other two edges to the skipped-adjacent edges
-        this.addCurveBetweenEdges(skipped + 1, skipped + 2);
-        this.addCurveBetweenEdges(skipped + 5, skipped + 4);
-      }
+      const positions = [
+        skipped + 1,
+        skipped + 2,
+        skipped + 3,
+        skipped + 4,
+        skipped + 5,
+      ];
+      this.addCurves(4, positions);
     }
 
     // 6 neighbours
     else if (activeNeighboursCount == 6) {
-      if (this.denseLayout == 3) {
-        // connect edges to adjacent edges
-        for (let i = 0; i < 6; i++) {
-          this.addCurveBetweenEdges(i, i + 1);
-        }
-      }
-      else {
-        // pair edges with adjacent edges
-        // alternate using denseLayout == 2 or 1
-        for (let i = this.denseLayout - 1; i < 6; i += 2) {
-          this.addCurveBetweenEdges(i, i + 1);
-        }
-      }
+      this.addCurves(5);
     }
+  }
+
+  addCurves(layout, edgeOrder) {
+    const layouts = curveLayouts[layout].layouts;
+    const layoutChoice = Math.floor(layouts.length * this.layoutSeed);
+    layouts[layoutChoice].joins.forEach(join => {
+      // use order array to map edges if it exists
+      // otherwise just use the numbers
+      const start = edgeOrder ? edgeOrder[join[0]] : join[0];
+      const end = edgeOrder ? edgeOrder[join[1]] : join[1];
+      this.addCurveBetweenEdges(start, end);
+    });
   }
 
   addCurveBetweenEdges(edge1, edge2) {
