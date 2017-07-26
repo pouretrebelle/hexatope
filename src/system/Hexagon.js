@@ -237,14 +237,14 @@ class Hexagon {
     }
   }
 
-  addCurves(layout, edgeOrder) {
-    const layouts = curveLayouts[layout].layouts;
+  addCurves(formation, edgeOrder) {
+    const layouts = curveLayouts[formation].layouts;
     const layoutChoice = Math.floor(layouts.length * this.layoutSeed);
-    layouts[layoutChoice].joins.forEach(join => {
+    layouts[layoutChoice].pairs.forEach(pair => {
       // use order array to map edges if it exists
       // otherwise just use the numbers
-      const start = edgeOrder ? edgeOrder[join[0]] : join[0];
-      const end = edgeOrder ? edgeOrder[join[1]] : join[1];
+      const start = edgeOrder ? edgeOrder[pair[0]] : pair[0];
+      const end = edgeOrder ? edgeOrder[pair[1]] : pair[1];
       this.addCurveBetweenEdges(start, end);
     });
   }

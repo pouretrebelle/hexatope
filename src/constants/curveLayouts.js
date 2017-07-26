@@ -2,7 +2,7 @@ export default {
   0: { // two neighbours
     layouts: [
       { // attach all
-        joins: [
+        pairs: [
           [0, 1],
         ],
       },
@@ -11,26 +11,26 @@ export default {
   1: { // three neighbours
     layouts: [
       { // attach all
-        joins: [
+        pairs: [
           [0, 1],
           [0, 2],
           [1, 2],
         ],
       },
       { // attach two
-        joins: [
+        pairs: [
           [0, 1],
           [0, 2],
         ],
       },
       { // attach two
-        joins: [
+        pairs: [
           [0, 2],
           [1, 2],
         ],
       },
       { // attach two
-        joins: [
+        pairs: [
           [0, 1],
           [1, 2],
         ],
@@ -40,20 +40,20 @@ export default {
   2: { // 4 neighbours, all adjacent
     layouts: [
       { // connect adjacent edges, ignore straight line
-        joins: [
+        pairs: [
           [0, 1],
           [1, 2],
           [2, 3],
         ],
       },
       { // cross over curves
-        joins: [
+        pairs: [
           [0, 2],
           [1, 3],
         ],
       },
       { // pair edges with adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [2, 3],
         ],
@@ -63,7 +63,7 @@ export default {
   3: { // 4 neighbours, 1 and 3 or in pairs
     layouts: [
       { // connect adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [1, 2],
           [2, 3],
@@ -71,13 +71,13 @@ export default {
         ],
       },
       { // pair adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [2, 3],
         ],
       },
       { // pair opposite adjacent edges
-        joins: [
+        pairs: [
           [1, 2],
           [3, 0],
         ],
@@ -87,7 +87,7 @@ export default {
   4: { // 5 neighbours
     layouts: [
       { // connect adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [1, 2],
           [2, 3],
@@ -96,14 +96,14 @@ export default {
         ],
       },
       { // batman logo
-        joins: [
+        pairs: [
           [0, 4],
           [1, 2],
           [2, 3],
         ],
       },
       { // evil M
-        joins: [
+        pairs: [
           [0, 2],
           [0, 1],
           [2, 4],
@@ -111,7 +111,7 @@ export default {
         ],
       },
       { // fountain
-        joins: [
+        pairs: [
           [0, 2],
           [1, 2],
           [3, 2],
@@ -123,7 +123,7 @@ export default {
   5: { // 6 neighbours
     layouts: [
       { // connect adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [1, 2],
           [2, 3],
@@ -133,14 +133,14 @@ export default {
         ],
       },
       { // pair adjacent edges
-        joins: [
+        pairs: [
           [0, 1],
           [2, 3],
           [4, 5],
         ],
       },
       { // cross over with cap
-        joins: [
+        pairs: [
           [0, 1],
           [2, 4],
           [3, 5],
