@@ -64,10 +64,13 @@ class System {
       this.mouseTargetHexLast = undefined;
     }
 
-    // don't do anything if the mouse is outside of bounds
+    // don't do any target update if the mouse is out of bounds
+    // or if it's long hovering
+    // or if it's already been touched
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
-        this.mouseTargetHexLast !== this.mouseTargetHex) {
+        this.mouseTargetHexLast !== this.mouseTargetHex &&
+        !this.mouseTargetHex.isLongHovering) {
 
       // increment and loop on left mouse button
       if (lastMouseButton == 0) {
@@ -90,6 +93,13 @@ class System {
       // update current hex before general update so neighbours can propagate
       this.mouseTargetHex.update();
       this.mouseTargetHexLast = this.mouseTargetHex;
+    }
+
+    // freeze layout if target is long hovering
+    if (this.canvas.isMouseInside &&
+        this.isDrawing &&
+        this.mouseTargetHex.isLongHovering) {
+      this.mouseTargetHex.freezeLayout();
     }
 
     this.updateHexagons();

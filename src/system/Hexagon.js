@@ -112,9 +112,11 @@ class Hexagon {
 
     // init if it is inside
     // and not in the process at all
+    // and it's not already the hovered hexagon
     if (mouseIsInside &&
         !this.layoutWaitTimer &&
-        !this.isLongHovering) {
+        !this.layoutProgressionTimer &&
+        this.system.mouseTargetHex != this) {
       const timeout = (LAYOUT_PROGRESSION_DELAY > LAYOUT_PROGRESSION_INTERVAL) ? LAYOUT_PROGRESSION_DELAY - LAYOUT_PROGRESSION_INTERVAL : 0;
       this.layoutWaitTimer = setTimeout(() => {
         this.initialiseLayoutProgression();
@@ -124,7 +126,7 @@ class Hexagon {
     // cancel if it's not inside
     // and is anywhere along the process
     else if (!mouseIsInside &&
-             (this.isLongHovering === true ||
+             (!!this.layoutProgressionTimer ||
              !!this.layoutWaitTimer)) {
       this.cancelLayoutProgression();
     }
@@ -140,9 +142,6 @@ class Hexagon {
   initialiseLayoutProgression = () => {
     // return if already initialised, aka nailed it
     if (this.isLongHovering) return;
-
-    // add to state
-    this.isLongHovering = true;
 
     // reset wait timer
     this.layoutWaitTimer = undefined;
@@ -169,11 +168,22 @@ class Hexagon {
     this.layoutWaitTimer = undefined;
   }
 
+  freezeLayout() {
+    // set current layout to initial
+    this.initialLayoutSeed = this.layoutSeed;
+
+    // cancel progression
+    this.cancelLayoutProgression();
+  }
+
   progressLayout = () => {
     if (!this.checkMouseTarget()) {
       this.cancelLayoutProgression();
       return;
     }
+
+    // set hovering now and not at the start of timer
+    this.isLongHovering = true;
 
     const formation = this.getFormation();
     if (formation > 0) {
