@@ -26,14 +26,15 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
-    this.isHovering = false;
 
     // chose random layout seed
     // regenerated when hex goes from inactive to active
     this.layoutSeed = random();
     // to return to layout on mouse out
     this.initialLayoutSeed = this.layoutSeed;
+    this.layoutWaitTimer = undefined;
     this.layoutProgressionTimer = undefined;
+    this.isLongHovering = false;
 
     this.curves = [];
   }
@@ -108,31 +109,70 @@ class Hexagon {
     // roughly check whether the mouse is inside the hexagon
     const mouseIsInside = (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
 
-    if (mouseIsInside && this.isHovering === false) {
-      // mouse enter
-      this.isHovering = true;
+    // init if it is inside
+    // and not in the process at all
+    if (mouseIsInside &&
+        !this.layoutWaitTimer &&
+        !this.isLongHovering) {
+      this.layoutWaitTimer = setTimeout(() => {
+        this.initialiseLayoutProgression();
+      }, 1000);
+    }
 
-      // set system target to this hex
+    // cancel if it's not inside
+    // and is anywhere along the process
+    else if (!mouseIsInside &&
+             (this.isLongHovering === true ||
+             !!this.layoutWaitTimer)) {
+      this.cancelLayoutProgression();
+    }
+
+    // set system target to this hex
+    if (mouseIsInside) {
       this.system.mouseTargetHex = this;
-
-      // set initial layout seed
-      this.initialLayoutSeed = this.layoutSeed;
-      this.layoutProgressionTimer = setInterval(() => {
-        this.progressLayout();
-      }, 500);
     }
 
-    else if (!mouseIsInside && this.isHovering === true) {
-      // mouse leave
-      this.isHovering = false;
+    return mouseIsInside;
+  }
 
-      // reset current layout to initial
-      this.layoutSeed = this.initialLayoutSeed;
-      clearInterval(this.layoutProgressionTimer);
-    }
+  initialiseLayoutProgression = () => {
+    // return if already initialised, aka nailed it
+    if (this.isLongHovering) return;
+
+    // add to state
+    this.isLongHovering = true;
+
+    // reset wait timer
+    this.layoutWaitTimer = undefined;
+
+    // set initial seed to current seet
+    this.initialLayoutSeed = this.layoutSeed;
+
+    // start progression timer
+    this.layoutProgressionTimer = setInterval(() => {
+      this.progressLayout();
+    }, 500);
+  }
+
+  cancelLayoutProgression = () => {
+    // remove state, oh no
+    this.isLongHovering = false;
+
+    // reset current layout to initial
+    this.layoutSeed = this.initialLayoutSeed;
+
+    // cancel and clear timers
+    clearInterval(this.layoutProgressionTimer);
+    this.layoutProgressionTimer = undefined;
+    this.layoutWaitTimer = undefined;
   }
 
   progressLayout = () => {
+    if (!this.checkMouseTarget()) {
+      this.cancelLayoutProgression();
+      return;
+    }
+
     const formation = this.getFormation();
     if (formation > 0) {
 
