@@ -3,6 +3,7 @@ import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
+import { LAYOUT_PROGRESSION_DELAY, LAYOUT_PROGRESSION_INTERVAL } from 'constants/timing';
 
 class Hexagon {
   constructor(system, x, y) {
@@ -114,9 +115,10 @@ class Hexagon {
     if (mouseIsInside &&
         !this.layoutWaitTimer &&
         !this.isLongHovering) {
+      const timeout = (LAYOUT_PROGRESSION_DELAY > LAYOUT_PROGRESSION_INTERVAL) ? LAYOUT_PROGRESSION_DELAY - LAYOUT_PROGRESSION_INTERVAL : 0;
       this.layoutWaitTimer = setTimeout(() => {
         this.initialiseLayoutProgression();
-      }, 1000);
+      }, timeout);
     }
 
     // cancel if it's not inside
@@ -151,7 +153,7 @@ class Hexagon {
     // start progression timer
     this.layoutProgressionTimer = setInterval(() => {
       this.progressLayout();
-    }, 500);
+    }, LAYOUT_PROGRESSION_INTERVAL);
   }
 
   cancelLayoutProgression = () => {
