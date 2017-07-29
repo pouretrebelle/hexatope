@@ -39,3 +39,27 @@ const addCurveToCurve = (primary, compare, primaryEnd, compareEnd, internal) => 
     end: compareEnd,
   });
 };
+
+export const getPushDepth = (layout, i) => {
+  let depth = 0;
+  if (layout.pushUp && layout.pushUp.indexOf(i) >= 0) {
+    depth = 1;
+  }
+  if (layout.pushDown && layout.pushDown.indexOf(i) >= 0) {
+    depth = -1;
+  }
+
+  return depth;
+};
+
+export const getForceDepth = (layout, i) => {
+  let depth = 0;
+  if (layout.forceUp && layout.forceUp.indexOf(i) >= 0) {
+    depth = 1;
+  }
+  if (layout.forceDown && layout.forceDown.indexOf(i) >= 0) {
+    depth = -1;
+  }
+
+  return depth;
+};

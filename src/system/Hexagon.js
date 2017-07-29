@@ -1,6 +1,7 @@
 import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
+import { getPushDepth, getForceDepth } from 'utils/curveUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
 import { LAYOUT_PROGRESSION_DELAY, LAYOUT_PROGRESSION_INTERVAL } from 'constants/timing';
@@ -408,11 +409,18 @@ class Hexagon {
       // otherwise just use the numbers
       const start = edgeOrder ? edgeOrder[pair[0]] : pair[0];
       const end = edgeOrder ? edgeOrder[pair[1]] : pair[1];
-      this.addCurveBetweenEdges(start, end);
+      this.addCurveBetweenEdges({
+        edge1: start,
+        edge2: end,
+        edge1DepthPush: getPushDepth(layout, pair[0]),
+        edge1DepthForce: getForceDepth(layout, pair[0]),
+        edge2DepthPush: getPushDepth(layout, pair[1]),
+        edge2DepthForce: getForceDepth(layout, pair[1]),
+      });
     });
   }
 
-  addCurveBetweenEdges(edge1, edge2) {
+  addCurveBetweenEdges({ edge1, edge2, ...depths }) {
     // called by planCurves()
     // used to determine whether they should be single, double, or diverging
     // also used to set curve offsets for inner/outer lines
@@ -424,6 +432,13 @@ class Hexagon {
     // make sure edges are between 0-5
     edge1 = wrap6(edge1);
     edge2 = wrap6(edge2);
+
+    // merge edges with depth data to pass into function more easily
+    const edgesData = Object.assign(
+      {},
+      { edge1, edge2 },
+      depths,
+    );
 
     // should we draw it as a double line?
     let double = false;
@@ -437,8 +452,8 @@ class Hexagon {
 
     if (double) {
       // double rainbow
-      curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 1, 3);
-      curve2 = this.makeCurveWithOffset(edge1, edge2, -1, -1, 3);
+      curve1 = this.makeCurveWithOffset(edgesData, 1, 1, 3);
+      curve2 = this.makeCurveWithOffset(edgesData, -1, -1, 3);
     }
 
     // if tile is single active
@@ -446,17 +461,17 @@ class Hexagon {
     else {
       // if edge1 hexagon exists and is double active
       if ((this.neighbours[edge1] && this.neighbours[edge1].active == 2)) {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 0, 2);
-        curve2 = this.makeCurveWithOffset(edge1, edge2, -1, 0, 2);
+        curve1 = this.makeCurveWithOffset(edgesData, 1, 0, 2);
+        curve2 = this.makeCurveWithOffset(edgesData, -1, 0, 2);
       }
       // if edge2 hexagon exists and is double active
       else if ((this.neighbours[edge2] && this.neighbours[edge2].active == 2)) {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 1, 1);
-        curve2 = this.makeCurveWithOffset(edge1, edge2, 0, -1, 1);
+        curve1 = this.makeCurveWithOffset(edgesData, 0, 1, 1);
+        curve2 = this.makeCurveWithOffset(edgesData, 0, -1, 1);
       }
       // if everything is single
       else {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 0, 0);
+        curve1 = this.makeCurveWithOffset(edgesData, 0, 0, 0);
       }
     }
 
@@ -471,7 +486,7 @@ class Hexagon {
     if (curve2) this.curves.push(curve2);
   }
 
-  makeCurveWithOffset(edge1, edge2, offset1, offset2, joinType) {
+  makeCurveWithOffset({ edge1, edge2, ...depths }, offset1, offset2, joinType) {
     // called by addCurveBetweenEdges()
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
@@ -547,6 +562,7 @@ class Hexagon {
       pos2Control,
       pos2,
       joinType: joinType,
+      depths,
     });
   }
 }

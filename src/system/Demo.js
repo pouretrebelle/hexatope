@@ -81,10 +81,10 @@ class Demo {
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2)
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1, curve.pos1.z),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control, curve.pos1.z),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control, curve.pos2.z),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2, curve.pos2.z)
       );
       const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
@@ -103,9 +103,9 @@ class Demo {
     return new THREE.Mesh(geometry, this.material);
   }
 
-  getVec3PointMerge(one, two) {
+  getVec3PointMerge(one, two, depth) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(one.x+two.x, -one.y-two.y, 0);
+    return new THREE.Vector3(one.x+two.x, -one.y-two.y, depth);
   }
 
   render = () => {
