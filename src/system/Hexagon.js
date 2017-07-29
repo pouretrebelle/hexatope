@@ -111,9 +111,11 @@ class Hexagon {
     const mouseIsInside = (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
 
     // init if it is inside
+    // and it's active
     // and not in the process at all
     // and it's not already the hovered hexagon
     if (mouseIsInside &&
+        this.active &&
         !this.layoutWaitTimer &&
         !this.layoutProgressionTimer &&
         this.system.mouseTargetHex != this) {
