@@ -384,15 +384,24 @@ class Hexagon {
     return false;
   }
 
-  addCurves(formation, edgeOrder) {
+  getLayout(formation) {
+    // if formation not passed in go get it
+    formation = formation || this.getFormation();
+
     // get potential layouts from formation
     const layouts = curveLayouts[formation].layouts;
 
     // chose layout based on seed
     const layoutChoice = Math.floor(layouts.length * this.layoutSeed);
 
+    return layouts[layoutChoice];
+  }
+
+  addCurves(formation, edgeOrder) {
+    const layout = this.getLayout(formation);
+
     // loop through chosen layout's pairs
-    layouts[layoutChoice].pairs.forEach(pair => {
+    layout.pairs.forEach(pair => {
       // use order array to map edges if it exists
       // otherwise just use the numbers
       const start = edgeOrder ? edgeOrder[pair[0]] : pair[0];
