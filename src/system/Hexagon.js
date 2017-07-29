@@ -416,6 +416,7 @@ class Hexagon {
     // used to determine whether they should be single, double, or diverging
     // also used to set curve offsets for inner/outer lines
 
+    // empty curves to be filled
     let curve1 = undefined;
     let curve2 = undefined;
 
@@ -435,8 +436,8 @@ class Hexagon {
 
     if (double) {
       // double rainbow
-      curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 1);
-      curve2 = this.makeCurveWithOffset(edge1, edge2, -1, -1);
+      curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 1, 3);
+      curve2 = this.makeCurveWithOffset(edge1, edge2, -1, -1, 3);
     }
 
     // if tile is single active
@@ -444,18 +445,24 @@ class Hexagon {
     else {
       // if edge1 hexagon exists and is double active
       if ((this.neighbours[edge1] && this.neighbours[edge1].active == 2)) {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 0);
-        curve2 = this.makeCurveWithOffset(edge1, edge2, -1, 0);
+        curve1 = this.makeCurveWithOffset(edge1, edge2, 1, 0, 2);
+        curve2 = this.makeCurveWithOffset(edge1, edge2, -1, 0, 2);
       }
       // if edge2 hexagon exists and is double active
       else if ((this.neighbours[edge2] && this.neighbours[edge2].active == 2)) {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 1);
-        curve2 = this.makeCurveWithOffset(edge1, edge2, 0, -1);
+        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 1, 1);
+        curve2 = this.makeCurveWithOffset(edge1, edge2, 0, -1, 1);
       }
       // if everything is single
       else {
-        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 0);
+        curve1 = this.makeCurveWithOffset(edge1, edge2, 0, 0, 0);
       }
+    }
+
+    // if there is more than one curve assign pairs
+    if (curve2) {
+      curve1.assignPair(curve2);
+      curve2.assignPair(curve1);
     }
 
     // add to curves array
@@ -463,7 +470,7 @@ class Hexagon {
     if (curve2) this.curves.push(curve2);
   }
 
-  makeCurveWithOffset(edge1, edge2, offset1, offset2) {
+  makeCurveWithOffset(edge1, edge2, offset1, offset2, joinType) {
     // called by addCurveBetweenEdges()
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
@@ -537,6 +544,7 @@ class Hexagon {
       pos1Control,
       pos2Control,
       pos2,
+      joinType: joinType,
     });
   }
 }
