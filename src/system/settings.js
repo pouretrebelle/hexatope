@@ -3,6 +3,8 @@ export default {
   hexLineWeight: 2,
   hexDoubleLineOffset: 0.3, // multiplied by radius
   hexMargin: 4,
+  hexFocusOffset: 2,
+  hexFocusLineWeight: 4,
   drawHex: true,
   drawGrid: true,
   drawCurves: true,
@@ -12,6 +14,7 @@ export default {
   inactiveColor: '#ffffff',
   activeColor: '#f6f7f8',
   doubleActiveColor: '#eaebed',
+  focusColor: '#f6f7f8',
   demoBackgroundColor: 0xeeeeee,
   tubeThickness: 5,
 };

@@ -1,18 +1,27 @@
 import Vector2 from 'utils/Vector2';
 import settings from 'system/settings';
 
-export const drawHexagon = (c, pixelPos, pixelRatio) => {
+export const drawFilledHexagon = (c, pixelPos, pixelRatio) => {
+  const radius = pixelRatio * (settings.hexRadius - settings.hexMargin / 2);
+  drawHexagon(c, pixelPos, pixelRatio, radius);
+  c.fill();
+};
+
+export const drawOutlinedHexagon = (c, pixelPos, pixelRatio) => {
+  const radius = pixelRatio * (settings.hexRadius - settings.hexMargin / 2 - settings.hexFocusOffset - settings.hexFocusLineWeight / 2);
+  drawHexagon(c, pixelPos, pixelRatio, radius);
+  c.stroke();
+};
+
+const drawHexagon = (c, pixelPos, pixelRatio, radius) => {
   // draws hexagon with the center pixelPos
-  const hexRadius = settings.hexRadius * pixelRatio;
-  const hexMargin = settings.hexMargin * pixelRatio;
   c.save();
   c.translate(pixelPos.x * pixelRatio, pixelPos.y * pixelRatio);
   c.beginPath();
   for (let i = 0; i < 6; i++) {
-    c.lineTo((hexRadius - hexMargin / 2) * Math.cos(i * Math.PI / 3), (hexRadius - hexMargin / 2) * Math.sin(i * Math.PI / 3));
+    c.lineTo(radius * Math.cos(i * Math.PI / 3), radius * Math.sin(i * Math.PI / 3));
   }
   c.closePath();
-  c.fill();
   c.restore();
 };
 

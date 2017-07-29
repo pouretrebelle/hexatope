@@ -1,6 +1,6 @@
 import Vector2 from 'utils/Vector2';
 import settings from './settings';
-import { drawHexagon } from 'utils/hexagonUtils';
+import { drawFilledHexagon, drawOutlinedHexagon } from 'utils/hexagonUtils';
 
 class Canvas {
   constructor(system) {
@@ -87,8 +87,15 @@ class Canvas {
 
   drawMouseHexagon() {
     this.c.fillStyle = settings.mouseColor;
-    if (this.system.mouseTargetHex) {
-      drawHexagon(this.c, this.system.mouseTargetHex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
+    const target = this.system.mouseTargetHex;
+    if (target) {
+      drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
+
+      if (target.isLongHovering) {
+        this.c.strokeStyle = settings.focusColor;
+        this.c.lineWidth = settings.hexFocusLineWeight;
+        drawOutlinedHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
+      }
     }
   }
 
@@ -106,7 +113,7 @@ class Canvas {
         this.c.fillStyle = settings.doubleActiveColor;
         break;
     }
-    drawHexagon(this.c, hex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
+    drawFilledHexagon(this.c, hex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
   }
 
   drawHexCurves(hex) {
