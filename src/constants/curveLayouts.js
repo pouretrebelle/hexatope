@@ -16,24 +16,32 @@ export default {
           [0, 2],
           [1, 2],
         ],
+        pushUp: [0],
+        pushDown: [1],
       },
       { // attach two
         pairs: [
           [0, 1],
           [0, 2],
         ],
+        pushUp: [1],
+        pushDown: [2],
       },
       { // attach two
         pairs: [
           [0, 2],
           [1, 2],
         ],
+        pushUp: [0],
+        pushDown: [1],
       },
       { // attach two
         pairs: [
           [0, 1],
           [1, 2],
         ],
+        pushUp: [0],
+        pushDown: [2],
       },
     ],
   },
@@ -45,12 +53,16 @@ export default {
           [1, 2],
           [2, 3],
         ],
+        pushUp: [1, 2],
       },
       { // cross over curves
         pairs: [
           [0, 2],
           [1, 3],
         ],
+        forceUp: [0, 2],
+        forceDown: [1],
+        pushDown: [3],
       },
       { // pair edges with adjacent edges
         pairs: [
@@ -69,6 +81,8 @@ export default {
           [2, 3],
           [3, 0],
         ],
+        pushUp: [0],
+        pushDown: [2],
       },
       { // pair adjacent edges
         pairs: [
@@ -94,6 +108,8 @@ export default {
           [3, 4],
           [4, 0],
         ],
+        pushUp: [0, 4],
+        pushDown: [2],
       },
       { // batman logo
         pairs: [
@@ -101,6 +117,8 @@ export default {
           [1, 2],
           [2, 3],
         ],
+        pushUp: [1],
+        pushDown: [3],
       },
       { // evil M
         pairs: [
@@ -109,6 +127,8 @@ export default {
           [2, 4],
           [3, 4],
         ],
+        pushUp: [0, 4],
+        pushDown: [1, 3],
       },
       { // fountain
         pairs: [
@@ -117,6 +137,8 @@ export default {
           [3, 2],
           [4, 2],
         ],
+        pushUp: [0, 4],
+        pushDown: [2],
       },
     ],
   },
@@ -131,6 +153,8 @@ export default {
           [4, 5],
           [5, 0],
         ],
+        pushUp: [0, 1],
+        pushDown: [4, 5],
       },
       { // pair adjacent edges
         pairs: [
@@ -145,6 +169,9 @@ export default {
           [2, 4],
           [3, 5],
         ],
+        forceUp: [2, 4],
+        forceDown: [3],
+        pushDown: [5],
       },
     ],
   },
