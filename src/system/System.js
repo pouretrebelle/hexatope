@@ -3,6 +3,7 @@ import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
 import { getEdgePos } from 'utils/hexagonUtils';
+import { matchCurves } from 'utils/curveUtils';
 
 class System {
   constructor({ windowWidth, windowHeight }) {
@@ -124,9 +125,8 @@ class System {
 
           // add each curve to the curves array
           hexagon.curves.forEach((curve) => {
-            curves.push(
-              Object.assign({}, curve, {hexagonPosition: hexagonPosition})
-            );
+            curve.hexagonPosition = hexagonPosition;
+            curves.push(curve);
           });
 
           // search for caps
@@ -151,6 +151,9 @@ class System {
         }
       }
     }
+
+    // set relations between curves
+    curves = matchCurves(curves);
 
     return {
       curves,

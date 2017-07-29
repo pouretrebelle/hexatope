@@ -264,6 +264,7 @@ class Hexagon {
 
           // add to curves property
           this.curves.push(new Curve({
+            hexagon: this,
             pos1,
             pos1Control,
             pos2Control,
@@ -540,6 +541,7 @@ class Hexagon {
     let pos2Control = pos2.minusNew(getEdgePos(edge2, 0).normalise().multiplyEq(controlMagnitude));
 
     return new Curve({
+      hexagon: this,
       pos1,
       pos1Control,
       pos2Control,
