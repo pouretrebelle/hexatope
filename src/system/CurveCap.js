@@ -15,6 +15,11 @@ class CurveCap {
   setDepth(depth) {
     this.depth = depth;
   }
+
+  getOppositeCap() {
+    if (this.curve.start == this) return this.curve.end;
+    return this.curve.start;
+  }
 }
 
 export default CurveCap;
