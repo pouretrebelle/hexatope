@@ -36,8 +36,8 @@ export const matchCurves = (curves) => {
 
 const addCurveToCurve = (primary, compare, primaryEnd, compareEnd, internal) => {
   // add new curve cap to appropriate property
-  primary[primaryEnd ? 'start' : 'end'][internal ? 'aligners' : 'extenders'].push(
-    compare[compareEnd ? 'start' : 'end']
+  primary[(primaryEnd === 1) ? 'start' : 'end'][internal ? 'aligners' : 'extenders'].push(
+    compare[(compareEnd === 1) ? 'start' : 'end']
   );
 };
 
@@ -63,4 +63,70 @@ export const getForceDepth = (layout, i) => {
   }
 
   return depth;
+};
+
+export const smoothCurves = (curves) => {
+  let caps = [];
+  curves.forEach(curve => {
+    caps.push(curve.start, curve.end);
+  });
+
+  let capGroups = groupCaps(caps);
+  capGroups.forEach(caps => {
+    // sum up the depth of all of the caps in the group
+    const totalDepth = caps.reduce((sum, cap) => (
+      sum + cap.depth
+    ), 0);
+    // make the depth an average of them all
+    const depth = totalDepth / caps.length;
+
+    // set the depth for each cap
+    caps.forEach(cap => {
+      cap.depth = depth;
+      return cap;
+    });
+  });
+
+  return curves;
+};
+
+
+// takes an array of caps and returns them grouped by position
+const groupCaps = (caps) => {
+  let capGroups = [];
+
+  // add bool to cap so they're not added more than once
+  caps.map(cap => {
+    cap.hasBeenGrouped = false;
+
+    return cap;
+  });
+
+  caps.forEach(cap => {
+    // return if it's already been added
+    if (cap.hasBeenGrouped) return;
+
+    // make array of this and all extenders and aligners
+    let capGroup = [cap];
+    cap.extenders.forEach(ext => {
+      capGroup.push(ext);
+      ext.hasBeenGrouped = true;
+    });
+    cap.aligners.forEach(align => {
+      capGroup.push(align);
+      align.hasBeenGrouped = true;
+    });
+
+    cap.hasBeenGrouped = true;
+    capGroups.push(capGroup);
+  });
+
+  // remove bool from object so we aren't storeing it anymore
+  caps.map(cap => {
+    delete cap.hasBeenGrouped;
+
+    return cap;
+  });
+
+  return capGroups;
 };
