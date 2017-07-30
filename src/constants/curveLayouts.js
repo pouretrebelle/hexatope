@@ -16,32 +16,24 @@ export default {
           [0, 2],
           [1, 2],
         ],
-        pushUp: [0],
-        pushDown: [1],
       },
       { // attach two
         pairs: [
           [0, 1],
           [0, 2],
         ],
-        pushUp: [1],
-        pushDown: [2],
       },
       { // attach two
         pairs: [
           [0, 2],
           [1, 2],
         ],
-        pushUp: [0],
-        pushDown: [1],
       },
       { // attach two
         pairs: [
           [0, 1],
           [1, 2],
         ],
-        pushUp: [0],
-        pushDown: [2],
       },
     ],
   },
@@ -61,8 +53,7 @@ export default {
           [1, 3],
         ],
         forceUp: [0, 2],
-        forceDown: [1],
-        pushDown: [3],
+        pushDown: [1, 3],
       },
       { // pair edges with adjacent edges
         pairs: [
@@ -170,8 +161,6 @@ export default {
           [3, 5],
         ],
         forceUp: [2, 4],
-        forceDown: [3],
-        pushDown: [5],
       },
     ],
   },
