@@ -72,7 +72,8 @@ export const configureDepth = (curves => {
   });
 
   averageCapDepth(caps);
-  smoothCurves(caps, 0.4);
+  smoothCurves(caps, 0.5);
+  smoothCurves(caps, 0.3);
   // re-average them
   averageCapDepth(caps);
 
