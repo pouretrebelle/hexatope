@@ -477,8 +477,8 @@ class Hexagon {
 
     // if there is more than one curve assign pairs
     if (curve2) {
-      curve1.assignPair(curve2);
-      curve2.assignPair(curve1);
+      curve1.setPair(curve2);
+      curve2.setPair(curve1);
     }
 
     // add to curves array

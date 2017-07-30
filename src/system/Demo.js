@@ -81,10 +81,10 @@ class Demo {
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1, curve.pos1.z),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos1Control, curve.pos1.z),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2Control, curve.pos2.z),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.pos2, curve.pos2.z)
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.capPos, curve.start.depth),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, curve.start.depth),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, curve.end.depth),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.capPos, curve.end.depth)
       );
       const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
