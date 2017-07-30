@@ -3,7 +3,7 @@ import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
 import { getEdgePos } from 'utils/hexagonUtils';
-import { matchCurves, smoothCurves } from 'utils/curveUtils';
+import { matchCurves, configureDepth } from 'utils/curveUtils';
 
 class System {
   constructor({ windowWidth, windowHeight }) {
@@ -158,7 +158,7 @@ class System {
       curves = matchCurves(curves);
 
       // smooth over the depths
-      curves = smoothCurves(curves);
+      curves = configureDepth(curves);
 
     }
 
