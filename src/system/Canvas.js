@@ -128,16 +128,16 @@ class Canvas {
     const scalar = this.pixelRatio * settings.hexRadius;
     this.c.lineWidth = settings.hexLineWeight * this.pixelRatio;
 
-    hex.curves.forEach(({ pos1, pos1Control, pos2Control, pos2 }) => {
+    hex.curves.forEach(({ start, end }) => {
       this.c.beginPath();
-      this.c.moveTo(pos1.x * scalar, pos1.y * scalar);
+      this.c.moveTo(start.capPos.x * scalar, start.capPos.y * scalar);
       this.c.bezierCurveTo(
-        pos1Control.x * scalar,
-        pos1Control.y * scalar,
-        pos2Control.x * scalar,
-        pos2Control.y * scalar,
-        pos2.x * scalar,
-        pos2.y * scalar,
+        start.controlPos.x * scalar,
+        start.controlPos.y * scalar,
+        end.controlPos.x * scalar,
+        end.controlPos.y * scalar,
+        end.capPos.x * scalar,
+        end.capPos.y * scalar,
       );
       this.c.stroke();
       this.c.closePath();
