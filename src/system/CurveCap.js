@@ -6,7 +6,7 @@ class CurveCap {
     this.controlPos = control;
 
     this.pair = undefined;
-    this.extensions = [];
+    this.extenders = [];
     this.aligners = [];
 
     this.depth = 0;

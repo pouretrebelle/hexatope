@@ -13,7 +13,7 @@ export const matchCurves = (curves) => {
       const compareStartPos = compare.start.capPos.plusNew(compare.hexagonPosition);
       const compareEndPos = compare.end.capPos.plusNew(compare.hexagonPosition);
 
-      // if inernal it's an aligner and not an extension
+      // if inernal it's an aligner and not an extender
       const internal = (primary.hexagonPosition == compare.hexagonPosition);
 
       if (primaryStartPos.dist(compareStartPos) < 0.001) {
@@ -36,7 +36,7 @@ export const matchCurves = (curves) => {
 
 const addCurveToCurve = (primary, compare, primaryEnd, compareEnd, internal) => {
   // add new curve cap to appropriate property
-  primary[primaryEnd ? 'start' : 'end'][internal ? 'aligners' : 'extensions'].push(
+  primary[primaryEnd ? 'start' : 'end'][internal ? 'aligners' : 'extenders'].push(
     compare[compareEnd ? 'start' : 'end']
   );
 };
