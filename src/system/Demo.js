@@ -105,7 +105,7 @@ class Demo {
 
   getVec3PointMerge(one, two, depth, scale) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(scale*(one.x+two.x), scale*(-one.y-two.y), scale*depth);
+    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), settings.depthScalar*scale*depth);
   }
 
   render = () => {
