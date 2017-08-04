@@ -92,9 +92,9 @@ class Demo {
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
-      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos);
+      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, cap.depth);
       const sphere = new THREE.SphereGeometry(tubeRadius);
-      sphere.translate(point.x, point.y, 0);
+      sphere.translate(point.x, point.y, point.z);
       geometry.merge(sphere);
     });
 

@@ -128,26 +128,6 @@ class System {
             curve.hexagonPosition = hexagonPosition;
             curves.push(curve);
           });
-
-          // search for caps
-          // check that it has no curves
-          if (hexagon.curves.length === 0) {
-            const activeNeighbourIndex = hexagon.getActiveNeighbours().indexOf(true);
-            const activeNeighbour = hexagon.neighbours[activeNeighbourIndex];
-            // check that it has one neighbour
-            // and that neighbour has more than one too, otherwise it won't have curves
-            if (activeNeighbourIndex !== -1 &&
-                activeNeighbour.countActiveNeighbours() > 1) {
-              // add to caps array
-              caps.push(
-                Object.assign(
-                  {},
-                  {pos: getEdgePos(activeNeighbourIndex)},
-                  {hexagonPosition: hexagonPosition},
-                )
-              );
-            }
-          }
         }
       }
     }
@@ -161,6 +141,21 @@ class System {
       curves = configureDepth(curves);
 
     }
+
+    // search for curves that need round caps
+    curves.forEach((curve) => {
+      // for the start and end of each curve
+      [curve.start, curve.end].forEach((cap) => {
+        // if it has no extenders it needs capping
+        if (cap.extenders.length === 0) {
+          caps.push({
+            pos: cap.capPos,
+            depth: cap.depth,
+            hexagonPosition: curve.hexagonPosition,
+          });
+        }
+      });
+    });
 
     return {
       curves,
