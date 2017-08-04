@@ -22,9 +22,11 @@ export default {
 export const demoModelSettings = {
   tubeSegments: 20,
   tubeRadiusSegments: 8,
+  scale: 1,
 };
 
 export const exportModelSettings = {
   tubeSegments: 30,
   tubeRadiusSegments: 20,
+  scale: 5.88, // map to mm
 };

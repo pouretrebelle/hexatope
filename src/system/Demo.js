@@ -81,19 +81,19 @@ class Demo {
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.capPos, curve.start.depth),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, curve.start.depth),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, curve.end.depth),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.capPos, curve.end.depth)
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.capPos, curve.start.depth, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, curve.start.depth, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, curve.end.depth, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.capPos, curve.end.depth, modelSettings.scale)
       );
-      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius, modelSettings.tubeRadiusSegments, false);
+      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
     });
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
-      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, cap.depth);
-      const sphere = new THREE.SphereGeometry(tubeRadius);
+      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, cap.depth, modelSettings.scale);
+      const sphere = new THREE.SphereGeometry(tubeRadius*modelSettings.scale);
       sphere.translate(point.x, point.y, point.z);
       geometry.merge(sphere);
     });
@@ -103,9 +103,9 @@ class Demo {
     return new THREE.Mesh(geometry, this.material);
   }
 
-  getVec3PointMerge(one, two, depth) {
+  getVec3PointMerge(one, two, depth, scale) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(one.x+two.x, -one.y-two.y, depth);
+    return new THREE.Vector3(scale*(one.x+two.x), scale*(-one.y-two.y), scale*depth);
   }
 
   render = () => {
