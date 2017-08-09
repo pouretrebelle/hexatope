@@ -491,10 +491,6 @@ class Hexagon {
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
 
-    // originOffset is the distance we move the origin point
-    // in the opposite direction of the average angle of the two points
-    let origin = new Point();
-
     // set up positions as per offsets
     let pos1 = getEdgePos(edge1, offset1);
     let pos2 = getEdgePos(edge2, offset2);
@@ -505,9 +501,6 @@ class Hexagon {
     if (edge1 == wrap6(edge2 - 1)) {
       // flips offset 2
       pos2 = getEdgePos(edge2, -offset2);
-      // brings offset in smooth curve
-      origin.y -= 0.25;
-      origin.rotate((edge1 + 0.5) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
     }
@@ -515,9 +508,6 @@ class Hexagon {
     else if (edge1 == wrap6(edge2 + 1)) {
       // flips offset 1
       pos1 = getEdgePos(edge1, -offset1);
-      // brings offset in smooth curve
-      origin.y -= 0.25;
-      origin.rotate((edge1 - 0.5) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
     }
@@ -526,7 +516,6 @@ class Hexagon {
     else if (edge1 == wrap6(edge2 - 2)) {
       // flips offset 2
       pos2 = getEdgePos(edge2, -offset2);
-      origin.rotate((edge1 + 1) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeWide(offset1);
       pos2ControlMagnitude = getControlMagnitudeWide(offset2);
     }
@@ -534,7 +523,6 @@ class Hexagon {
     else if (edge1 == wrap6(edge2 + 2)) {
       // flips offset 1
       pos1 = getEdgePos(edge1, -offset1);
-      origin.rotate((edge1 - 1) * Math.PI / 3);
       pos1ControlMagnitude = getControlMagnitudeWide(offset1);
       pos2ControlMagnitude = getControlMagnitudeWide(offset2);
     }
