@@ -76,6 +76,7 @@ export const configureDepth = (curves => {
   smoothCurves(caps, 0.3);
   // re-average them
   averageCapDepth(caps);
+  cofigureControlPointDepth(caps);
 
   return curves;
 });
@@ -122,6 +123,46 @@ const smoothCurves = (caps, smoothDegree) => {
   });
 };
 
+const cofigureControlPointDepth = (caps) => {
+  // group caps by groups of aligners
+  let capGroups = groupCaps(caps);
+  capGroups = capGroups.map(splitCapGroup);
+
+  capGroups.forEach(group => {
+    const pointDepth = group[0][0].capPos.z;
+    const firstGroup = group[0];
+    const secondGroup = group[1];
+    let groupDepthAverages = [0, 0];
+
+    // increment the groupDepth by the position of the other end of the curve
+    const addDepthToGroup = (groupIndex, cap) => {
+      const depth = cap.getOppositeCap().capPos.z;
+      groupDepthAverages[groupIndex] += depth;
+    };
+    firstGroup.forEach(cap => addDepthToGroup(0, cap));
+    secondGroup.forEach(cap => addDepthToGroup(1, cap));
+
+    // divide each depth by the amount of caps that have incremented it
+    // if there are no caps in that group or the result is NaN
+    // return the current depth
+    groupDepthAverages.forEach((depth, i) => (
+      (!depth) ? pointDepth : depth / group[i].length
+    ));
+
+    // use math to put each sides depth half way between the point and its average endings
+    const a = groupDepthAverages[0];
+    const b = groupDepthAverages[1];
+    const firstDepth = pointDepth + (a - b) / 4;
+    const secondDepth = pointDepth + (b - a) / 4;
+    firstGroup.forEach(cap => {
+      cap.controlPos.z = firstDepth;
+    });
+    secondGroup.forEach(cap => {
+      cap.controlPos.z = secondDepth;
+    });
+  });
+};
+
 
 // takes an array of caps and returns them grouped by position
 const groupCaps = (caps) => {
@@ -161,4 +202,24 @@ const groupCaps = (caps) => {
   });
 
   return capGroups;
+};
+
+// splits cap group by which hex they're in
+const splitCapGroup = (caps) => {
+  let groups = [[], []];
+
+  // get the hexagon of the first cap
+  // we compare the rest of the caps to it
+  const firstHex = caps[0].curve.hexagon;
+
+  caps.forEach(cap => {
+    if (cap.curve.hexagon == firstHex) {
+      groups[0].push(cap);
+    }
+    else {
+      groups[1].push(cap);
+    }
+  });
+
+  return groups;
 };
