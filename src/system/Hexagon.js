@@ -491,6 +491,9 @@ class Hexagon {
     // determines which is the inner and outer line
     // sets offset and draws line accordingly
 
+    // we use edgeSeparation to estimate the curve's length, it describes the relation between the two edges
+    let edgeSeparation = 2;
+
     // set up positions as per offsets
     let pos1 = getEdgePos(edge1, offset1);
     let pos2 = getEdgePos(edge2, offset2);
@@ -503,6 +506,7 @@ class Hexagon {
       pos2 = getEdgePos(edge2, -offset2);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
+      edgeSeparation = 0;
     }
     // if edge 2 is one anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 1)) {
@@ -510,6 +514,7 @@ class Hexagon {
       pos1 = getEdgePos(edge1, -offset1);
       pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
       pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
+      edgeSeparation = 0;
     }
 
     // if edge 2 is two clockwise from edge 1
@@ -518,6 +523,7 @@ class Hexagon {
       pos2 = getEdgePos(edge2, -offset2);
       pos1ControlMagnitude = getControlMagnitudeWide(offset1);
       pos2ControlMagnitude = getControlMagnitudeWide(offset2);
+      edgeSeparation = 1;
     }
     // if edge 2 is two anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 2)) {
@@ -525,6 +531,7 @@ class Hexagon {
       pos1 = getEdgePos(edge1, -offset1);
       pos1ControlMagnitude = getControlMagnitudeWide(offset1);
       pos2ControlMagnitude = getControlMagnitudeWide(offset2);
+      edgeSeparation = 1;
     }
 
     // if edges are opposites we add weak control points perpendicular to the point's edge
@@ -550,6 +557,7 @@ class Hexagon {
       pos2Control,
       pos2,
       joinType: joinType,
+      edgeSeparation: edgeSeparation,
       depths,
     });
   }
