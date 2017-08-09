@@ -1,4 +1,4 @@
-import Vector2 from 'utils/Vector2';
+import Point from 'system/Point';
 import settings from 'system/settings';
 
 export const drawFilledHexagon = (c, pixelPos, pixelRatio) => {
@@ -25,15 +25,16 @@ const drawHexagon = (c, pixelPos, pixelRatio, radius) => {
   c.restore();
 };
 
-export const getEdgePos = (i, offset) => {
+export const getEdgePoint = (i, offset) => {
   // return position of this edge of the hexagon
   // if (offset == 1) clockwise from middle edge
   // if (offset == 0) middle of edge
   // if (offset == -1) anti-clockwise from middle edge
   const halfHexHeight = Math.sqrt(3) / 2;
-  let pos = new Vector2(offset * settings.hexDoubleLineOffset / 2, -halfHexHeight);
-  pos.rotate(i * Math.PI / 3);
-  return pos;
+  let point = new Point(offset * settings.hexDoubleLineOffset / 2, -halfHexHeight);
+  point.rotate(i * Math.PI / 3);
+  point.edge = i;
+  return point;
 };
 
 // following functions use a cheeky formula for estimating a circle arc with cubic beziers

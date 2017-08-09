@@ -1,6 +1,6 @@
 import Point from './Point';
 import { wrap6, random } from 'utils/numberUtils';
-import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
+import { getEdgePoint, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import { getPushDepth, getForceDepth } from 'utils/curveUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
@@ -256,20 +256,17 @@ class Hexagon {
         // the neighbour must have > 1 active neighbour to avoid ellipses on an active edge
         if (activeNeighbour.countActiveNeighbours() > 1) {
           // get two edge points
-          const pos1 = getEdgePos(activeEdge, 1);
-          const pos2 = getEdgePos(activeEdge, -1);
+          const point1 = getEdgePoint(activeEdge, 1);
+          const point2 = getEdgePoint(activeEdge, -1);
           // get two control points
-          const controlOffset = getEdgePos(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset);
-          let pos1Control = pos1.minusNew(controlOffset);
-          let pos2Control = pos2.minusNew(controlOffset);
+          const controlOffset = getEdgePoint(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset);
 
           // add to curves property
           this.curves.push(new Curve({
             hexagon: this,
-            pos1,
-            pos1Control,
-            pos2Control,
-            pos2,
+            point1,
+            point2,
+            controlOffset,
           }));
         }
       }
@@ -495,42 +492,42 @@ class Hexagon {
     let edgeSeparation = 2;
 
     // set up positions as per offsets
-    let pos1 = getEdgePos(edge1, offset1);
-    let pos2 = getEdgePos(edge2, offset2);
-    let pos1ControlMagnitude = 0;
-    let pos2ControlMagnitude = 0;
+    let point1 = getEdgePoint(edge1, offset1);
+    let point2 = getEdgePoint(edge2, offset2);
+    let point1ControlMagnitude = 0;
+    let point2ControlMagnitude = 0;
 
     // if edge 2 is one clockwise from edge 1
     if (edge1 == wrap6(edge2 - 1)) {
       // flips offset 2
-      pos2 = getEdgePos(edge2, -offset2);
-      pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
-      pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
+      point2 = getEdgePoint(edge2, -offset2);
+      point1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
+      point2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
       edgeSeparation = 0;
     }
     // if edge 2 is one anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 1)) {
       // flips offset 1
-      pos1 = getEdgePos(edge1, -offset1);
-      pos1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
-      pos2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
+      point1 = getEdgePoint(edge1, -offset1);
+      point1ControlMagnitude = getControlMagnitudeAdjacent(offset1);
+      point2ControlMagnitude = getControlMagnitudeAdjacent(offset2);
       edgeSeparation = 0;
     }
 
     // if edge 2 is two clockwise from edge 1
     else if (edge1 == wrap6(edge2 - 2)) {
       // flips offset 2
-      pos2 = getEdgePos(edge2, -offset2);
-      pos1ControlMagnitude = getControlMagnitudeWide(offset1);
-      pos2ControlMagnitude = getControlMagnitudeWide(offset2);
+      point2 = getEdgePoint(edge2, -offset2);
+      point1ControlMagnitude = getControlMagnitudeWide(offset1);
+      point2ControlMagnitude = getControlMagnitudeWide(offset2);
       edgeSeparation = 1;
     }
     // if edge 2 is two anti-clockwise from edge 1
     else if (edge1 == wrap6(edge2 + 2)) {
       // flips offset 1
-      pos1 = getEdgePos(edge1, -offset1);
-      pos1ControlMagnitude = getControlMagnitudeWide(offset1);
-      pos2ControlMagnitude = getControlMagnitudeWide(offset2);
+      point1 = getEdgePoint(edge1, -offset1);
+      point1ControlMagnitude = getControlMagnitudeWide(offset1);
+      point2ControlMagnitude = getControlMagnitudeWide(offset2);
       edgeSeparation = 1;
     }
 
@@ -538,24 +535,20 @@ class Hexagon {
     // this is so converging/diverging lines meet perpendicularly
     if (Math.abs(edge2 - edge1) == 3) {
       // flip the offset 2 to create parallel lines
-      pos2 = getEdgePos(edge2, -offset2);
+      point2 = getEdgePoint(edge2, -offset2);
       // make control points the start and end of line
-      pos1ControlMagnitude = 0.5;
-      pos2ControlMagnitude = 0.5;
+      point1ControlMagnitude = 0.5;
+      point2ControlMagnitude = 0.5;
     }
 
     // average magnitude of control points
-    const controlMagnitude = (pos1ControlMagnitude + pos2ControlMagnitude) / 2;
-    // generate control points by taking them away from the points
-    let pos1Control = pos1.minusNew(getEdgePos(edge1, 0).normalise().multiplyEq(controlMagnitude));
-    let pos2Control = pos2.minusNew(getEdgePos(edge2, 0).normalise().multiplyEq(controlMagnitude));
+    const controlMagnitude = (point1ControlMagnitude + point2ControlMagnitude) / 2;
 
     return new Curve({
       hexagon: this,
-      pos1,
-      pos1Control,
-      pos2Control,
-      pos2,
+      point1,
+      point2,
+      controlMagnitude,
       joinType: joinType,
       edgeSeparation: edgeSeparation,
       depths,
