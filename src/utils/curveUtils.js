@@ -85,16 +85,13 @@ const averageCapDepth = (caps) => {
   capGroups.forEach(caps => {
     // sum up the depth of all of the caps in the group
     const totalDepth = caps.reduce((sum, cap) => (
-      sum + cap.depth
+      sum + cap.capPos.z
     ), 0);
     // make the depth an average of them all
     const depth = totalDepth / caps.length;
 
     // set the depth for each cap
-    caps.forEach(cap => {
-      cap.depth = depth;
-      return cap;
-    });
+    caps.forEach(cap => cap.setDepth(depth));
   });
 };
 
@@ -102,25 +99,25 @@ const smoothCurves = (caps, smoothDegree) => {
 
   caps.forEach(cap => {
     // get depth of other end of the curve
-    const alignEndDepth = cap.getOppositeCap().depth;
+    const alignEndDepth = cap.getOppositeCap().capPos.z;
 
     // get average depth of other end of all extenders
     const hasExtenders = !!cap.extenders.length;
-    const extenderEndDepths = cap.extenders.map(ext => ext.getOppositeCap().depth);
+    const extenderEndDepths = cap.extenders.map(ext => ext.getOppositeCap().capPos.z);
     const extenderEndDepthTotal = extenderEndDepths.reduce((a, b) => (a + b), 0);
     let extenderEndDepthAverage = hasExtenders ? extenderEndDepthTotal / extenderEndDepths.length : 0;
 
     // tweak depth using the smooth degree
     // if there aren't extenders use more of the original
     cap.nextDepth = hasExtenders ?
-      (0.5 * smoothDegree) * (alignEndDepth + extenderEndDepthAverage) + (1 - smoothDegree) * cap.depth
+      (0.5 * smoothDegree) * (alignEndDepth + extenderEndDepthAverage) + (1 - smoothDegree) * cap.capPos.z
       :
-      (0.5 * smoothDegree * alignEndDepth) + (1 - smoothDegree * 0.5) * cap.depth;
+      (0.5 * smoothDegree * alignEndDepth) + (1 - smoothDegree * 0.5) * cap.capPos.z;
   });
 
   // update real depth after all have been morphed
   caps.forEach(cap => {
-    cap.depth = cap.nextDepth;
+    cap.setDepth(cap.nextDepth);
     delete cap.nextDepth;
   });
 };

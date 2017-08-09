@@ -149,7 +149,6 @@ class System {
         if (cap.extenders.length === 0) {
           caps.push({
             pos: cap.capPos,
-            depth: cap.depth,
             hexagonPosition: curve.hexagonPosition,
           });
         }

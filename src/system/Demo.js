@@ -81,10 +81,10 @@ class Demo {
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.capPos, curve.start.depth, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, curve.start.depth, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, curve.end.depth, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.capPos, curve.end.depth, modelSettings.scale)
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.capPos, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.capPos, modelSettings.scale)
       );
       const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
@@ -92,7 +92,7 @@ class Demo {
 
     // draw each cap as a sphere
     data.caps.forEach(cap => {
-      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, cap.depth, modelSettings.scale);
+      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, modelSettings.scale);
       const sphere = new THREE.SphereGeometry(tubeRadius*modelSettings.scale);
       sphere.translate(point.x, point.y, point.z);
       geometry.merge(sphere);
@@ -103,9 +103,9 @@ class Demo {
     return new THREE.Mesh(geometry, this.material);
   }
 
-  getVec3PointMerge(one, two, depth, scale) {
+  getVec3PointMerge(one, two, scale) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), settings.depthScalar*scale*depth);
+    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), settings.depthScalar*scale*two.z);
   }
 
   render = () => {

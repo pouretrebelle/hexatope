@@ -8,12 +8,11 @@ class CurveCap {
     this.pair = undefined;
     this.extenders = [];
     this.aligners = [];
-
-    this.depth = 0;
   }
 
   setDepth(depth) {
-    this.depth = depth;
+    this.capPos.z = depth;
+    this.controlPos.z = depth;
   }
 
   getOppositeCap() {

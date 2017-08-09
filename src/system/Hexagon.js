@@ -1,4 +1,4 @@
-import Vector2 from 'utils/Vector2';
+import Point from './Point';
 import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePos, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import { getPushDepth, getForceDepth } from 'utils/curveUtils';
@@ -13,10 +13,10 @@ class Hexagon {
     this.hexagons = system.hexagons;
 
     // establish grid position
-    this.pos = new Vector2(x, y);
+    this.pos = new Point(x, y);
 
     // establish position in layout
-    this.layoutPos = new Vector2();
+    this.layoutPos = new Point();
     this.layoutPos.x = 3 * x + 0.5 + y % 2 * 1.5;
     this.layoutPos.y = Math.sqrt(3) * (y * 0.5 + 0.5);
 
@@ -493,7 +493,7 @@ class Hexagon {
 
     // originOffset is the distance we move the origin point
     // in the opposite direction of the average angle of the two points
-    let origin = new Vector2();
+    let origin = new Point();
 
     // set up positions as per offsets
     let pos1 = getEdgePos(edge1, offset1);
