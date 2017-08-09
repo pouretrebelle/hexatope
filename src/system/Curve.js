@@ -3,18 +3,17 @@ import CurveCap from './CurveCap';
 class Curve {
   constructor({
     hexagon,
-    pos1,
-    pos1Control,
-    pos2Control,
-    pos2,
+    point1,
+    point2,
+    controlMagnitude,
     joinType,
     edgeSeparation,
     depths,
   }) {
     this.hexagon = hexagon;
 
-    this.start = new CurveCap(this, pos1, pos1Control);
-    this.end = new CurveCap(this, pos2, pos2Control);
+    this.start = new CurveCap(this, point1, controlMagnitude);
+    this.end = new CurveCap(this, point2, controlMagnitude);
 
     // joinType
     // 0 - a single line without a pair
