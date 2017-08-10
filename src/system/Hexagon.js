@@ -258,15 +258,12 @@ class Hexagon {
           // get two edge points
           const point1 = getEdgePoint(activeEdge, 1);
           const point2 = getEdgePoint(activeEdge, -1);
-          // get two control points
-          const controlOffset = getEdgePoint(activeEdge, 0).normalise().multiplyEq(settings.hexDoubleLineOffset);
-
           // add to curves property
           this.curves.push(new Curve({
             hexagon: this,
             point1,
             point2,
-            controlOffset,
+            controlMagnitude: settings.hexDoubleLineOffset,
           }));
         }
       }
