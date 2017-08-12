@@ -1,4 +1,5 @@
 import CurveCap from './CurveCap';
+import settings from './settings';
 
 class Curve {
   constructor({
@@ -39,6 +40,11 @@ class Curve {
       case 2:
         this.estLength = 2;
         break;
+    }
+
+    // if it's not defined then it's a double cap
+    if (this.estLength === undefined) {
+      this.estLength = Math.PI * settings.hexDoubleLineOffset;
     }
 
     // set when getting hexagon data
