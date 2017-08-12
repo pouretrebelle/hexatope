@@ -18,6 +18,7 @@ export default {
   demoBackgroundColor: 0xeeeeee,
   tubeThickness: 5,
   depthScalar: 1,
+  depthPairScalar: 1,
 };
 
 export const demoModelSettings = {

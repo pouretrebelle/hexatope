@@ -24,12 +24,16 @@ class Curve {
     this.divergeAtStart = joinType === 1;
     this.divergeAtEnd = joinType === 2;
     this.hasPair = !!joinType;
+
+    // these are defined in setPair() called in Hexagon/addCurveBetweenEdges()
     this.pair = undefined;
+    this.insideOfPair = undefined;
 
     // edgeSeparation
     // 0 - adjacent edges
     // 1 - two away
     // 2 - opposite edges
+    this.edgeSeparation = edgeSeparation;
     switch (edgeSeparation) {
       case 0:
         this.estLength = 1.05; // a third of 0.5r circle
@@ -69,10 +73,32 @@ class Curve {
     this.end.setDepth((edge2DepthPush && (joinType == 3 || joinType == 1)) ? edge2DepthPush : edge2DepthForce);
   }
 
+  getChordLength() {
+    return this.start.capPos.minusNew(this.end.capPos).magnitude();
+  }
+
+  increaseDepths(amount) {
+    this.start.setDepth(this.start.capPos.z + amount);
+    this.end.setDepth(this.end.capPos.z + amount);
+  }
+
   setPair(curve) {
     this.pair = curve;
     if (this.divergeAtStart) this.start.pair = curve.start;
     if (this.divergeAtEnd) this.end.pair = curve.end;
+
+    // if they're parallel there's no inner or outer
+    if (this.edgeSeparation == 2) return;
+
+    // check whether it's the inner curve or outer curve by comparing chords
+    if (this.getChordLength() < curve.getChordLength()) {
+      this.insideOfPair = true;
+      const depthIncrease = settings.depthPairScalar * ((this.edgeSeparation == 0) ? 1 : 0.5);
+      this.increaseDepths(depthIncrease);
+    }
+    else {
+      this.insideOfPair = false;
+    }
   }
 }
 
