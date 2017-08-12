@@ -47,6 +47,9 @@ class Canvas {
     this.canvas.style.width = `${this.externalWidth}px`;
     this.canvas.height = this.externalHeight * this.pixelRatio;
     this.canvas.style.height = `${this.externalHeight}px`;
+
+    // redraw canvas
+    this.draw();
   }
 
   draw() {

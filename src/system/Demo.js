@@ -65,6 +65,10 @@ class Demo {
 
   updateDimensions({ windowWidth, windowHeight }) {
     this.renderer.setSize(windowWidth / 2, windowHeight);
+
+    // update camera aspect ratio
+    this.camera.aspect = (windowWidth / 2) / windowHeight;
+    this.camera.updateProjectionMatrix();
   }
 
   updateCurves() {

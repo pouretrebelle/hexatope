@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 @inject('UIStore') @observer
@@ -12,10 +13,21 @@ class Demo extends Component {
 
   componentDidMount() {
     this.props.system.demo.setup(this.demoElement, this.props.UIStore);
+
+    // resize canvas when window size is changed
+    this.windowSizeReaction = reaction(
+      () => [this.props.UIStore.windowWidth, this.props.UIStore.windowHeight],
+      () => this.resizeCanvas(),
+    );
   }
 
   onDownloadButtonClicked = () => {
     this.props.system.demo.downloadSTL();
+  }
+
+  resizeCanvas = () => {
+    if (!this.props.system || !this.props.system.demo) return;
+    this.props.system.demo.updateDimensions(this.props.UIStore);
   }
 
   render() {

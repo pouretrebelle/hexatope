@@ -19,13 +19,24 @@ class Canvas extends Component {
     // render canvas when mouse position is changed
     this.mouseReaction = reaction(
       () => [this.props.UIStore.mouseY, this.props.UIStore.mouseX],
-      () => this.renderCanvas()
+      () => this.renderCanvas(),
+    );
+
+    // resize canvas when window size is changed
+    this.windowSizeReaction = reaction(
+      () => [this.props.UIStore.windowWidth, this.props.UIStore.windowHeight],
+      () => this.resizeCanvas(),
     );
   }
 
   renderCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
     this.props.system.render(this.props.UIStore);
+  }
+
+  resizeCanvas = () => {
+    if (!this.props.system || !this.props.system.canvas.c) return;
+    this.props.system.canvas.updateDimensions(this.props.UIStore);
   }
 
   render() {
