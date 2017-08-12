@@ -13,18 +13,19 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.props.system.canvas.setup(this.canvasElement, this.props.UIStore);
+    const store = this.props.UIStore;
+    this.props.system.canvas.setup(this.canvasElement, store);
     this.renderCanvas();
 
     // render canvas when mouse position is changed
     this.mouseReaction = reaction(
-      () => [this.props.UIStore.mouseY, this.props.UIStore.mouseX],
+      () => [store.mouseY, store.mouseX, store.isMouseDown],
       () => this.renderCanvas(),
     );
 
     // resize canvas when window size is changed
     this.windowSizeReaction = reaction(
-      () => [this.props.UIStore.windowWidth, this.props.UIStore.windowHeight],
+      () => [store.windowWidth, store.windowHeight],
       () => this.resizeCanvas(),
     );
   }
