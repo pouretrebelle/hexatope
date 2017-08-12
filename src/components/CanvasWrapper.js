@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { reaction } from 'mobx';
 import { inject, observer } from 'mobx-react';
 
 @inject('UIStore') @observer
@@ -8,11 +9,18 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.canvasElement = undefined;
+    this.mouseReaction = undefined;
   }
 
   componentDidMount() {
     this.props.system.canvas.setup(this.canvasElement, this.props.UIStore);
     this.renderCanvas();
+
+    // render canvas when mouse position is changed
+    this.mouseReaction = reaction(
+      () => [this.props.UIStore.mouseY, this.props.UIStore.mouseX],
+      () => this.renderCanvas()
+    );
   }
 
   renderCanvas = () => {
@@ -21,7 +29,6 @@ class Canvas extends Component {
   }
 
   render() {
-    const UIStore = this.props.UIStore;
     this.renderCanvas();
 
     return (
@@ -30,16 +37,6 @@ class Canvas extends Component {
           ref={element => this.canvasElement = element}
           style={{ cursor: 'crosshair' }}
         />
-        <dl>
-          <dt>Window Width</dt>
-          <dd>{UIStore.windowWidth}</dd>
-          <dt>Window Height</dt>
-          <dd>{UIStore.windowHeight}</dd>
-          <dt>Mouse X</dt>
-          <dd>{UIStore.mouseX}</dd>
-          <dt>Mouse Y</dt>
-          <dd>{UIStore.mouseY}</dd>
-        </dl>
       </div>
     );
   }
