@@ -30,6 +30,14 @@ class Canvas extends Component {
     );
   }
 
+  startDrawing = (e) => {
+    this.props.UIStore.startPoint(e);
+  }
+
+  endDrawing = () => {
+    this.props.UIStore.endPoint();
+  }
+
   renderCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
     this.props.system.render(this.props.UIStore);
@@ -48,6 +56,11 @@ class Canvas extends Component {
         <canvas
           ref={element => this.canvasElement = element}
           style={{ cursor: 'crosshair' }}
+          onMouseDown={this.startDrawing}
+          onTouchStart={this.startDrawing}
+          onMouseOut={this.endDrawing}
+          onMouseUp={this.endDrawing}
+          onTouchEnd={this.endDrawing}
         />
       </div>
     );
