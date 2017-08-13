@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { reaction } from 'mobx';
-import { inject, observer } from 'mobx-react';
 
-@inject('UIStore') @observer
+import UIStore from 'stores/UIStore';
+
 class Canvas extends Component {
 
   constructor(props) {
@@ -13,39 +13,45 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    const store = this.props.UIStore;
-    this.props.system.canvas.setup(this.canvasElement, store);
+    this.props.system.canvas.setup(this.canvasElement, UIStore);
     this.renderCanvas();
 
     // render canvas when mouse position is changed
     this.mouseReaction = reaction(
-      () => [store.mouseY, store.mouseX, store.isMouseDown],
+      () => [
+        UIStore.mouseY,
+        UIStore.mouseX,
+        UIStore.isMouseDown,
+      ],
       () => this.renderCanvas(),
     );
 
     // resize canvas when window size is changed
     this.windowSizeReaction = reaction(
-      () => [store.windowWidth, store.windowHeight],
+      () => [
+        UIStore.windowWidth,
+        UIStore.windowHeight,
+      ],
       () => this.resizeCanvas(),
     );
   }
 
   startDrawing = (e) => {
-    this.props.UIStore.startPoint(e);
+    UIStore.startPoint(e);
   }
 
   endDrawing = () => {
-    this.props.UIStore.endPoint();
+    UIStore.endPoint();
   }
 
   renderCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
-    this.props.system.render(this.props.UIStore);
+    this.props.system.render(UIStore);
   }
 
   resizeCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
-    this.props.system.canvas.updateDimensions(this.props.UIStore);
+    this.props.system.canvas.updateDimensions(UIStore);
   }
 
   render() {
@@ -69,7 +75,6 @@ class Canvas extends Component {
 
 Canvas.propTypes = {
   system: PropTypes.object,
-  UIStore: PropTypes.object,
 };
 
 export default Canvas;
