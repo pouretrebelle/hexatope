@@ -27,7 +27,8 @@ class Demo extends Component {
     // render demo when settings are changed
     this.settingsReaction = reaction(
       () => [
-        SettingsStore.depthScalar,
+        SettingsStore.depthOverlapScalar,
+        SettingsStore.depthCurvatureScalar,
       ],
       () => this.renderDemo(true),
     );

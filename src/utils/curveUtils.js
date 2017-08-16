@@ -84,15 +84,17 @@ export const configureDepth = (curves => {
 const averageCapDepth = (caps) => {
   let capGroups = groupCaps(caps);
   capGroups.forEach(caps => {
-    // sum up the depth of all of the caps in the group
-    const totalDepth = caps.reduce((sum, cap) => (
-      sum + cap.capPos.z
-    ), 0);
-    // make the depth an average of them all
-    const depth = totalDepth / caps.length;
+    // sum up the depth of all of the caps in the group and divide by quantity
+    const depthOverlap = caps.reduce((sum, cap) => (
+      sum + cap.capPos.depthOverlap
+    ), 0) / caps.length;
+    const depthCurvature = caps.reduce((sum, cap) => (
+      sum + cap.capPos.depthCurvature
+    ), 0) / caps.length;
 
     // set the depth for each cap
-    caps.forEach(cap => cap.setDepth(depth));
+    caps.forEach(cap => cap.setDepthOverlap(depthOverlap));
+    caps.forEach(cap => cap.setDepthCurvature(depthCurvature));
   });
 };
 
@@ -100,26 +102,37 @@ const smoothCurves = (caps, smoothDegree) => {
 
   caps.forEach(cap => {
     // get depth of other end of the curve
-    const alignEndDepth = cap.getOppositeCap().capPos.z;
+    const alignEndDepthOverlap = cap.getOppositeCap().capPos.depthOverlap;
+    const alignEndDepthCurvature = cap.getOppositeCap().capPos.depthCurvature;
 
     // get average depth of other end of all extenders
     const hasExtenders = !!cap.extenders.length;
-    const extenderEndDepths = cap.extenders.map(ext => ext.getOppositeCap().capPos.z);
-    const extenderEndDepthTotal = extenderEndDepths.reduce((a, b) => (a + b), 0);
-    let extenderEndDepthAverage = hasExtenders ? extenderEndDepthTotal / extenderEndDepths.length : 0;
+    const extenderEndDepthOverlaps = cap.extenders.map(ext => ext.getOppositeCap().capPos.depthOverlap);
+    const extenderEndDepthOverlapTotal = extenderEndDepthOverlaps.reduce((a, b) => (a + b), 0);
+    let extenderEndDepthOverlapAverage = hasExtenders ? extenderEndDepthOverlapTotal / extenderEndDepthOverlaps.length : 0;
+
+    const extenderEndDepthCurvatures = cap.extenders.map(ext => ext.getOppositeCap().capPos.depthCurvature);
+    const extenderEndDepthCurvatureTotal = extenderEndDepthCurvatures.reduce((a, b) => (a + b), 0);
+    let extenderEndDepthCurvatureAverage = hasExtenders ? extenderEndDepthCurvatureTotal / extenderEndDepthCurvatures.length : 0;
 
     // tweak depth using the smooth degree
     // if there aren't extenders use more of the original
-    cap.nextDepth = hasExtenders ?
-      (0.5 * smoothDegree) * (alignEndDepth + extenderEndDepthAverage) + (1 - smoothDegree) * cap.capPos.z
+    cap.nextDepthOverlap = hasExtenders ?
+      (0.5 * smoothDegree) * (alignEndDepthOverlap + extenderEndDepthOverlapAverage) + (1 - smoothDegree) * cap.capPos.depthOverlap
       :
-      (0.5 * smoothDegree * alignEndDepth) + (1 - smoothDegree * 0.5) * cap.capPos.z;
+      (0.5 * smoothDegree * alignEndDepthOverlap) + (1 - smoothDegree * 0.5) * cap.capPos.depthOverlap;
+    cap.nextDepthCurvature = hasExtenders ?
+      (0.5 * smoothDegree) * (alignEndDepthCurvature + extenderEndDepthCurvatureAverage) + (1 - smoothDegree) * cap.capPos.depthCurvature
+      :
+      (0.5 * smoothDegree * alignEndDepthCurvature) + (1 - smoothDegree * 0.5) * cap.capPos.depthCurvature;
   });
 
   // update real depth after all have been morphed
   caps.forEach(cap => {
-    cap.setDepth(cap.nextDepth);
-    delete cap.nextDepth;
+    cap.setDepthOverlap(cap.nextDepthOverlap);
+    cap.setDepthCurvature(cap.nextDepthCurvature);
+    delete cap.nextDepthOverlap;
+    delete cap.nextDepthCurvature;
   });
 };
 
@@ -131,11 +144,13 @@ const cofigureControlPointDepth = (caps) => {
   capGroups.forEach(group => {
     const firstGroup = group[0];
     const secondGroup = group[1];
-    let groupAngleAverages = [0, 0];
+    let groupOverlapAngleAverages = [0, 0];
+    let groupCurvatureAngleAverages = [0, 0];
 
     // increment the groupDepth by the position of the other end of the curve
     const addDepthToGroup = (groupIndex, cap) => {
-      groupAngleAverages[groupIndex] += cap.getAngleToOppositeCap();
+      groupOverlapAngleAverages[groupIndex] += cap.getOverlapAngleToOppositeCap();
+      groupCurvatureAngleAverages[groupIndex] += cap.getCurvatureAngleToOppositeCap();
     };
     firstGroup.forEach(cap => addDepthToGroup(0, cap));
     secondGroup.forEach(cap => addDepthToGroup(1, cap));
@@ -143,17 +158,22 @@ const cofigureControlPointDepth = (caps) => {
     // divide each depth by the amount of caps that have incremented it
     // if there are no caps in that group or the result is NaN
     // return the current depth
-    groupAngleAverages.forEach((depth, i) => (
+    groupOverlapAngleAverages.forEach((depth, i) => (
+      (!depth) ? 0 : depth / group[i].length
+    ));
+    groupOverlapAngleAverages.forEach((depth, i) => (
       (!depth) ? 0 : depth / group[i].length
     ));
 
-    const firstAngle = (groupAngleAverages[0] - groupAngleAverages[1]) / 2;
-    const secondAngle = (groupAngleAverages[1] - groupAngleAverages[0]) / 2;
+    const firstOverlapAngle = (groupOverlapAngleAverages[0] - groupOverlapAngleAverages[1]) / 2;
+    const secondOverlapAngle = (groupOverlapAngleAverages[1] - groupOverlapAngleAverages[0]) / 2;
+    const firstCurvatureAngle = (groupCurvatureAngleAverages[0] - groupCurvatureAngleAverages[1]) / 2;
+    const secondCurvatureAngle = (groupCurvatureAngleAverages[1] - groupCurvatureAngleAverages[0]) / 2;
     firstGroup.forEach(cap => {
-      cap.angleControlPos(firstAngle);
+      cap.angleControlPos(firstOverlapAngle, firstCurvatureAngle);
     });
     secondGroup.forEach(cap => {
-      cap.angleControlPos(secondAngle);
+      cap.angleControlPos(secondOverlapAngle, secondCurvatureAngle);
     });
   });
 };

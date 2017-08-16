@@ -11,8 +11,13 @@ class Settings extends Component {
     super(props);
   }
 
-  onDepthChanged = (e) => {
-    this.props.SettingsStore.updateDepth(e.target.value);
+  onDepthOverlapChanged = (e) => {
+    this.props.SettingsStore.updateDepthOverlap(e.target.value);
+    return true;
+  }
+
+  onDepthCurvatureChanged = (e) => {
+    this.props.SettingsStore.updateDepthCurvature(e.target.value);
     return true;
   }
 
@@ -22,8 +27,17 @@ class Settings extends Component {
         <input
           type={'range'}
           className={styles.range}
-          onChange={this.onDepthChanged}
-          value={this.props.SettingsStore.depthScalar}
+          onChange={this.onDepthOverlapChanged}
+          value={this.props.SettingsStore.depthOverlapScalar}
+          min={'0'}
+          max={'1'}
+          step={'any'}
+        />
+        <input
+          type={'range'}
+          className={styles.range}
+          onChange={this.onDepthCurvatureChanged}
+          value={this.props.SettingsStore.depthCurvatureScalar}
           min={'0'}
           max={'1'}
           step={'any'}
