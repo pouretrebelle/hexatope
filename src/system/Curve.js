@@ -69,17 +69,12 @@ class Curve {
     // use push if is double or diverging at the other end
     // otherwise use force value
     // use force value if push isn't defined but force is
-    this.start.setDepth((edge1DepthPush && (joinType == 3 || joinType == 2)) ? edge1DepthPush : edge1DepthForce);
-    this.end.setDepth((edge2DepthPush && (joinType == 3 || joinType == 1)) ? edge2DepthPush : edge2DepthForce);
+    this.start.setDepthOverlap((edge1DepthPush && (joinType == 3 || joinType == 2)) ? edge1DepthPush : edge1DepthForce);
+    this.end.setDepthOverlap((edge2DepthPush && (joinType == 3 || joinType == 1)) ? edge2DepthPush : edge2DepthForce);
   }
 
   getChordLength() {
     return this.start.capPos.minusNew(this.end.capPos).magnitude();
-  }
-
-  increaseDepths(amount) {
-    this.start.setDepth(this.start.capPos.z + amount);
-    this.end.setDepth(this.end.capPos.z + amount);
   }
 
   setPair(curve) {
@@ -93,8 +88,9 @@ class Curve {
     // check whether it's the inner curve or outer curve by comparing chords
     if (this.getChordLength() < curve.getChordLength()) {
       this.insideOfPair = true;
-      const depthIncrease = settings.depthPairScalar * ((this.edgeSeparation == 0) ? 1 : 0.5);
-      this.increaseDepths(depthIncrease);
+      const depth = (this.edgeSeparation == 0) ? 1 : 0.5;
+      this.start.setDepthCurvature(depth);
+      this.end.setDepthCurvature(depth);
     }
     else {
       this.insideOfPair = false;

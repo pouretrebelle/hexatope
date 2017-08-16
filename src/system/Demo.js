@@ -4,8 +4,6 @@ import { saveAs } from 'file-saver';
 import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
 
-import SettingsStore from 'stores/SettingsStore';
-
 class Demo {
   constructor(system) {
     this.system = system;
@@ -111,7 +109,7 @@ class Demo {
 
   getVec3PointMerge(one, two, scale) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), SettingsStore.depthScalar*scale*two.z);
+    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), scale*two.z);
   }
 
   render = () => {
