@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { reaction } from 'mobx';
-import { inject, observer } from 'mobx-react';
 
-@inject('UIStore') @observer
+import UIStore from 'stores/UIStore';
+import SettingsStore from 'stores/SettingsStore';
+
 class Demo extends Component {
 
   constructor(props) {
@@ -12,12 +13,24 @@ class Demo extends Component {
   }
 
   componentDidMount() {
-    this.props.system.demo.setup(this.demoElement, this.props.UIStore);
+    this.props.system.demo.setup(this.demoElement, UIStore);
 
     // resize canvas when window size is changed
     this.windowSizeReaction = reaction(
-      () => [this.props.UIStore.windowWidth, this.props.UIStore.windowHeight],
-      () => this.resizeCanvas(),
+      () => [
+        UIStore.windowWidth,
+        UIStore.windowHeight,
+      ],
+      () => this.resizeDemo(),
+    );
+
+    // render demo when settings are changed
+    this.settingsReaction = reaction(
+      () => [
+        SettingsStore.depthOverlapScalar,
+        SettingsStore.depthCurvatureScalar,
+      ],
+      () => this.renderDemo(true),
     );
   }
 
@@ -25,9 +38,14 @@ class Demo extends Component {
     this.props.system.demo.downloadSTL();
   }
 
-  resizeCanvas = () => {
+  renderDemo = () => {
     if (!this.props.system || !this.props.system.demo) return;
-    this.props.system.demo.updateDimensions(this.props.UIStore);
+    this.props.system.demo.updateCurves();
+  }
+
+  resizeDemo = () => {
+    if (!this.props.system || !this.props.system.demo) return;
+    this.props.system.demo.updateDimensions(UIStore);
   }
 
   render() {
@@ -50,7 +68,6 @@ class Demo extends Component {
 
 Demo.propTypes = {
   system: PropTypes.object,
-  UIStore: PropTypes.object,
 };
 
 export default Demo;

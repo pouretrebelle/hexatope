@@ -19,11 +19,7 @@ class UIStore {
   createListeners() {
     window.addEventListener('resize', this.onWindowResized);
     window.addEventListener('mousemove', this.onMouseMoved);
-    window.addEventListener('mousedown', this.onPointStarted);
-    window.addEventListener('mouseup', this.onPointEnded);
     window.addEventListener('touchmove', this.onTouchMoved);
-    window.addEventListener('touchstart', this.onPointStarted);
-    window.addEventListener('touchend', this.onPointEnded);
 
     // don't open menu on right click, for manual dragging
     window.addEventListener('contextmenu', (e) => {
@@ -61,8 +57,6 @@ class UIStore {
   onWindowResized = () => this.updateDimensions();
   onMouseMoved = (e) => this.updateMousePosition(e);
   onTouchMoved = (e) => this.updateMousePosition(e.touches[0]);
-  onPointStarted = (e) => this.startPoint(e);
-  onPointEnded = () => this.endPoint();
 }
 
-export default UIStore;
+export default new UIStore();
