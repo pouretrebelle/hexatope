@@ -55,6 +55,10 @@ module.exports = {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('css-loader?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss-loader'),
       },
+      {
+        test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+        loader: 'file-loader',
+      },
     ],
   },
   resolve: {
