@@ -17,7 +17,7 @@ export default {
   focusColor: '#f6f7f8',
   demoBackgroundColor: 0xeeeeee,
   tubeThickness: 5,
-  depthPairScalar: 1,
+  cameraRotateSpeed: 5,
 };
 
 export const demoModelSettings = {

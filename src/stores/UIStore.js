@@ -7,7 +7,8 @@ class UIStore {
   @observable mouseX = 0;
   @observable mouseY = 0;
   @observable lastMouseButton = 0;
-  @observable isMouseDown = false;
+  @observable isMouseDownOverCanvas = false;
+  @observable isMouseOverDemo = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -46,12 +47,22 @@ class UIStore {
   @action
   startPoint = (e) => {
     this.lastMouseButton = e.button || 0; // default to left button
-    this.isMouseDown = true;
+    this.isMouseDownOverCanvas = true;
   }
 
   @action
   endPoint = () => {
-    this.isMouseDown = false;
+    this.isMouseDownOverCanvas = false;
+  }
+
+  @action
+  mouseIsOverDemo = () => {
+    this.isMouseOverDemo = true;
+  }
+
+  @action
+  mouseNotOverDemo = () => {
+    this.isMouseOverDemo = false;
   }
 
   onWindowResized = () => this.updateDimensions();

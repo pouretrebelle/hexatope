@@ -3,6 +3,7 @@ import OrbitControls from 'three-orbitcontrols';
 import { saveAs } from 'file-saver';
 import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
+import UIStore from 'stores/UIStore';
 
 class Demo {
   constructor(system) {
@@ -29,6 +30,8 @@ class Demo {
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
+    this.controls.autoRotate = true;
+    this.controls.autoRotateSpeed = settings.cameraRotateSpeed;
 
     // renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -113,6 +116,8 @@ class Demo {
   }
 
   render = () => {
+    if (!UIStore.isMouseOverDemo) this.controls.update();
+
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
   }

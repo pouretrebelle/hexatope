@@ -32,6 +32,29 @@ class Demo extends Component {
       ],
       () => this.renderDemo(true),
     );
+
+    // check mouse position
+    // render canvas when mouse position is changed
+    this.mouseReaction = reaction(
+      () => [
+        UIStore.mouseY,
+        UIStore.mouseX,
+      ],
+      () => this.checkMousePosition(),
+    );
+  }
+
+  checkMousePosition = () => {
+    const boundingBox = this.demoElement.getBoundingClientRect();
+    if (boundingBox.left <= UIStore.mouseX &&
+        UIStore.mouseX <= boundingBox.right &&
+        boundingBox.top <= UIStore.mouseY &&
+        UIStore.mouseY <= boundingBox.bottom
+    ) {
+      if (!UIStore.isMouseOverDemo) UIStore.mouseIsOverDemo();
+    } else {
+      if (UIStore.isMouseOverDemo) UIStore.mouseNotOverDemo();
+    }
   }
 
   onDownloadButtonClicked = () => {

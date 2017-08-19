@@ -49,15 +49,15 @@ class System {
     }
   }
 
-  render({ isMouseDown, lastMouseButton, ...props }) {
+  render({ isMouseDownOverCanvas, lastMouseButton, ...props }) {
     this.canvas.updateMousePos(props);
 
-    if (isMouseDown && !this.isDrawing) {
+    if (isMouseDownOverCanvas && !this.isDrawing) {
       // start drawing
       this.isDrawing = true;
     }
 
-    if (!isMouseDown && this.isDrawing) {
+    if (!isMouseDownOverCanvas && this.isDrawing) {
       // end drawing
       this.isDrawing = false;
       // reset last target for multiple clicks on the same hexagon
