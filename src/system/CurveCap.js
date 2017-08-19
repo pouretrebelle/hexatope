@@ -1,27 +1,49 @@
+import { observable, computed } from 'mobx';
+import SettingsStore from 'stores/SettingsStore';
 import { getEdgePoint } from 'utils/hexagonUtils';
-import Point from './Point';
 
 class CurveCap {
   constructor(curve, point, controlMagnitude) {
     this.curve = curve;
 
-    this.point = new Point(point.x, point.y);
+    this.pos = point;
 
-    this.point.controlDirection = getEdgePoint(point.edge, 0).normalise();
-    this.point.controlMagnitude = controlMagnitude;
-    this.point.cap = this;
+    this.controlDirection = getEdgePoint(point.edge, 0).normalise();
+    this.controlMagnitude = controlMagnitude;
 
     this.pair = undefined;
     this.extenders = [];
     this.aligners = [];
   }
 
+  @observable depthOverlap = 0;
+  @observable depthCurvature = 0;
+  @observable angleOverlap = 0;
+  @observable angleCurvature = 0;
+
+  @computed get posZ() {
+    return SettingsStore.depthOverlapScalar * this.depthOverlap + SettingsStore.depthCurvatureScalar * this.depthCurvature;
+  }
+
+  @computed get controlPos() {
+    if (this.angleOverlap === undefined && this.angleCurvature === undefined) return this.x;
+
+    const averageAngle = SettingsStore.depthOverlapScalar * this.angleOverlap + SettingsStore.depthCurvatureScalar * this.angleCurvature;
+    const depth = Math.sin(averageAngle) * this.controlMagnitude;
+    const length = Math.cos(averageAngle) * this.controlMagnitude;
+
+    let controlPos = this.pos.minusNew(this.controlDirection.multiplyNew(length));
+    controlPos.z = this.posZ + depth;
+
+    return controlPos;
+  }
+
   setDepthOverlap(depth) {
-    this.point.setDepthOverlap(depth);
+    this.depthOverlap = depth;
   }
 
   setDepthCurvature(depth) {
-    this.point.setDepthCurvature(depth);
+    this.depthCurvature = depth;
   }
 
   getOppositeCap() {
@@ -30,16 +52,16 @@ class CurveCap {
   }
 
   getOverlapAngleToOppositeCap() {
-    return Math.atan((this.getOppositeCap().point.depthOverlap - this.point.depthOverlap) / this.curve.estLength);
+    return Math.atan((this.getOppositeCap().depthOverlap - this.depthOverlap) / this.curve.estLength);
   }
 
   getCurvatureAngleToOppositeCap() {
-    return Math.atan((this.getOppositeCap().point.depthCurvature - this.point.depthCurvature) / this.curve.estLength);
+    return Math.atan((this.getOppositeCap().depthCurvature - this.depthCurvature) / this.curve.estLength);
   }
 
   angleControlPos(angleOverlap, angleCurvature) {
-    this.point.angleOverlap = angleOverlap;
-    this.point.angleCurvature = angleCurvature;
+    this.angleOverlap = angleOverlap;
+    this.angleCurvature = angleCurvature;
   }
 }
 

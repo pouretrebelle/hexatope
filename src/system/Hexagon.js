@@ -1,4 +1,4 @@
-import Point from './Point';
+import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
 import { getEdgePoint, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
 import { getPushDepth, getForceDepth } from 'utils/curveUtils';
@@ -13,10 +13,10 @@ class Hexagon {
     this.hexagons = system.hexagons;
 
     // establish grid position
-    this.pos = new Point(x, y);
+    this.pos = new Vector2(x, y);
 
     // establish position in layout
-    this.layoutPos = new Point();
+    this.layoutPos = new Vector2();
     this.layoutPos.x = 3 * x + 0.5 + y % 2 * 1.5;
     this.layoutPos.y = Math.sqrt(3) * (y * 0.5 + 0.5);
 

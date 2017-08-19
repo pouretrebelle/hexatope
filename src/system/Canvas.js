@@ -133,14 +133,14 @@ class Canvas {
 
     hex.curves.forEach(({ start, end }) => {
       this.c.beginPath();
-      this.c.moveTo(start.point.x * scalar, start.point.y * scalar);
+      this.c.moveTo(start.pos.x * scalar, start.pos.y * scalar);
       this.c.bezierCurveTo(
-        start.point.controlPos.x * scalar,
-        start.point.controlPos.y * scalar,
-        end.point.controlPos.x * scalar,
-        end.point.controlPos.y * scalar,
-        end.point.x * scalar,
-        end.point.y * scalar,
+        start.controlPos.x * scalar,
+        start.controlPos.y * scalar,
+        end.controlPos.x * scalar,
+        end.controlPos.y * scalar,
+        end.pos.x * scalar,
+        end.pos.y * scalar,
       );
       this.c.stroke();
       this.c.closePath();

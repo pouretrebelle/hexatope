@@ -74,7 +74,7 @@ class Curve {
   }
 
   getChordLength() {
-    return this.start.point.minusNew(this.end.point).magnitude();
+    return this.start.pos.minusNew(this.end.pos).magnitude();
   }
 
   setPair(curve) {
