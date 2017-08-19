@@ -49,7 +49,7 @@ module.exports = {
       },
       {
         test: /\.s[ca]ss$/,
-        loader: 'style-loader!css-loader?modules&localIdentName=[name]---[local]---[hash:base64:5]!sass-loader',
+        loader: 'style-loader!css-loader?modules&localIdentName=[name]---[local]---[hash:base64:5]!postcss-loader!sass-loader',
       },
       {
         test: /\.css$/,
