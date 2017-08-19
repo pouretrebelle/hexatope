@@ -54,6 +54,10 @@ class Curve {
     // set when getting hexagon data
     this.hexagonPosition = undefined;
 
+    // set when making curves
+    // used to show initial layout when in edit mode
+    this.drawFaded = false;
+
     if (depths) this.setupDepths(depths, joinType);
   }
 

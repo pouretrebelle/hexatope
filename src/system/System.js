@@ -70,7 +70,7 @@ class System {
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
         this.mouseTargetHexLast !== this.mouseTargetHex &&
-        !this.mouseTargetHex.isLongHovering) {
+        !this.mouseTargetHex.editMode) {
 
       // increment and loop on left mouse button
       if (lastMouseButton == 0) {
@@ -98,7 +98,7 @@ class System {
     // freeze layout if target is long hovering
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
-        this.mouseTargetHex.isLongHovering) {
+        this.mouseTargetHex.editMode) {
       this.mouseTargetHex.freezeLayout();
     }
 
