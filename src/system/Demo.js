@@ -21,7 +21,6 @@ class Demo {
 
     // scene
     this.scene = new THREE.Scene();
-    // this.scene.background = new THREE.Color(settings.demoBackgroundColor);
 
     // camera
     // (fov, aspect, near, far)
@@ -44,23 +43,40 @@ class Demo {
     this.updateDimensions(UIStore);
 
     // lights
-    const light1 = new THREE.PointLight(0xffffff, 1);
-    light1.position.set(100, 0, 0);
+    const light1 = new THREE.PointLight(0xffffff, 0.6);
+    light1.position.set(50, 20, -25);
     this.scene.add(light1);
-    const light2 = new THREE.PointLight(0xffffff, 1);
-    light2.position.set(-100, 0, 0);
+    const light2 = new THREE.PointLight(0xffffff, 0.3);
+    light2.position.set(-50, -20, -15);
     this.scene.add(light2);
-    const light3 = new THREE.PointLight(0xffffff, 0.5);
-    light3.position.set(0, -20, 50);
+    const light3 = new THREE.PointLight(0xffffff, 0.6);
+    light3.position.set(-15, 50, 50);
     this.scene.add(light3);
-    const ambLight = new THREE.AmbientLight(0xaaaaaa);
+    const light4 = new THREE.PointLight(0xffffff, 0.3);
+    light4.position.set(15, -50, 50);
+    this.scene.add(light4);
+    const ambLight = new THREE.AmbientLight(0xffffff);
     this.scene.add(ambLight);
+
+    // load env map for reflection
+    // images by Paul Debevec from http://www.pauldebevec.com/Probes/
+    var envMapURLs = [
+      require('assets/images/left.jpg'),
+      require('assets/images/right.jpg'),
+      require('assets/images/top.jpg'),
+      require('assets/images/bottom.jpg'),
+      require('assets/images/front.jpg'),
+      require('assets/images/back.jpg'),
+    ];
+    const envMap = new THREE.CubeTextureLoader().load(envMapURLs);
 
     // material
     this.material = new THREE.MeshStandardMaterial({
       color: 0xffffff,
-      roughness: 0.6,
-      metalness: 0.6,
+      roughness: 0.7,
+      metalness: 0.75,
+      envMap: envMap,
+      envMapIntensity: 1,
     });
 
     // initialise render loop
