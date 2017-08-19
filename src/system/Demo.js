@@ -85,10 +85,10 @@ class Demo {
     // draw each curve as a tube
     data.curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.point, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.start.point.controlPos, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.point.controlPos, modelSettings.scale),
-        this.getVec3PointMerge(curve.hexagonPosition, curve.end.point, modelSettings.scale)
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.pos, modelSettings.scale, curve.start.posZ),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, modelSettings.scale),
+        this.getVec3PointMerge(curve.hexagonPosition, curve.end.pos, modelSettings.scale, curve.end.posZ)
       );
       const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
@@ -107,9 +107,9 @@ class Demo {
     return new THREE.Mesh(geometry, this.material);
   }
 
-  getVec3PointMerge(one, two, scale) {
+  getVec3PointMerge(one, two, scale, twoZ) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), scale*two.z);
+    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), scale*(twoZ ? twoZ : two.z));
   }
 
   render = () => {
