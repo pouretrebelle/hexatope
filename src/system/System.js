@@ -148,7 +148,7 @@ class System {
         // if it has no extenders it needs capping
         if (cap.extenders.length === 0) {
           caps.push({
-            pos: cap.capPos,
+            pos: cap.point,
             hexagonPosition: curve.hexagonPosition,
           });
         }

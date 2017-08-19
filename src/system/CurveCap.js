@@ -5,10 +5,11 @@ class CurveCap {
   constructor(curve, point, controlMagnitude) {
     this.curve = curve;
 
-    this.capPos = point;
-    this.controlMagnitude = controlMagnitude;
-    this.controlPos = new Point(point.x, point.y);
-    this.controlPos.minusEq(getEdgePoint(point.edge, 0).normalise().multiplyEq(controlMagnitude));
+    this.point = new Point(point.x, point.y);
+
+    this.point.controlDirection = getEdgePoint(point.edge, 0).normalise();
+    this.point.controlMagnitude = controlMagnitude;
+    this.point.cap = this;
 
     this.pair = undefined;
     this.extenders = [];
@@ -16,13 +17,11 @@ class CurveCap {
   }
 
   setDepthOverlap(depth) {
-    this.capPos.setDepthOverlap(depth);
-    this.controlPos.setDepthOverlap(depth);
+    this.point.setDepthOverlap(depth);
   }
 
   setDepthCurvature(depth) {
-    this.capPos.setDepthCurvature(depth);
-    this.controlPos.setDepthCurvature(depth);
+    this.point.setDepthCurvature(depth);
   }
 
   getOppositeCap() {
@@ -31,20 +30,16 @@ class CurveCap {
   }
 
   getOverlapAngleToOppositeCap() {
-    return Math.atan((this.getOppositeCap().capPos.depthOverlap - this.capPos.depthOverlap) / this.curve.estLength);
+    return Math.atan((this.getOppositeCap().point.depthOverlap - this.point.depthOverlap) / this.curve.estLength);
   }
 
   getCurvatureAngleToOppositeCap() {
-    return Math.atan((this.getOppositeCap().capPos.depthCurvature - this.capPos.depthCurvature) / this.curve.estLength);
+    return Math.atan((this.getOppositeCap().point.depthCurvature - this.point.depthCurvature) / this.curve.estLength);
   }
 
-  angleControlPos(depthAngle, curvatureAngle) {
-    const depth = Math.sin(depthAngle) * this.controlMagnitude;
-    const length = Math.cos(depthAngle) * this.controlMagnitude;
-
-    this.controlPos = new Point(this.capPos.x, this.capPos.y);
-    this.controlPos.minusEq(getEdgePoint(this.capPos.edge, 0).normalise().multiplyEq(length));
-    this.controlPos.setDepthOverlap(this.capPos.depthOverlap + depth);
+  angleControlPos(angleOverlap, angleCurvature) {
+    this.point.angleOverlap = angleOverlap;
+    this.point.angleCurvature = angleCurvature;
   }
 }
 

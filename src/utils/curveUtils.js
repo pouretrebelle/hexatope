@@ -3,15 +3,15 @@ export const matchCurves = (curves) => {
   curves.forEach((primary) => {
 
     // cap positions don't include hexagon position so we need to add it
-    const primaryStartPos = primary.start.capPos.plusNew(primary.hexagonPosition);
-    const primaryEndPos = primary.end.capPos.plusNew(primary.hexagonPosition);
+    const primaryStartPos = primary.start.point.plusNew(primary.hexagonPosition);
+    const primaryEndPos = primary.end.point.plusNew(primary.hexagonPosition);
 
     curves.forEach((compare) => {
       // move on if it's the same curve
       if (primary == compare) return;
 
-      const compareStartPos = compare.start.capPos.plusNew(compare.hexagonPosition);
-      const compareEndPos = compare.end.capPos.plusNew(compare.hexagonPosition);
+      const compareStartPos = compare.start.point.plusNew(compare.hexagonPosition);
+      const compareEndPos = compare.end.point.plusNew(compare.hexagonPosition);
 
       // if inernal it's an aligner and not an extender
       const internal = (primary.hexagonPosition == compare.hexagonPosition);
@@ -86,10 +86,10 @@ const averageCapDepth = (caps) => {
   capGroups.forEach(caps => {
     // sum up the depth of all of the caps in the group and divide by quantity
     const depthOverlap = caps.reduce((sum, cap) => (
-      sum + cap.capPos.depthOverlap
+      sum + cap.point.depthOverlap
     ), 0) / caps.length;
     const depthCurvature = caps.reduce((sum, cap) => (
-      sum + cap.capPos.depthCurvature
+      sum + cap.point.depthCurvature
     ), 0) / caps.length;
 
     // set the depth for each cap
@@ -102,29 +102,29 @@ const smoothCurves = (caps, smoothDegree) => {
 
   caps.forEach(cap => {
     // get depth of other end of the curve
-    const alignEndDepthOverlap = cap.getOppositeCap().capPos.depthOverlap;
-    const alignEndDepthCurvature = cap.getOppositeCap().capPos.depthCurvature;
+    const alignEndDepthOverlap = cap.getOppositeCap().point.depthOverlap;
+    const alignEndDepthCurvature = cap.getOppositeCap().point.depthCurvature;
 
     // get average depth of other end of all extenders
     const hasExtenders = !!cap.extenders.length;
-    const extenderEndDepthOverlaps = cap.extenders.map(ext => ext.getOppositeCap().capPos.depthOverlap);
+    const extenderEndDepthOverlaps = cap.extenders.map(ext => ext.getOppositeCap().point.depthOverlap);
     const extenderEndDepthOverlapTotal = extenderEndDepthOverlaps.reduce((a, b) => (a + b), 0);
     let extenderEndDepthOverlapAverage = hasExtenders ? extenderEndDepthOverlapTotal / extenderEndDepthOverlaps.length : 0;
 
-    const extenderEndDepthCurvatures = cap.extenders.map(ext => ext.getOppositeCap().capPos.depthCurvature);
+    const extenderEndDepthCurvatures = cap.extenders.map(ext => ext.getOppositeCap().point.depthCurvature);
     const extenderEndDepthCurvatureTotal = extenderEndDepthCurvatures.reduce((a, b) => (a + b), 0);
     let extenderEndDepthCurvatureAverage = hasExtenders ? extenderEndDepthCurvatureTotal / extenderEndDepthCurvatures.length : 0;
 
     // tweak depth using the smooth degree
     // if there aren't extenders use more of the original
     cap.nextDepthOverlap = hasExtenders ?
-      (0.5 * smoothDegree) * (alignEndDepthOverlap + extenderEndDepthOverlapAverage) + (1 - smoothDegree) * cap.capPos.depthOverlap
+      (0.5 * smoothDegree) * (alignEndDepthOverlap + extenderEndDepthOverlapAverage) + (1 - smoothDegree) * cap.point.depthOverlap
       :
-      (0.5 * smoothDegree * alignEndDepthOverlap) + (1 - smoothDegree * 0.5) * cap.capPos.depthOverlap;
+      (0.5 * smoothDegree * alignEndDepthOverlap) + (1 - smoothDegree * 0.5) * cap.point.depthOverlap;
     cap.nextDepthCurvature = hasExtenders ?
-      (0.5 * smoothDegree) * (alignEndDepthCurvature + extenderEndDepthCurvatureAverage) + (1 - smoothDegree) * cap.capPos.depthCurvature
+      (0.5 * smoothDegree) * (alignEndDepthCurvature + extenderEndDepthCurvatureAverage) + (1 - smoothDegree) * cap.point.depthCurvature
       :
-      (0.5 * smoothDegree * alignEndDepthCurvature) + (1 - smoothDegree * 0.5) * cap.capPos.depthCurvature;
+      (0.5 * smoothDegree * alignEndDepthCurvature) + (1 - smoothDegree * 0.5) * cap.point.depthCurvature;
   });
 
   // update real depth after all have been morphed
