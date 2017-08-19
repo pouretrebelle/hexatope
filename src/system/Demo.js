@@ -26,6 +26,7 @@ class Demo {
     // (fov, aspect, near, far)
     this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
     this.camera.position.z = UIStore.windowHeight * 0.05;
+    this.scene.add(this.camera);
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
@@ -44,19 +45,19 @@ class Demo {
 
     // lights
     const light1 = new THREE.PointLight(0xffffff, 0.6);
-    light1.position.set(50, 20, -25);
-    this.scene.add(light1);
+    light1.position.set(50, 20, -25 - UIStore.windowHeight * 0.05);
+    this.camera.add(light1);
     const light2 = new THREE.PointLight(0xffffff, 0.3);
-    light2.position.set(-50, -20, -15);
-    this.scene.add(light2);
+    light2.position.set(-50, -20, -15 - UIStore.windowHeight * 0.05);
+    this.camera.add(light2);
     const light3 = new THREE.PointLight(0xffffff, 0.6);
-    light3.position.set(-15, 50, 50);
-    this.scene.add(light3);
+    light3.position.set(-15, 50, 50 - UIStore.windowHeight * 0.05);
+    this.camera.add(light3);
     const light4 = new THREE.PointLight(0xffffff, 0.3);
-    light4.position.set(15, -50, 50);
-    this.scene.add(light4);
+    light4.position.set(15, -50, 50 - UIStore.windowHeight * 0.05);
+    this.camera.add(light4);
     const ambLight = new THREE.AmbientLight(0xffffff);
-    this.scene.add(ambLight);
+    this.camera.add(ambLight);
 
     // load env map for reflection
     // images by Paul Debevec from http://www.pauldebevec.com/Probes/
