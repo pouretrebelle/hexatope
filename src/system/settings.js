@@ -18,6 +18,7 @@ export default {
   demoBackgroundColor: 0xeeeeee,
   tubeThickness: 5,
   cameraRotateSpeed: 5,
+  cameraDampingFactor: 0.2,
 };
 
 export const demoModelSettings = {

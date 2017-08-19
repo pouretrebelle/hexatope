@@ -30,8 +30,11 @@ class Demo {
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
+    this.controls.enableDamping = true;
+    this.controls.dampingFactor = settings.cameraDampingFactor;
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = settings.cameraRotateSpeed;
+    this.controls.autoRotateSpeed = settings.cameraRotateSpeed * settings.cameraDampingFactor;
+    this.controls.rotateSpeed = settings.cameraDampingFactor;
 
     // renderer
     this.renderer = new THREE.WebGLRenderer({
@@ -137,7 +140,8 @@ class Demo {
   }
 
   render = () => {
-    if (!UIStore.isMouseOverDemo) this.controls.update();
+    this.controls.autoRotate = !UIStore.isMouseOverDemo;
+    this.controls.update();
 
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
