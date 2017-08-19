@@ -21,7 +21,7 @@ class Canvas extends Component {
       () => [
         UIStore.mouseY,
         UIStore.mouseX,
-        UIStore.isMouseDown,
+        UIStore.isMouseDownOverCanvas,
       ],
       () => this.renderCanvas(),
     );
