@@ -35,6 +35,8 @@ class Demo {
     this.controls.autoRotate = true;
     this.controls.autoRotateSpeed = settings.cameraRotateSpeed * settings.cameraDampingFactor;
     this.controls.rotateSpeed = settings.cameraDampingFactor;
+    this.controls.minDistance = settings.cameraMinDistance;
+    this.controls.maxDistance = settings.cameraMaxDistance;
 
     // renderer
     this.renderer = new THREE.WebGLRenderer({

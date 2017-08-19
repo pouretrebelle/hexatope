@@ -19,6 +19,8 @@ export default {
   tubeThickness: 5,
   cameraRotateSpeed: 5,
   cameraDampingFactor: 0.2,
+  cameraMinDistance: 5,
+  cameraMaxDistance: 80,
 };
 
 export const demoModelSettings = {
