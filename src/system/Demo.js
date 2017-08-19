@@ -83,11 +83,11 @@ class Demo {
 
   generateMesh(modelSettings) {
     let geometry = new THREE.Geometry();
-    const data = this.system.getHexagonData();
+    const curves = this.system.getCurvesData();
     const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
 
     // draw each curve as a tube
-    data.curves.forEach(curve => {
+    curves.forEach(curve => {
       const bezier = new THREE.CubicBezierCurve3(
         this.getVec3PointMerge(curve.hexagonPosition, curve.start.pos, modelSettings.scale, curve.start.posZ),
         this.getVec3PointMerge(curve.hexagonPosition, curve.start.controlPos, modelSettings.scale),
@@ -96,14 +96,17 @@ class Demo {
       );
       const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
       geometry.merge(tube);
-    });
 
-    // draw each cap as a sphere
-    data.caps.forEach(cap => {
-      const point = this.getVec3PointMerge(cap.hexagonPosition, cap.pos, modelSettings.scale);
-      const sphere = new THREE.SphereGeometry(tubeRadius*modelSettings.scale);
-      sphere.translate(point.x, point.y, point.z);
-      geometry.merge(sphere);
+      // check whether the caps need capping
+      [curve.start, curve.end].forEach((cap) => {
+        if (cap.extenders.length === 0) {
+          // if it has no extenders it needs a sphere at the end
+          const point = this.getVec3PointMerge(curve.hexagonPosition, cap.pos, modelSettings.scale, cap.posZ);
+          const sphere = new THREE.SphereGeometry(tubeRadius * modelSettings.scale);
+          sphere.translate(point.x, point.y, point.z);
+          geometry.merge(sphere);
+        }
+      });
     });
 
     // center geometry in viewport

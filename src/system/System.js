@@ -106,9 +106,8 @@ class System {
     this.canvas.draw();
   }
 
-  getHexagonData() {
+  getCurvesData() {
     let curves = [];
-    let caps = [];
 
     for (let x = 0; x < this.columns; x++) {
       for (let y = 0; y < this.rows; y++) {
@@ -132,33 +131,13 @@ class System {
     }
 
     if (curves.length) {
-
       // set relations between curves
       curves = matchCurves(curves);
-
       // smooth over the depths
       curves = configureDepth(curves);
-
     }
 
-    // search for curves that need round caps
-    curves.forEach((curve) => {
-      // for the start and end of each curve
-      [curve.start, curve.end].forEach((cap) => {
-        // if it has no extenders it needs capping
-        if (cap.extenders.length === 0) {
-          caps.push({
-            pos: cap.pos,
-            hexagonPosition: curve.hexagonPosition,
-          });
-        }
-      });
-    });
-
-    return {
-      curves,
-      caps,
-    };
+    return curves;
   }
 
 }
