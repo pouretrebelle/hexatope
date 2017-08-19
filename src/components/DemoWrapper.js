@@ -5,6 +5,8 @@ import { reaction } from 'mobx';
 import UIStore from 'stores/UIStore';
 import SettingsStore from 'stores/SettingsStore';
 
+import styles from './DemoWrapper.sass';
+
 class Demo extends Component {
 
   constructor(props) {
@@ -76,7 +78,7 @@ class Demo extends Component {
       <div>
         <canvas
           ref={element => this.demoElement = element}
-          style={{ cursor: 'pointer' }}
+          className={styles.demoCanvas}
         />
         <button
           onClick={this.onDownloadButtonClicked}

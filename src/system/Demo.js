@@ -21,7 +21,7 @@ class Demo {
 
     // scene
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(settings.demoBackgroundColor);
+    // this.scene.background = new THREE.Color(settings.demoBackgroundColor);
 
     // camera
     // (fov, aspect, near, far)
@@ -37,6 +37,7 @@ class Demo {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
+      alpha: true,
     });
     this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 
