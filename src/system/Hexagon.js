@@ -29,6 +29,7 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
+    this.editMode = false;
 
     // chose random layout seed
     // regenerated when hex goes from inactive to active
@@ -37,7 +38,6 @@ class Hexagon {
     this.initialLayoutSeed = this.layoutSeed;
     this.layoutWaitTimer = undefined;
     this.layoutProgressionTimer = undefined;
-    this.isLongHovering = false;
 
     this.curves = [];
   }
@@ -145,7 +145,7 @@ class Hexagon {
 
   initialiseLayoutProgression = () => {
     // return if already initialised, aka nailed it
-    if (this.isLongHovering) return;
+    if (this.editMode) return;
 
     // reset wait timer
     this.layoutWaitTimer = undefined;
@@ -161,7 +161,7 @@ class Hexagon {
 
   cancelLayoutProgression = () => {
     // remove state, oh no
-    this.isLongHovering = false;
+    this.editMode = false;
 
     // reset current layout to initial
     this.layoutSeed = this.initialLayoutSeed;
@@ -190,7 +190,7 @@ class Hexagon {
     }
 
     // set hovering now and not at the start of timer
-    this.isLongHovering = true;
+    this.editMode = true;
 
     const formation = this.getFormation();
     if (formation > 0) {
@@ -381,7 +381,7 @@ class Hexagon {
     return false;
   }
 
-  getLayout(formation) {
+  getLayout(formation, seed) {
     // if formation not passed in go get it
     formation = formation || this.getFormation();
 
@@ -389,32 +389,39 @@ class Hexagon {
     const layouts = curveLayouts[formation].layouts;
 
     // chose layout based on seed
-    const layoutChoice = Math.floor(layouts.length * this.layoutSeed);
+    const layoutChoice = Math.floor(layouts.length * seed);
 
     return layouts[layoutChoice];
   }
 
   addCurves(formation, edgeOrder) {
-    const layout = this.getLayout(formation);
+    let layouts = [this.getLayout(formation, this.layoutSeed)];
+    // if editMode we want to show the initial layout curves but faded
+    if (this.editMode) {
+      layouts.push(this.getLayout(formation, this.initialLayoutSeed));
+    }
 
     // loop through chosen layout's pairs
-    layout.pairs.forEach(pair => {
-      // use order array to map edges if it exists
-      // otherwise just use the numbers
-      const start = edgeOrder ? edgeOrder[pair[0]] : pair[0];
-      const end = edgeOrder ? edgeOrder[pair[1]] : pair[1];
-      this.addCurveBetweenEdges({
-        edge1: start,
-        edge2: end,
-        edge1DepthPush: getPushDepth(layout, pair[0]),
-        edge1DepthForce: getForceDepth(layout, pair[0]),
-        edge2DepthPush: getPushDepth(layout, pair[1]),
-        edge2DepthForce: getForceDepth(layout, pair[1]),
+    layouts.forEach((layout, i) => {
+      layout.pairs.forEach(pair => {
+        // use order array to map edges if it exists
+        // otherwise just use the numbers
+        const start = edgeOrder ? edgeOrder[pair[0]] : pair[0];
+        const end = edgeOrder ? edgeOrder[pair[1]] : pair[1];
+        this.addCurveBetweenEdges({
+          edge1: start,
+          edge2: end,
+          drawFaded: (i === 1) ? true : false,
+          edge1DepthPush: getPushDepth(layout, pair[0]),
+          edge1DepthForce: getForceDepth(layout, pair[0]),
+          edge2DepthPush: getPushDepth(layout, pair[1]),
+          edge2DepthForce: getForceDepth(layout, pair[1]),
+        });
       });
     });
   }
 
-  addCurveBetweenEdges({ edge1, edge2, ...depths }) {
+  addCurveBetweenEdges({ edge1, edge2, drawFaded, ...depths }) {
     // called by planCurves()
     // used to determine whether they should be single, double, or diverging
     // also used to set curve offsets for inner/outer lines
@@ -473,6 +480,12 @@ class Hexagon {
     if (curve2) {
       curve1.setPair(curve2);
       curve2.setPair(curve1);
+    }
+
+    // set fadedness of each curve
+    if (drawFaded) {
+      curve1.drawFaded = true;
+      if (curve2) curve2.drawFaded = true;
     }
 
     // add to curves array

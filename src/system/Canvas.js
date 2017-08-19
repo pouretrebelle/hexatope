@@ -1,6 +1,6 @@
 import Vector2 from 'utils/Vector2';
 import settings from './settings';
-import { drawFilledHexagon, drawOutlinedHexagon } from 'utils/hexagonUtils';
+import { drawFilledHexagon } from 'utils/hexagonUtils';
 
 class Canvas {
   constructor(system) {
@@ -89,16 +89,10 @@ class Canvas {
   }
 
   drawMouseHexagon() {
-    this.c.fillStyle = settings.mouseColor;
+    this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
     const target = this.system.mouseTargetHex;
     if (target) {
       drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
-
-      if (target.isLongHovering) {
-        this.c.strokeStyle = settings.focusColor;
-        this.c.lineWidth = settings.hexFocusLineWeight;
-        drawOutlinedHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
-      }
     }
   }
 
@@ -127,11 +121,12 @@ class Canvas {
     const startX = hex.layoutPos.x * this.pixelRatio * settings.hexRadius;
     const startY = hex.layoutPos.y * this.pixelRatio * settings.hexRadius;
     this.c.translate(startX, startY);
-    this.c.strokeStyle = '#000';
     const scalar = this.pixelRatio * settings.hexRadius;
     this.c.lineWidth = settings.hexLineWeight * this.pixelRatio;
 
-    hex.curves.forEach(({ start, end }) => {
+    hex.curves.forEach((curve) => {
+      const { start, end } = curve;
+      this.c.strokeStyle = curve.drawFaded ? settings.lineColorFaded : settings.lineColor;
       this.c.beginPath();
       this.c.moveTo(start.pos.x * scalar, start.pos.y * scalar);
       this.c.bezierCurveTo(
