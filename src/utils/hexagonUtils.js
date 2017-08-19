@@ -1,4 +1,4 @@
-import Point from 'system/Point';
+import Vector2 from 'utils/Vector2';
 import settings from 'system/settings';
 
 export const drawFilledHexagon = (c, pixelPos, pixelRatio) => {
@@ -31,7 +31,7 @@ export const getEdgePoint = (i, offset) => {
   // if (offset == 0) middle of edge
   // if (offset == -1) anti-clockwise from middle edge
   const halfHexHeight = Math.sqrt(3) / 2;
-  let point = new Point(offset * settings.hexDoubleLineOffset / 2, -halfHexHeight);
+  let point = new Vector2(offset * settings.hexDoubleLineOffset / 2, -halfHexHeight);
   point.rotate(i * Math.PI / 3);
   point.edge = i;
   return point;
