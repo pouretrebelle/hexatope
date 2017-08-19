@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import styles from 'styles/layout.css';
 
 import System from 'system/System';
-import Settings from 'components/Settings';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
 
@@ -20,9 +19,6 @@ class App extends Component {
   render() {
     return (
       <div className={styles.content}>
-        <Settings
-          system={this.system}
-        />
         <CanvasWrapper
           system={this.system}
         />

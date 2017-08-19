@@ -1,0 +1,42 @@
+.settings
+  box-sizing: border-box
+  position: absolute
+  bottom: 5vh
+  right: 0
+  width: 100%
+  text-align: center
+  opacity: 0
+  transition: opacity 0.3s linear
+
+.range
+  -webkit-appearance: none
+  width: 15rem
+  max-width: 20vw
+  display: block
+  margin: 1rem auto
+  background: transparent
+  border-radius: 1.3px
+  transition: background 0.2s linear
+  background: rgba(white, 0.5)
+  border: 1px solid rgba(gainsboro, 0.6)
+  &:hover
+    background: rgba(white, 0.8)
+  &:focus
+    outline: none
+    background: rgba(snow, 0.8)
+  &::-webkit-slider-runnable-track
+    width: 100%
+    height: 1rem
+    cursor: pointer
+  &::-webkit-slider-thumb
+    cursor: pointer
+    -webkit-appearance: none
+    margin-top: -0.25rem
+    height: 1.5rem
+    width: 0.5rem
+    border-radius: 3px
+    background: whitesmoke
+    border: 1px solid silver
+
+.settingsVisible
+  opacity: 1

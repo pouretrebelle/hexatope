@@ -4,6 +4,7 @@ import { reaction } from 'mobx';
 
 import UIStore from 'stores/UIStore';
 import SettingsStore from 'stores/SettingsStore';
+import DemoSettings from 'components/DemoSettings';
 
 import styles from './DemoWrapper.sass';
 
@@ -75,11 +76,9 @@ class Demo extends Component {
 
   render() {
     return (
-      <div>
-        <canvas
-          ref={element => this.demoElement = element}
-          className={styles.demoCanvas}
-        />
+      <div className={styles.demoWrapper}>
+        <DemoSettings />
+        <canvas ref={element => this.demoElement = element} />
         <button
           onClick={this.onDownloadButtonClicked}
           style={{ position: 'absolute', right: 0, bottom: 0 }}

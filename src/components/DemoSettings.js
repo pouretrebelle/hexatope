@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
-import styles from './Settings.sass';
+import styles from './DemoSettings.sass';
 
-@inject('SettingsStore') @observer
-class Settings extends Component {
+@inject('SettingsStore', 'UIStore') @observer
+class DemoSettings extends Component {
 
   constructor(props) {
     super(props);
@@ -22,13 +23,20 @@ class Settings extends Component {
   }
 
   render() {
+    const { SettingsStore, UIStore } = this.props;
+
+    const wrapperClasses = classNames({
+      [styles.settings]: true,
+      [styles.settingsVisible]: UIStore.isMouseOverDemo,
+    });
+
     return (
-      <div className={styles.settings}>
+      <div className={wrapperClasses}>
         <input
           type={'range'}
           className={styles.range}
           onChange={this.onDepthOverlapChanged}
-          value={this.props.SettingsStore.depthOverlapScalar}
+          value={SettingsStore.depthOverlapScalar}
           min={'0'}
           max={'1'}
           step={'any'}
@@ -37,7 +45,7 @@ class Settings extends Component {
           type={'range'}
           className={styles.range}
           onChange={this.onDepthCurvatureChanged}
-          value={this.props.SettingsStore.depthCurvatureScalar}
+          value={SettingsStore.depthCurvatureScalar}
           min={'0'}
           max={'1'}
           step={'any'}
@@ -47,9 +55,9 @@ class Settings extends Component {
   }
 }
 
-Settings.propTypes = {
-  system: PropTypes.object,
+DemoSettings.propTypes = {
   SettingsStore: PropTypes.object,
+  UIStore: PropTypes.object,
 };
 
-export default Settings;
+export default DemoSettings;
