@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import { reaction } from 'mobx';
 
 import UIStore from 'stores/UIStore';
+import CanvasSettings from './CanvasSettings';
+
+import styles from './CanvasWrapper.sass';
 
 class Canvas extends Component {
 
@@ -58,10 +61,10 @@ class Canvas extends Component {
     this.renderCanvas();
 
     return (
-      <div>
+      <div className={styles.canvasWrapper}>
+        <CanvasSettings system={this.props.system} />
         <canvas
           ref={element => this.canvasElement = element}
-          style={{ cursor: 'crosshair' }}
           onMouseDown={this.startDrawing}
           onTouchStart={this.startDrawing}
           onMouseOut={this.endDrawing}

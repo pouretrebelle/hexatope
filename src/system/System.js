@@ -140,6 +140,17 @@ class System {
     return curves;
   }
 
+  clearHexagons() {
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.columns; x++) {
+        this.hexagons[x][y].clear();
+      }
+    }
+
+    this.demo.updateCurves();
+    this.canvas.draw();
+  }
+
 }
 
 export default System;

@@ -92,6 +92,15 @@ class Hexagon {
     this.neighbours = n;
   }
 
+  clear() {
+    // reset active state
+    this.nextActive = 0;
+    this.active = 0;
+
+    // force replan
+    this.update();
+  }
+
   update() {
     // ransomise layout if hex is becoming active
     if (!this.active && this.nextActive) {
