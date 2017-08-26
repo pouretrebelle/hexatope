@@ -9,15 +9,22 @@ class CanvasSettings extends Component {
     super(props);
   }
 
-  onClearButtonPressed = () => {
+  onClearButtonClicked = () => {
     this.props.system.clearHexagons();
+  }
+
+  onDownloadButtonClicked = () => {
+    this.props.system.canvas.downloadSVG();
   }
 
   render() {
     return (
       <div className={styles.settings}>
-        <button onClick={this.onClearButtonPressed}>
+        <button onClick={this.onClearButtonClicked}>
           Clear
+        </button>
+        <button onClick={this.onDownloadButtonClicked}>
+          Download SVG
         </button>
       </div>
     );
