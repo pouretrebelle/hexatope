@@ -1,3 +1,5 @@
+import C2S from 'canvas2svg';
+import { saveAs } from 'file-saver';
 import Vector2 from 'utils/Vector2';
 import settings from './settings';
 import { drawFilledHexagon } from 'utils/hexagonUtils';
@@ -78,11 +80,7 @@ class Canvas {
     if (settings.drawMouse && this.isMouseInside) this.drawMouseHexagon();
 
     if (settings.drawCurves) {
-      for (let y = 0; y < this.system.rows; y++) {
-        for (let x = 0; x < this.system.columns; x++) {
-          this.drawHexCurves(this.system.hexagons[x][y]);
-        }
-      }
+      this.drawAllHexCurves(this.c);
     }
 
     this.c.restore();
@@ -113,23 +111,31 @@ class Canvas {
     drawFilledHexagon(this.c, hex.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
   }
 
-  drawHexCurves(hex) {
+  drawAllHexCurves(c) {
+    for (let y = 0; y < this.system.rows; y++) {
+      for (let x = 0; x < this.system.columns; x++) {
+        this.drawHexCurves(this.system.hexagons[x][y], c);
+      }
+    }
+  }
+
+  drawHexCurves(hex, c) {
     // don't do anything if it's not in an active state
     if (!hex.active) return;
 
-    this.c.save();
+    c.save();
     const startX = hex.layoutPos.x * this.pixelRatio * settings.hexRadius;
     const startY = hex.layoutPos.y * this.pixelRatio * settings.hexRadius;
-    this.c.translate(startX, startY);
+    c.translate(startX, startY);
     const scalar = this.pixelRatio * settings.hexRadius;
-    this.c.lineWidth = settings.hexLineWeight * this.pixelRatio;
+    c.lineWidth = settings.hexLineWeight * this.pixelRatio;
 
     hex.curves.forEach((curve) => {
       const { start, end } = curve;
-      this.c.strokeStyle = curve.drawFaded ? settings.lineColorFaded : settings.lineColor;
-      this.c.beginPath();
-      this.c.moveTo(start.pos.x * scalar, start.pos.y * scalar);
-      this.c.bezierCurveTo(
+      c.strokeStyle = curve.drawFaded ? settings.lineColorFaded : settings.lineColor;
+      c.beginPath();
+      c.moveTo(start.pos.x * scalar, start.pos.y * scalar);
+      c.bezierCurveTo(
         start.controlPos.x * scalar,
         start.controlPos.y * scalar,
         end.controlPos.x * scalar,
@@ -137,11 +143,28 @@ class Canvas {
         end.pos.x * scalar,
         end.pos.y * scalar,
       );
-      this.c.stroke();
-      this.c.closePath();
+      c.stroke();
+      c.closePath();
     });
 
-    this.c.restore();
+    c.restore();
+  }
+
+  downloadSVG() {
+    // create new svg canvas context
+    let svgC = new C2S(this.externalWidth * this.pixelRatio, this.externalHeight * this.pixelRatio);
+
+    // draw all the hex curves to this context
+    this.drawAllHexCurves(svgC);
+
+    // create blob of svg content
+    const blob = new Blob(
+      [svgC.getSerializedSvg()],
+      {
+        type: 'text/plain',
+      }
+    );
+    saveAs(blob, 'hexatope.svg');
   }
 }
 
