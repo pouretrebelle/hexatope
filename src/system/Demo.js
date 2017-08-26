@@ -152,8 +152,12 @@ class Demo {
   downloadSTL() {
     const exporter = new STLExporter();
     const exportMesh = this.generateMesh(exportModelSettings);
-    const stlString = exporter.parse(exportMesh);
-    const blob = new Blob([stlString], { type: 'text/plain' });
+    const blob = new Blob(
+      [exporter.parse(exportMesh)],
+      {
+        type: 'application/sla',
+      }
+    );
     saveAs(blob, 'hexatope.stl');
   }
 }
