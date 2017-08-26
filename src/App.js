@@ -10,6 +10,8 @@ import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
 import DownloadButtons from 'components/DownloadButtons';
 
+import wall from './wall.jpg';
+
 @inject('UIStore') @observer
 class App extends Component {
 
@@ -21,6 +23,14 @@ class App extends Component {
   render() {
     return (
       <div className={styles.content}>
+        <img src={wall} style={{
+          pointerEvents: 'none',
+          position: 'absolute',
+          zIndex: 100,
+          width: '50%',
+          height: 'auto',
+          mixBlendMode: 'darken',
+        }}/>
         <CanvasWrapper
           system={this.system}
         />

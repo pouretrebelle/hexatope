@@ -62,7 +62,7 @@ class Demo extends Component {
 
   renderDemo = () => {
     if (!this.props.system || !this.props.system.demo) return;
-    this.props.system.demo.updateCurves();
+    // this.props.system.demo.updateCurves();
   }
 
   resizeDemo = () => {

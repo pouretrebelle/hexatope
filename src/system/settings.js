@@ -1,5 +1,5 @@
 export default {
-  hexRadius: 30,
+  hexRadius: 20,
   hexLineWeight: 2,
   hexDoubleLineOffset: 0.3,
   hexMargin: 4,
