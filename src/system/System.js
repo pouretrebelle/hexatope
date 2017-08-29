@@ -5,20 +5,37 @@ import Hexagon from './Hexagon';
 import { matchCurves, configureDepth } from 'utils/curveUtils';
 
 class System {
-  constructor({ windowWidth, windowHeight }) {
+  constructor(UIStore) {
     this.hexagons = [];
-    this.columns = Math.ceil(windowWidth / 2 / (settings.hexRadius * 3));
-    this.rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
+    this.columns = undefined;
+    this.rows = undefined;
     this.canvas = new Canvas(this);
     this.demo = new Demo(this);
     this.mouseTargetHex = undefined;
     this.mouseTargetHexLast = undefined;
     this.isDrawing = false;
     this.hasChange = false;
-    this.setup();
+
+    this.setup(UIStore);
   }
 
-  setup() {
+  setup({ windowWidth, windowHeight }) {
+
+    let columns, rows;
+    // determnine size by width if width is bigger
+    if (windowWidth / 2 > windowHeight) {
+      columns = Math.ceil(windowWidth / 2 / (settings.hexRadius * 3));
+      rows = Math.ceil(windowWidth / 2 / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
+    }
+    // otherwise determine it by height
+    else {
+      columns = Math.ceil(windowHeight / (settings.hexRadius * 3));
+      rows = Math.ceil(windowHeight / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
+    }
+    // make sure they're both odd for symmetry's sake
+    this.columns = (columns % 2) ? columns : columns + 1;
+    this.rows = (rows % 2) ? rows : rows + 1;
+
     // initialise 2D array of hexagons
     for (let x = 0; x < this.columns; x++) {
       this.hexagons.push([]);
