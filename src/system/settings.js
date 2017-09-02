@@ -12,6 +12,8 @@ export default {
   gridColor: '#fafafa',
   mouseColor: '#e5e6e8',
   mouseActiveColor: '#e0e1e2',
+  mouseEraserColor: '#ffffff',
+  mouseEraserActiveColor: 'rgba(249, 250, 251, 0.8)',
   inactiveColor: '#ffffff',
   activeColor: '#f6f7f8',
   doubleActiveColor: '#eaebed',

@@ -3,6 +3,8 @@ import { saveAs } from 'file-saver';
 import Vector2 from 'utils/Vector2';
 import settings from './settings';
 import { drawFilledHexagon } from 'utils/hexagonUtils';
+import SettingsStore from 'stores/SettingsStore';
+import * as MODES from 'constants/toolModes';
 
 class Canvas {
   constructor(system) {
@@ -83,11 +85,31 @@ class Canvas {
       this.drawAllHexCurves(this.c);
     }
 
+    // draw another hexagon over mouse position if in eraser mode to fade out lines
+    if (settings.drawMouse &&
+        this.isMouseInside &&
+        SettingsStore.toolMode === MODES.ERASER_MODE) {
+      this.drawMouseHexagonOverlay();
+    }
+
     this.c.restore();
   }
 
   drawMouseHexagon() {
-    this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
+    if (SettingsStore.toolMode === MODES.PENCIL_MODE) {
+      this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
+    }
+    else {
+      this.c.fillStyle = this.system.isDrawing ? settings.mouseEraserActiveColor : settings.mouseEraserColor;
+    }
+    const target = this.system.mouseTargetHex;
+    if (target) {
+      drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
+    }
+  }
+
+  drawMouseHexagonOverlay() {
+    this.c.fillStyle = settings.mouseEraserActiveColor;
     const target = this.system.mouseTargetHex;
     if (target) {
       drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);

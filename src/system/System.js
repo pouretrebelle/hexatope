@@ -3,6 +3,8 @@ import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
 import { matchCurves, configureDepth } from 'utils/curveUtils';
+import SettingsStore from 'stores/SettingsStore';
+import * as MODES from 'constants/toolModes';
 
 class System {
   constructor(UIStore) {
@@ -89,16 +91,21 @@ class System {
         this.mouseTargetHexLast !== this.mouseTargetHex &&
         !this.mouseTargetHex.editMode) {
 
-      // increment and loop on left mouse button
-      if (lastMouseButton == 0) {
+      // increment on left mouse button in pencil mode
+      if (lastMouseButton == 0 &&
+          SettingsStore.toolMode === MODES.PENCIL_MODE &&
+          this.mouseTargetHex.nextActive < 2) {
 
         // update global change value to propagate 3d redraw
         this.hasChanged = true;
 
         this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
       }
-      // decrement on right mouse button
-      else if (lastMouseButton == 2 && this.mouseTargetHex.nextActive > 0) {
+
+      // decrement on right mouse button or in eraser mode
+      else if (
+        (lastMouseButton == 2 || SettingsStore.toolMode === MODES.ERASER_MODE) &&
+        this.mouseTargetHex.nextActive > 0) {
 
         // update global change value to propagate 3d redraw
         // only if it's actually removing lines

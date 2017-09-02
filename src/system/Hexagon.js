@@ -4,7 +4,9 @@ import { getEdgePoint, getControlMagnitudeAdjacent, getControlMagnitudeWide } fr
 import { getPushDepth, getForceDepth } from 'utils/curveUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
+import SettingsStore from 'stores/SettingsStore';
 import { LAYOUT_PROGRESSION_DELAY, LAYOUT_PROGRESSION_INTERVAL } from 'constants/timing';
+import * as MODES from 'constants/toolModes';
 import Curve from './Curve';
 
 class Hexagon {
@@ -122,10 +124,12 @@ class Hexagon {
     const mouseIsInside = (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
 
     // init if it is inside
+    // and we're in go mode
     // and it's active
     // and not in the process at all
     // and it's not already the hovered hexagon
     if (mouseIsInside &&
+        SettingsStore.toolMode == MODES.PENCIL_MODE &&
         this.active &&
         !this.layoutWaitTimer &&
         !this.layoutProgressionTimer &&
