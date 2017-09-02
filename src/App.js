@@ -27,14 +27,11 @@ class App extends Component {
           pointerEvents: 'none',
           position: 'absolute',
           zIndex: 100,
-          width: '50%',
-          height: 'auto',
+          width: 'auto',
+          height: '100vh',
           mixBlendMode: 'darken',
         }}/>
         <CanvasWrapper
-          system={this.system}
-        />
-        <DemoWrapper
           system={this.system}
         />
         <DownloadButtons
