@@ -31,10 +31,6 @@ class CanvasSettings extends Component {
     this.props.UIStore.canvasHasBeenCleared();
   }
 
-  onDownloadButtonClicked = () => {
-    this.props.system.canvas.downloadSVG();
-  }
-
   render() {
     const { toolMode } = this.props.SettingsStore;
 
@@ -69,9 +65,6 @@ class CanvasSettings extends Component {
             <ClearIcon className={styles.icon} />
           </button>
         </Tooltip>
-        <button className={styles.button} onClick={this.onDownloadButtonClicked}>
-          Download SVG
-        </button>
       </div>
     );
   }

@@ -60,10 +60,6 @@ class Demo extends Component {
     }
   }
 
-  onDownloadButtonClicked = () => {
-    this.props.system.demo.downloadSTL();
-  }
-
   renderDemo = () => {
     if (!this.props.system || !this.props.system.demo) return;
     this.props.system.demo.updateCurves();
@@ -79,12 +75,6 @@ class Demo extends Component {
       <div className={styles.demoWrapper}>
         <DemoSettings system={this.props.system} />
         <canvas ref={element => this.demoElement = element} />
-        <button
-          onClick={this.onDownloadButtonClicked}
-          style={{ position: 'absolute', right: 0, bottom: 0 }}
-        >
-          Download STL
-        </button>
       </div>
     );
   }

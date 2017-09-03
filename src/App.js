@@ -8,6 +8,7 @@ import styles from 'styles/application.sass';
 import System from 'system/System';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
+import DownloadButtons from 'components/DownloadButtons';
 
 @inject('UIStore') @observer
 class App extends Component {
@@ -24,6 +25,9 @@ class App extends Component {
           system={this.system}
         />
         <DemoWrapper
+          system={this.system}
+        />
+        <DownloadButtons
           system={this.system}
         />
         <Typekit kitId='req1ouh' />
