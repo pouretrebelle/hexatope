@@ -1,5 +1,40 @@
 .settings
   position: absolute
   left: 0
-  bottom: 0
+  bottom: 1rem
   width: 100%
+  text-align: center
+
+.button
+  position: relative
+  cursor: pointer
+  background: none
+  border: 0
+  padding: 0.4rem
+  margin: 0.4rem
+  background: rgba(white, 0.5)
+  border-radius: 3px
+  border: 1px solid gainsboro
+  transition: background 0.2s linear
+  color: silver
+
+.icon
+  width: 1.4rem
+  height: 1.4rem
+  fill: silver
+  transition: fill 0.2s linear
+
+.button:hover
+  background: white
+  .icon
+    fill: slategrey
+
+.button:focus
+  border-color: silver
+  outline: none
+
+.buttonActive
+  border-color: mix(whitesmoke, silver)
+  background: whitesmoke
+  .icon
+    fill: slategrey
