@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import * as MODES from 'constants/toolModes';
 
+import Tooltip from './common/Tooltip';
 import PencilIcon from './icons/PencilIcon';
 import EraserIcon from './icons/EraserIcon';
 import ClearIcon from './icons/ClearIcon';
@@ -44,27 +45,30 @@ class CanvasSettings extends Component {
 
     return (
       <div className={styles.settings}>
-        <button
-          className={buttonClasses(MODES.PENCIL_MODE)}
-          onClick={this.onPencilButtonClicked}
-          title={'draw mode'}
-        >
-          <PencilIcon className={styles.icon} />
-        </button>
-        <button
-          className={buttonClasses(MODES.ERASER_MODE)}
-          onClick={this.onEraserButtonClicked}
-          title={'erase mode'}
-        >
-          <EraserIcon className={styles.icon} />
-        </button>
-        <button
-          className={styles.button}
-          onClick={this.onClearButtonClicked}
-          title={'clear'}
-        >
-          <ClearIcon className={styles.icon} />
-        </button>
+        <Tooltip label={'draw'}>
+          <button
+            className={buttonClasses(MODES.PENCIL_MODE)}
+            onClick={this.onPencilButtonClicked}
+          >
+            <PencilIcon className={styles.icon} />
+          </button>
+        </Tooltip>
+        <Tooltip label={'erase'}>
+          <button
+            className={buttonClasses(MODES.ERASER_MODE)}
+            onClick={this.onEraserButtonClicked}
+          >
+            <EraserIcon className={styles.icon} />
+          </button>
+        </Tooltip>
+        <Tooltip label={'clear'}>
+          <button
+            className={styles.button}
+            onClick={this.onClearButtonClicked}
+          >
+            <ClearIcon className={styles.icon} />
+          </button>
+        </Tooltip>
         <button className={styles.button} onClick={this.onDownloadButtonClicked}>
           Download SVG
         </button>

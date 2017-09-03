@@ -1,0 +1,41 @@
+@import '~styles/variables/typography'
+
+.tooltipWrapper
+  position: relative
+  display: inline-block
+
+.tooltip
+  position: absolute
+  opacity: 0
+  pointer-events: none
+  user-select: none
+  left: 50%
+  bottom: 100%
+  min-width: 60px
+  max-width: 200px
+  padding: 0.5rem 1rem
+  transform: translate(-50%, 0)
+  background: rgba(whitesmoke, 0.8)
+  border: 1px solid rgba(lightgrey, 0.8)
+  border-radius: 4px
+  transition: opacity 0.3s ease-out, transform 0.4s ease-out
+  text-transform: uppercase
+  font-weight: $font-weight-heavy
+  font-size: 0.75rem
+
+.tooltip:before
+  content: ''
+  display: block
+  position: absolute
+  top: 100%
+  left: 50%
+  width: 0
+  height: 0
+  margin-left: -0.5rem
+  border-style: solid
+  border-width: 0.5rem 0.5rem 0
+  border-color: rgba(lightgrey, 0.8) transparent
+
+.tooltipWrapper:hover .tooltip
+  opacity: 1
+  transform: translate(-50%, -1rem)
