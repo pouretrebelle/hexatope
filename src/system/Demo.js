@@ -87,6 +87,9 @@ class Demo {
       envMapIntensity: 1,
     });
 
+    this.ghostMaterial = this.material.clone();
+    this.ghostMaterial.metalness = 0.6;
+
     // initialise render loop
     this.render();
   }
@@ -130,8 +133,10 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.end.pos, modelSettings.scale, curve.end.posZ)
       );
       const tube = new THREE.TubeBufferGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
-      curve.tubeGeometry = tube;
-      group.add(new THREE.Mesh(tube, this.material));
+
+      const tubeMesh = new THREE.Mesh(tube, this.material);
+      curve.tubeMesh = tubeMesh;
+      group.add(tubeMesh);
 
       // check whether the caps need capping
       [curve.start, curve.end].forEach((cap) => {
@@ -175,7 +180,7 @@ class Demo {
 
     curves.forEach(curve => {
       // start at invisible
-      curve.tubeGeometry.setDrawRange(0, 0);
+      curve.tubeMesh.geometry.setDrawRange(0, 0);
 
       curve.animationProgress = 0;
       curve.isAnimating = false;
@@ -212,19 +217,19 @@ class Demo {
 
       // set the ranges
       if (curve.isAnimatingFromStart) {
-        curve.tubeGeometry.setDrawRange(
+        curve.tubeMesh.geometry.setDrawRange(
           0,
           Math.round(steppedProgress * this.animationRangeMax)
         );
       }
       else if (curve.isAnimatingFromEnd) {
-        curve.tubeGeometry.setDrawRange(
+        curve.tubeMesh.geometry.setDrawRange(
           Math.round((1 - steppedProgress) * this.animationRangeMax),
           this.animationRangeMax
         );
       }
       else if (curve.isAnimatingFromMiddle) {
-        curve.tubeGeometry.setDrawRange(
+        curve.tubeMesh.geometry.setDrawRange(
           Math.round((1 - steppedProgress) * this.animationRangeMax / 2),
           Math.round(steppedProgress * this.animationRangeMax)
         );
@@ -233,10 +238,9 @@ class Demo {
       if (curve.animationProgress >= 1) this.finishCurveAnimation(curve);
     });
 
-    // count the curves that haven't finished animating
-    // finish the spell if they all have
-    if (this.animatingCurves.filter(curve => !curve.finishedAnimating).length === 0) {
-      this.isAnimating = false;
+    // end animation if there aren't any curves left animating
+    if (this.animatingCurves.filter(curve => curve.isAnimating).length === 0) {
+      this.endAnimation();
     }
   }
 
@@ -257,7 +261,7 @@ class Demo {
     }
 
     // make sure it's set at max
-    curve.tubeGeometry.setDrawRange(0, this.animationRangeMax);
+    curve.tubeMesh.geometry.setDrawRange(0, this.animationRangeMax);
     curve.isAnimating = false;
     curve.finishedAnimating = true;
   }
@@ -293,6 +297,24 @@ class Demo {
       }
       alignerCap.curve.isAnimating = true;
     });
+  }
+
+  endAnimation() {
+    // find the non-connected pieces
+    const leftoverCurves = this.animatingCurves.filter(curve => !curve.finishedAnimating);
+
+    // if there are no leftovers we're done! yay!
+    if (!leftoverCurves.length) {
+      this.isAnimating = false;
+      return;
+    }
+
+    // otherwise we make the rest ghosts and restart the animation
+    leftoverCurves.forEach(curve => {
+      curve.tubeMesh.material = this.ghostMaterial;
+    });
+    leftoverCurves[0].isAnimating = true;
+    leftoverCurves[0].isAnimatingFromMiddle = true;
   }
 
   render = () => {
