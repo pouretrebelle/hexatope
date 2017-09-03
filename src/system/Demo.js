@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
 import { saveAs } from 'file-saver';
+import { clamp } from 'utils/numberUtils';
 import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
 import UIStore from 'stores/UIStore';
@@ -200,26 +201,32 @@ class Demo {
       // skip if it's not animating at all
       if (!curve.isAnimating) return;
 
-      // progress that animation
-      curve.animationProgress += this.animationStep;
+      // increase progress according to speed and curve length
+      curve.animationProgress = clamp(
+        (curve.animationProgress + this.animationStep * settings.animationSpeed / curve.estLength),
+        0,
+        1
+      );
+      // round the progress to the nearest step
+      const steppedProgress = Math.round(curve.animationProgress / this.animationStep) * this.animationStep;
 
       // set the ranges
       if (curve.isAnimatingFromStart) {
         curve.tubeGeometry.setDrawRange(
           0,
-          curve.animationProgress * this.animationRangeMax
+          Math.round(steppedProgress * this.animationRangeMax)
         );
       }
       else if (curve.isAnimatingFromEnd) {
         curve.tubeGeometry.setDrawRange(
-          Math.round((1 - curve.animationProgress) * this.animationRangeMax),
+          Math.round((1 - steppedProgress) * this.animationRangeMax),
           this.animationRangeMax
         );
       }
       else if (curve.isAnimatingFromMiddle) {
         curve.tubeGeometry.setDrawRange(
-          Math.round((1 - curve.animationProgress) * this.animationRangeMax / 2),
-          Math.round(curve.animationProgress * this.animationRangeMax)
+          Math.round((1 - steppedProgress) * this.animationRangeMax / 2),
+          Math.round(steppedProgress * this.animationRangeMax)
         );
       }
 
