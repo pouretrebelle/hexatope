@@ -25,6 +25,8 @@ export default {
   cameraDampingFactor: 0.2,
   cameraMinDistance: 5,
   cameraMaxDistance: 80,
+  animationStep: 8 * 6,
+  animationRangeMax: 20 * 8 * 6,
 };
 
 export const demoModelSettings = {

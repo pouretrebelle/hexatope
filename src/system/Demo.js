@@ -14,6 +14,7 @@ class Demo {
     this.renderer = undefined;
     this.material = undefined;
     this.mesh = undefined;
+    this.isAnimating = false;
   }
 
   setup(canvas, UIStore) {
@@ -99,7 +100,7 @@ class Demo {
 
   updateCurves() {
     this.scene.remove(this.mesh);
-    this.mesh = this.generateMesh(demoModelSettings);
+    this.mesh = this.generateMeshes(demoModelSettings, false);
     this.scene.add(this.mesh);
     this.system.UIStore.demoHasBeenUpdated();
   }
@@ -107,13 +108,17 @@ class Demo {
   updateAndAnimateCurves() {
     // reset position and rotation of orbit controls
     this.controls.reset();
-    this.updateCurves();
+    this.system.UIStore.demoHasBeenUpdated();
+
+    this.scene.remove(this.mesh);
+    this.mesh = this.generateMeshes(demoModelSettings, true);
+    this.scene.add(this.mesh);
   }
 
-  generateMesh(modelSettings) {
-    let geometry = new THREE.Geometry();
+  generateMeshes(modelSettings, animate) {
     const curves = this.system.getCurvesData();
     const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
+    let group = new THREE.Group();
 
     // draw each curve as a tube
     curves.forEach(curve => {
@@ -123,24 +128,33 @@ class Demo {
         this.getVec3PointMerge(curve.hexagonPosition, curve.end.controlPos, modelSettings.scale),
         this.getVec3PointMerge(curve.hexagonPosition, curve.end.pos, modelSettings.scale, curve.end.posZ)
       );
-      const tube = new THREE.TubeGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
-      geometry.merge(tube);
+      const tube = new THREE.TubeBufferGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
+      curve.tubeGeometry = tube;
+      group.add(new THREE.Mesh(tube, this.material));
 
       // check whether the caps need capping
       [curve.start, curve.end].forEach((cap) => {
         if (cap.extenders.length === 0) {
           // if it has no extenders it needs a sphere at the end
           const point = this.getVec3PointMerge(curve.hexagonPosition, cap.pos, modelSettings.scale, cap.posZ);
-          const sphere = new THREE.SphereGeometry(tubeRadius * modelSettings.scale);
+          const sphere = new THREE.SphereBufferGeometry(tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, modelSettings.tubeRadiusSegments);
           sphere.translate(point.x, point.y, point.z);
-          geometry.merge(sphere);
+          const sphereMesh = new THREE.Mesh(sphere, this.material);
+          cap.sphereMesh = sphereMesh;
+          group.add(sphereMesh);
         }
       });
     });
 
-    // center geometry in viewport
-    geometry.center();
-    return new THREE.Mesh(geometry, this.material);
+    const bBox = new THREE.Box3().setFromObject(group);
+    const bBoxCenter = bBox.getCenter();
+    group.translateX(-bBoxCenter.x);
+    group.translateY(-bBoxCenter.y);
+    group.translateZ(-bBoxCenter.z);
+
+    if (animate) this.initialiseAnimation(curves, settings.animationStep, settings.animationRangeMax);
+
+    return group;
   }
 
   getVec3PointMerge(one, two, scale, twoZ) {
@@ -148,9 +162,136 @@ class Demo {
     return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), scale*(twoZ ? twoZ : two.z));
   }
 
+  initialiseAnimation(curves, step, rangeMax) {
+    if (curves.length === 0) return;
+
+    this.isAnimating = true;
+    this.animatingCurves = curves;
+    this.animationStep = step / rangeMax;
+    this.animationRangeMax = rangeMax;
+
+    curves.forEach(curve => {
+      // start at invisible
+      curve.tubeGeometry.setDrawRange(0, 0);
+
+      curve.animationProgress = 0;
+      curve.isAnimating = false;
+      curve.isAnimatingFromStart = false;
+      curve.isAnimatingFromEnd = false;
+      curve.isAnimatingFromMiddle = false;
+      curve.finishedAnimating = false;
+
+      // hide any capping spheres
+      if (curve.start.sphereMesh) curve.start.sphereMesh.visible = false;
+      if (curve.end.sphereMesh) curve.end.sphereMesh.visible = false;
+    });
+
+    // start midway through the pack
+    // TODO: chose this with intelligence?
+    const chosenCurve = Math.floor(curves.length/2);
+    curves[chosenCurve].isAnimating = true;
+    curves[chosenCurve].isAnimatingFromMiddle = true;
+  }
+
+  updateAnimation() {
+    this.animatingCurves.forEach(curve => {
+      // skip if it's not animating at all
+      if (!curve.isAnimating) return;
+
+      // progress that animation
+      curve.animationProgress += this.animationStep;
+
+      // set the ranges
+      if (curve.isAnimatingFromStart) {
+        curve.tubeGeometry.setDrawRange(
+          0,
+          curve.animationProgress * this.animationRangeMax
+        );
+      }
+      else if (curve.isAnimatingFromEnd) {
+        curve.tubeGeometry.setDrawRange(
+          Math.round((1 - curve.animationProgress) * this.animationRangeMax),
+          this.animationRangeMax
+        );
+      }
+      else if (curve.isAnimatingFromMiddle) {
+        curve.tubeGeometry.setDrawRange(
+          Math.round((1 - curve.animationProgress) * this.animationRangeMax / 2),
+          Math.round(curve.animationProgress * this.animationRangeMax)
+        );
+      }
+
+      if (curve.animationProgress >= 1) this.finishCurveAnimation(curve);
+    });
+
+    // count the curves that haven't finished animating
+    // finish the spell if they all have
+    if (this.animatingCurves.filter(curve => !curve.finishedAnimating).length === 0) {
+      this.isAnimating = false;
+    }
+  }
+
+  finishCurveAnimation(curve) {
+    // start the dominoes
+    if (curve.isAnimatingFromStart) {
+      this.triggerAnimationFromCap(curve.end);
+      curve.isAnimatingFromStart = false;
+    }
+    else if (curve.isAnimatingFromEnd) {
+      this.triggerAnimationFromCap(curve.start);
+      curve.isAnimatingFromEnd = false;
+    }
+    else if (curve.isAnimatingFromMiddle) {
+      this.triggerAnimationFromCap(curve.start);
+      this.triggerAnimationFromCap(curve.end);
+      curve.isAnimatingFromMiddle = false;
+    }
+
+    // make sure it's set at max
+    curve.tubeGeometry.setDrawRange(0, this.animationRangeMax);
+    curve.isAnimating = false;
+    curve.finishedAnimating = true;
+  }
+
+  triggerAnimationFromCap(cap) {
+    if (cap.extenders.length === 0) {
+      // make the capping sphere visible
+      cap.sphereMesh.visible = true;
+      return;
+    }
+
+    cap.extenders.forEach(extenderCap => {
+      // don't try if it's already been hit
+      if (extenderCap.curve.isAnimating || extenderCap.curve.finishedAnimating) return;
+      if (extenderCap === extenderCap.curve.start) {
+        extenderCap.curve.isAnimatingFromStart = true;
+      }
+      else {
+        extenderCap.curve.isAnimatingFromEnd = true;
+      }
+      extenderCap.curve.isAnimating = true;
+    });
+
+    // we have to set off the aligners as well or we might miss something
+    cap.aligners.forEach(alignerCap => {
+      // don't try if it's already been hit
+      if (alignerCap.curve.isAnimating || alignerCap.curve.finishedAnimating) return;
+      if (alignerCap === alignerCap.curve.start) {
+        alignerCap.curve.isAnimatingFromStart = true;
+      }
+      else {
+        alignerCap.curve.isAnimatingFromEnd = true;
+      }
+      alignerCap.curve.isAnimating = true;
+    });
+  }
+
   render = () => {
-    this.controls.autoRotate = !UIStore.isMouseOverDemo;
+    // autorotate when animating and when the mouse is over the canvas
+    this.controls.autoRotate = this.isAnimating || !UIStore.isMouseOverDemo;
     this.controls.update();
+
+    if (this.isAnimating) this.updateAnimation();
 
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
@@ -158,7 +299,14 @@ class Demo {
 
   downloadSTL() {
     const exporter = new STLExporter();
-    const exportMesh = this.generateMesh(exportModelSettings);
+    const meshes = this.generateMeshes(exportModelSettings);
+    let exportGeometry = new THREE.Geometry();
+    meshes.children.forEach(mesh =>
+      exportGeometry.merge(new THREE.Geometry().fromBufferGeometry(mesh.geometry))
+    );
+
+    const exportMesh = new THREE.Mesh(exportGeometry, this.material);
+
     const blob = new Blob(
       [exporter.parse(exportMesh)],
       {
