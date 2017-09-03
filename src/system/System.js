@@ -165,7 +165,6 @@ class System {
       }
     }
 
-    this.demo.updateCurves();
     this.canvas.draw();
   }
 
