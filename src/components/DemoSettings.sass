@@ -1,4 +1,4 @@
-.settings
+.sliderSettings
   box-sizing: border-box
   position: absolute
   bottom: 5vh
@@ -6,6 +6,7 @@
   width: 100%
   text-align: center
   opacity: 0
+  pointer-events: none
   transition: opacity 0.3s linear
 
 .range
@@ -38,5 +39,29 @@
     background: whitesmoke
     border: 1px solid silver
 
-.settingsVisible
+.refreshButton
+  position: absolute
+  top: 50%
+  left: 50%
+  opacity: 0
+  pointer-events: none
+  cursor: pointer
+  transition: opacity 0.5s linear
+  transform: translate(-50%, -50%)
+  background: whitesmoke
+  padding: 1rem
+  border: 1px solid silver
+  border-radius: 3px
+  text-transform: uppercase
+
+.refreshButton:focus
+  outline: none
+  background: gainsboro
+
+.refreshButtonHint
+  opacity: 0.5
+
+.sliderSettingsVisible,
+.refreshButtonVisible
   opacity: 1
+  pointer-events: auto

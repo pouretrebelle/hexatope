@@ -77,7 +77,7 @@ class Demo extends Component {
   render() {
     return (
       <div className={styles.demoWrapper}>
-        <DemoSettings />
+        <DemoSettings system={this.props.system} />
         <canvas ref={element => this.demoElement = element} />
         <button
           onClick={this.onDownloadButtonClicked}

@@ -189,8 +189,8 @@ class Hexagon {
     // set current layout to initial
     this.initialLayoutSeed = this.layoutSeed;
 
-    // update demo
-    this.system.demo.updateCurves();
+    // flag system as changed since last update
+    this.system.curvesHaveChanged();
 
     // cancel progression
     this.cancelLayoutProgression();

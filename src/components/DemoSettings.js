@@ -22,40 +22,59 @@ class DemoSettings extends Component {
     return true;
   }
 
+  refreshDemo = () => {
+    this.props.system.demo.updateAndAnimateCurves();
+  }
+
   render() {
     const { SettingsStore, UIStore } = this.props;
 
-    const wrapperClasses = classNames({
-      [styles.settings]: true,
-      [styles.settingsVisible]: UIStore.isMouseOverDemo,
+    const refreshButtonClasses = classNames({
+      [styles.refreshButton]: true,
+      [styles.refreshButtonHint]: UIStore.curvesChangedSinceDemoUpdate,
+      [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate,
+    });
+
+    const sliderWrapperClasses = classNames({
+      [styles.sliderSettings]: true,
+      [styles.sliderSettingsVisible]: UIStore.isMouseOverDemo && !UIStore.curvesChangedSinceDemoUpdate,
     });
 
     return (
-      <div className={wrapperClasses}>
-        <input
-          type={'range'}
-          className={styles.range}
-          onChange={this.onDepthOverlapChanged}
-          value={SettingsStore.depthOverlapScalar}
-          min={'0'}
-          max={'1'}
-          step={'any'}
-        />
-        <input
-          type={'range'}
-          className={styles.range}
-          onChange={this.onDepthCurvatureChanged}
-          value={SettingsStore.depthCurvatureScalar}
-          min={'0'}
-          max={'1'}
-          step={'any'}
-        />
+      <div>
+        <button
+          className={refreshButtonClasses}
+          onClick={this.refreshDemo}
+        >
+          render in 3D
+        </button>
+        <div className={sliderWrapperClasses}>
+          <input
+            type={'range'}
+            className={styles.range}
+            onChange={this.onDepthOverlapChanged}
+            value={SettingsStore.depthOverlapScalar}
+            min={'0'}
+            max={'1'}
+            step={'any'}
+          />
+          <input
+            type={'range'}
+            className={styles.range}
+            onChange={this.onDepthCurvatureChanged}
+            value={SettingsStore.depthCurvatureScalar}
+            min={'0'}
+            max={'1'}
+            step={'any'}
+          />
+        </div>
       </div>
     );
   }
 }
 
 DemoSettings.propTypes = {
+  system: PropTypes.object,
   SettingsStore: PropTypes.object,
   UIStore: PropTypes.object,
 };

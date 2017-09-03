@@ -16,7 +16,7 @@ class System {
     this.mouseTargetHex = undefined;
     this.mouseTargetHexLast = undefined;
     this.isDrawing = false;
-    this.hasChange = false;
+    this.UIStore = UIStore;
 
     this.setup(UIStore);
   }
@@ -60,12 +60,6 @@ class System {
         this.hexagons[x][y].update();
       }
     }
-
-    // update the demo
-    if (this.hasChanged) {
-      this.demo.updateCurves();
-      this.hasChanged = false;
-    }
   }
 
   render({ isMouseDownOverCanvas, lastMouseButton, ...props }) {
@@ -96,8 +90,8 @@ class System {
           SettingsStore.toolMode === MODES.PENCIL_MODE &&
           this.mouseTargetHex.nextActive < 2) {
 
-        // update global change value to propagate 3d redraw
-        this.hasChanged = true;
+        // update UIStore value for demo ui changes
+        this.curvesHaveChanged();
 
         this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
       }
@@ -107,9 +101,9 @@ class System {
         (lastMouseButton == 2 || SettingsStore.toolMode === MODES.ERASER_MODE) &&
         this.mouseTargetHex.nextActive > 0) {
 
-        // update global change value to propagate 3d redraw
+        // update UIStore value for demo ui changes
         // only if it's actually removing lines
-        this.hasChanged = true;
+        this.curvesHaveChanged();
 
         this.mouseTargetHex.nextActive--;
       }
@@ -175,6 +169,9 @@ class System {
     this.canvas.draw();
   }
 
+  curvesHaveChanged() {
+    this.UIStore.curvesHaveChanged();
+  }
 }
 
 export default System;

@@ -9,6 +9,7 @@ class UIStore {
   @observable lastMouseButton = 0;
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
+  @observable curvesChangedSinceDemoUpdate = true;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -63,6 +64,16 @@ class UIStore {
   @action
   mouseNotOverDemo = () => {
     this.isMouseOverDemo = false;
+  }
+
+  @action
+  curvesHaveChanged = () => {
+    this.curvesChangedSinceDemoUpdate = true;
+  }
+
+  @action
+  demoHasBeenUpdated = () => {
+    this.curvesChangedSinceDemoUpdate = false;
   }
 
   onWindowResized = () => this.updateDimensions();

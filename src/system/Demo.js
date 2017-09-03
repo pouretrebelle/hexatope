@@ -101,6 +101,13 @@ class Demo {
     this.scene.remove(this.mesh);
     this.mesh = this.generateMesh(demoModelSettings);
     this.scene.add(this.mesh);
+    this.system.UIStore.demoHasBeenUpdated();
+  }
+
+  updateAndAnimateCurves() {
+    // reset position and rotation of orbit controls
+    this.controls.reset();
+    this.updateCurves();
   }
 
   generateMesh(modelSettings) {
