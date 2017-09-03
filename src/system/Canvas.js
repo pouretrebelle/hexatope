@@ -85,13 +85,6 @@ class Canvas {
       this.drawAllHexCurves(this.c);
     }
 
-    // draw another hexagon over mouse position if in eraser mode to fade out lines
-    if (settings.drawMouse &&
-        this.isMouseInside &&
-        SettingsStore.toolMode === MODES.ERASER_MODE) {
-      this.drawMouseHexagonOverlay();
-    }
-
     this.c.restore();
   }
 
@@ -102,14 +95,6 @@ class Canvas {
     else {
       this.c.fillStyle = this.system.isDrawing ? settings.mouseEraserActiveColor : settings.mouseEraserColor;
     }
-    const target = this.system.mouseTargetHex;
-    if (target) {
-      drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
-    }
-  }
-
-  drawMouseHexagonOverlay() {
-    this.c.fillStyle = settings.mouseEraserActiveColor;
     const target = this.system.mouseTargetHex;
     if (target) {
       drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
@@ -154,7 +139,11 @@ class Canvas {
 
     hex.curves.forEach((curve) => {
       const { start, end } = curve;
-      c.strokeStyle = curve.drawFaded ? settings.lineColorFaded : settings.lineColor;
+      c.strokeStyle = settings.lineColor;
+      if (curve.drawFaded ||
+          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === MODES.ERASER_MODE)) {
+        c.strokeStyle = settings.lineColorFaded;
+      }
       c.beginPath();
       c.moveTo(start.pos.x * scalar, start.pos.y * scalar);
       c.bezierCurveTo(
