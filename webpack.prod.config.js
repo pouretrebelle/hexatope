@@ -63,5 +63,8 @@ module.exports = {
   },
   resolve: {
     modules: ['src', 'node_modules'],
+    alias: {
+      styles: path.resolve('src', 'styles'),
+    },
   },
 };
