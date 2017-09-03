@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import Typekit from 'react-typekit';
 
-import styles from 'styles/layout.css';
+import styles from 'styles/application.sass';
 
 import System from 'system/System';
 import CanvasWrapper from 'components/CanvasWrapper';
@@ -25,6 +26,7 @@ class App extends Component {
         <DemoWrapper
           system={this.system}
         />
+        <Typekit kitId='req1ouh' />
       </div>
     );
   }
