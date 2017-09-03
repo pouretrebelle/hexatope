@@ -4124,6 +4124,13 @@ react-transform-hmr@1.0.4, react-transform-hmr@^1.0.3:
     global "^4.3.0"
     react-proxy "^1.1.7"
 
+react-typekit@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-typekit/-/react-typekit-1.1.0.tgz#53e7081587c877d1d80398f6a7d25a5292fd2003"
+  dependencies:
+    lodash "^4.17.4"
+    prop-types "^15.5.10"
+
 react@15.6.1:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-15.6.1.tgz#baa8434ec6780bde997cdc380b79cd33b96393df"
