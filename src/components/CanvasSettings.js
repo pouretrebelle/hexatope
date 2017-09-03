@@ -10,7 +10,7 @@ import ClearIcon from './icons/ClearIcon';
 
 import styles from './CanvasSettings.sass';
 
-@inject('SettingsStore') @observer
+@inject('SettingsStore', 'UIStore') @observer
 class CanvasSettings extends Component {
 
   constructor(props) {
@@ -27,6 +27,7 @@ class CanvasSettings extends Component {
 
   onClearButtonClicked = () => {
     this.props.system.clearHexagons();
+    this.props.UIStore.canvasHasBeenCleared();
   }
 
   onDownloadButtonClicked = () => {
@@ -75,6 +76,7 @@ class CanvasSettings extends Component {
 CanvasSettings.propTypes = {
   system: PropTypes.object.isRequired,
   SettingsStore: PropTypes.object,
+  UIStore: PropTypes.object,
 };
 
 export default CanvasSettings;

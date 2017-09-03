@@ -15,7 +15,6 @@ class Demo {
     this.renderer = undefined;
     this.material = undefined;
     this.mesh = undefined;
-    this.isAnimating = false;
   }
 
   setup(canvas, UIStore) {
@@ -173,7 +172,7 @@ class Demo {
   initialiseAnimation(curves, step, rangeMax) {
     if (curves.length === 0) return;
 
-    this.isAnimating = true;
+    UIStore.demoAnimationStarted();
     this.animatingCurves = curves;
     this.animationStep = step / rangeMax;
     this.animationRangeMax = rangeMax;
@@ -305,7 +304,7 @@ class Demo {
 
     // if there are no leftovers we're done! yay!
     if (!leftoverCurves.length) {
-      this.isAnimating = false;
+      UIStore.demoAnimationEnded();
       return;
     }
 
@@ -319,10 +318,10 @@ class Demo {
 
   render = () => {
     // autorotate when animating and when the mouse is over the canvas
-    this.controls.autoRotate = this.isAnimating || !UIStore.isMouseOverDemo;
+    this.controls.autoRotate = UIStore.demoIsAnimating || !UIStore.isMouseOverDemo;
     this.controls.update();
 
-    if (this.isAnimating) this.updateAnimation();
+    if (UIStore.demoIsAnimating) this.updateAnimation();
 
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);

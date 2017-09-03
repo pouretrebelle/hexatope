@@ -31,13 +31,13 @@ class DemoSettings extends Component {
 
     const refreshButtonClasses = classNames({
       [styles.refreshButton]: true,
-      [styles.refreshButtonHint]: UIStore.curvesChangedSinceDemoUpdate,
-      [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate,
+      [styles.refreshButtonHint]: UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
+      [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
     });
 
     const sliderWrapperClasses = classNames({
       [styles.sliderSettings]: true,
-      [styles.sliderSettingsVisible]: UIStore.isMouseOverDemo && !UIStore.curvesChangedSinceDemoUpdate,
+      [styles.sliderSettingsVisible]: UIStore.isMouseOverDemo && !UIStore.curvesChangedSinceDemoUpdate && !UIStore.demoIsAnimating,
     });
 
     return (
@@ -46,7 +46,7 @@ class DemoSettings extends Component {
           className={refreshButtonClasses}
           onClick={this.refreshDemo}
         >
-          render in 3D
+          Render
         </button>
         <div className={sliderWrapperClasses}>
           <input

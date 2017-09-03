@@ -9,6 +9,8 @@ class UIStore {
   @observable lastMouseButton = 0;
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
+  @observable demoIsAnimating = false;
+  @observable curvesExist = false;
   @observable curvesChangedSinceDemoUpdate = true;
 
   constructor() {
@@ -68,12 +70,28 @@ class UIStore {
 
   @action
   curvesHaveChanged = () => {
+    this.curvesExist = true;
     this.curvesChangedSinceDemoUpdate = true;
+  }
+
+  @action
+  canvasHasBeenCleared = () => {
+    this.curvesExist = false;
   }
 
   @action
   demoHasBeenUpdated = () => {
     this.curvesChangedSinceDemoUpdate = false;
+  }
+
+  @action
+  demoAnimationStarted = () => {
+    this.demoIsAnimating = true;
+  }
+
+  @action
+  demoAnimationEnded = () => {
+    this.demoIsAnimating = false;
   }
 
   onWindowResized = () => this.updateDimensions();
