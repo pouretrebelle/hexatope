@@ -25,7 +25,7 @@ export default {
   cameraDampingFactor: 0.2,
   cameraMinDistance: 5,
   cameraMaxDistance: 80,
-  animationStep: 8 * 6,
+  animationStep: 8 * 6 * 2,
   animationRangeMax: 20 * 8 * 6,
 };
 
