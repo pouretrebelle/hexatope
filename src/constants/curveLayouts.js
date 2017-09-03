@@ -131,6 +131,15 @@ export default {
         pushUp: [0, 4],
         pushDown: [2],
       },
+      { // V with strike
+        pairs: [
+          [0, 2],
+          [2, 4],
+          [1, 3],
+        ],
+        pushUp: [0, 4],
+        forceUp: [2],
+      },
     ],
   },
   6: { // 6 neighbours
@@ -161,6 +170,17 @@ export default {
           [3, 5],
         ],
         forceUp: [2, 4],
+      },
+      { // david's cross
+        pairs: [
+          [1, 3],
+          [3, 5],
+          [5, 1],
+          [0, 2],
+          [2, 4],
+          [4, 0],
+        ],
+        forceUp: [1, 3, 5],
       },
     ],
   },
