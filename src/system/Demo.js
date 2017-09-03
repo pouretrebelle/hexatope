@@ -159,7 +159,9 @@ class Demo {
 
   getVec3PointMerge(one, two, scale, twoZ) {
     // we have to flip the x-axis, no idea why
-    return new THREE.Vector3(scale * (one.x + two.x), scale * (-one.y - two.y), scale*(twoZ ? twoZ : two.z));
+    // also we're swapping the x and z axes so orbit control resets to the z plane
+    // makes animation fold forwards instead of away
+    return new THREE.Vector3(scale * (twoZ ? twoZ : two.z), scale * (-one.y - two.y), scale * (one.x + two.x));
   }
 
   initialiseAnimation(curves, step, rangeMax) {
