@@ -107,6 +107,7 @@ class Hexagon {
     // ransomise layout if hex is becoming active
     if (!this.active && this.nextActive) {
       this.layoutSeed = Math.random();
+      this.initialLayoutSeed = this.layoutSeed;
     }
 
     // update active from next active
