@@ -6,6 +6,7 @@ class UIStore {
   @observable windowHeight = 0;
   @observable mouseX = 0;
   @observable mouseY = 0;
+  @observable orderOfRotation = 0;
   @observable lastMouseButton = 0;
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
@@ -56,6 +57,10 @@ class UIStore {
   @action
   endPoint = () => {
     this.isMouseDownOverCanvas = false;
+  }
+
+  @action rotateCanvas = () => {
+    this.orderOfRotation = (this.orderOfRotation + 1 ) % 4;
   }
 
   @action

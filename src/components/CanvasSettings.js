@@ -8,6 +8,7 @@ import Tooltip from './common/Tooltip';
 import PencilIcon from './icons/PencilIcon';
 import EraserIcon from './icons/EraserIcon';
 import ClearIcon from './icons/ClearIcon';
+import RotateIcon from './icons/RotateIcon';
 
 import styles from './CanvasSettings.sass';
 
@@ -29,6 +30,10 @@ class CanvasSettings extends Component {
   onClearButtonClicked = () => {
     this.props.system.clearHexagons();
     this.props.UIStore.canvasHasBeenCleared();
+  }
+
+  onRotateButtonClicked = () => {
+    this.props.UIStore.rotateCanvas();
   }
 
   render() {
@@ -63,6 +68,14 @@ class CanvasSettings extends Component {
             onClick={this.onClearButtonClicked}
           >
             <ClearIcon className={styles.icon} />
+          </button>
+        </Tooltip>
+        <Tooltip label={'rotate'}>
+          <button
+            className={styles.button}
+            onClick={this.onRotateButtonClicked}
+          >
+            <RotateIcon className={styles.icon} />
           </button>
         </Tooltip>
       </div>

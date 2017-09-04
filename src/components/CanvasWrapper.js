@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
 
 import UIStore from 'stores/UIStore';
@@ -7,6 +9,7 @@ import CanvasSettings from './CanvasSettings';
 
 import styles from './CanvasWrapper.sass';
 
+@inject('UIStore') @observer
 class Canvas extends Component {
 
   constructor(props) {
@@ -60,10 +63,16 @@ class Canvas extends Component {
   render() {
     this.renderCanvas();
 
+    const canvasClasses = classNames({
+      [styles.canvas]: true,
+      [styles[`rotate${this.props.UIStore.orderOfRotation}`]]: true,
+    });
+
     return (
       <div className={styles.canvasWrapper}>
         <CanvasSettings system={this.props.system} />
         <canvas
+          className={canvasClasses}
           ref={element => this.canvasElement = element}
           onMouseDown={this.startDrawing}
           onTouchStart={this.startDrawing}
@@ -78,6 +87,7 @@ class Canvas extends Component {
 
 Canvas.propTypes = {
   system: PropTypes.object,
+  UIStore: PropTypes.object,
 };
 
 export default Canvas;

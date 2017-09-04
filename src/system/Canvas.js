@@ -45,8 +45,9 @@ class Canvas {
   }
 
   updateDimensions({ windowWidth, windowHeight }) {
-    this.externalWidth = windowWidth / 2;
-    this.externalHeight = windowHeight;
+    const size = (windowWidth / 2 > windowHeight) ? windowWidth / 2 : windowHeight;
+    this.externalWidth = size;
+    this.externalHeight = size;
     this.canvas.width = this.externalWidth * this.pixelRatio;
     this.canvas.style.width = `${this.externalWidth}px`;
     this.canvas.height = this.externalHeight * this.pixelRatio;
