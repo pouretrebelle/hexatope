@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import Typekit from 'react-typekit';
+import ReactGA from 'react-ga';
 
 import styles from 'styles/application.sass';
 
@@ -17,6 +18,10 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.system = new System(this.props.UIStore);
+
+    if (process.env.NODE_ENV === 'production') {
+      ReactGA.initialize('UA-106084023-1');
+    }
   }
 
   render() {
