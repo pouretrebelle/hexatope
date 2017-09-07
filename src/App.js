@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { Helmet } from 'react-helmet';
 import Typekit from 'react-typekit';
 import ReactGA from 'react-ga';
 
@@ -26,17 +27,25 @@ class App extends Component {
 
   render() {
     return (
-      <div className={styles.content}>
-        <CanvasWrapper
-          system={this.system}
-        />
-        <DemoWrapper
-          system={this.system}
-        />
-        { settings.showDownloadButtons && <DownloadButtons
-          system={this.system}
-        /> }
-        <Typekit kitId='req1ouh' />
+      <div>
+
+        <Helmet>
+          <title>Hexatope</title>
+          <meta name={'description'} content={'Hexatope is an experiment in generative jewellery by Charlotte Dann, opening shop in Winter 2017.'}/>
+        </Helmet>
+
+        <div className={styles.content}>
+          <CanvasWrapper
+            system={this.system}
+          />
+          <DemoWrapper
+            system={this.system}
+          />
+          { settings.showDownloadButtons && <DownloadButtons
+            system={this.system}
+          /> }
+          <Typekit kitId={'req1ouh'} />
+        </div>
       </div>
     );
   }
