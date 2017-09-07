@@ -5,6 +5,7 @@ import Typekit from 'react-typekit';
 
 import styles from 'styles/application.sass';
 
+import settings from 'system/settings';
 import System from 'system/System';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
@@ -27,9 +28,9 @@ class App extends Component {
         <DemoWrapper
           system={this.system}
         />
-        <DownloadButtons
+        { settings.showDownloadButtons && <DownloadButtons
           system={this.system}
-        />
+        /> }
         <Typekit kitId='req1ouh' />
       </div>
     );
