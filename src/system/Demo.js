@@ -166,7 +166,7 @@ class Demo {
     // we have to flip the x-axis, no idea why
     // also we're swapping the x and z axes so orbit control resets to the z plane
     // makes animation fold forwards instead of away
-    return new THREE.Vector3(scale * (twoZ ? twoZ : two.z), scale * (-one.y - two.y), scale * (one.x + two.x));
+    return new THREE.Vector3(-scale * (twoZ ? twoZ : two.z), scale * (-one.y - two.y), scale * (one.x + two.x));
   }
 
   initialiseAnimation(curves, step, rangeMax) {
