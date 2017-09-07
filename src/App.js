@@ -23,6 +23,12 @@ class App extends Component {
     if (process.env.NODE_ENV === 'production') {
       ReactGA.initialize('UA-106084023-1');
     }
+
+    this.title = 'Hexatope.io';
+    this.metaDescription = 'Hexatope is an experiment in generative jewellery by Charlotte Dann, opening shop in Winter 2017.';
+    this.favicon = require('assets/favicon.png');
+    this.metaOpenGraph = require('assets/opengraph.jpg');
+    this.metaTwitterCard = require('assets/twittercard.jpg');
   }
 
   render() {
@@ -30,8 +36,18 @@ class App extends Component {
       <div>
 
         <Helmet>
-          <title>Hexatope</title>
-          <meta name={'description'} content={'Hexatope is an experiment in generative jewellery by Charlotte Dann, opening shop in Winter 2017.'}/>
+          <title>{this.title}</title>
+          <link rel={'icon'} type={'image/png'} href={this.favicon} sizes={'32x32'}/>
+          <meta property={'og:title'} content={this.title}/>
+          <meta name={'twitter:title'} content={this.title}/>
+          <meta name={'description'} content={this.metaDescription}/>
+          <meta name={'og:description'} content={this.metaDescription}/>
+          <meta name={'twitter:description'} content={this.metaDescription}/>
+          <meta name={'twitter:card'} content={'summary_large_image'}/>
+          <meta property={'og:image'} content={this.metaOpenGraph}/>
+          <meta property={'og:image:width'} content={1200}/>
+          <meta property={'og:image:height'} content={630}/>
+          <meta name={'twitter:image'} content={this.metaTwitterCard}/>
         </Helmet>
 
         <div className={styles.content}>
