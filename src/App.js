@@ -12,6 +12,7 @@ import System from 'system/System';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
 import DownloadButtons from 'components/DownloadButtons';
+import Mailchimp from 'components/Mailchimp';
 
 @inject('UIStore') @observer
 class App extends Component {
@@ -60,6 +61,7 @@ class App extends Component {
           { settings.showDownloadButtons && <DownloadButtons
             system={this.system}
           /> }
+          <Mailchimp />
           <Typekit kitId={'req1ouh'} />
         </div>
       </div>
