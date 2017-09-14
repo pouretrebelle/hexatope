@@ -1,8 +1,8 @@
 export default {
-  hexRadius: 30,
-  hexLineWeight: 2,
+  hexRadius: 50,
+  hexLineWeight: 3,
   hexDoubleLineOffset: 0.3,
-  hexMargin: 4,
+  hexMargin: 6,
   hexFocusOffset: 2,
   hexFocusLineWeight: 4,
   drawHex: true,

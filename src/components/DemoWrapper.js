@@ -51,8 +51,8 @@ class Demo extends Component {
     const boundingBox = this.demoElement.getBoundingClientRect();
     if (boundingBox.left <= UIStore.mouseX &&
         UIStore.mouseX <= boundingBox.right &&
-        boundingBox.top <= UIStore.mouseY &&
-        UIStore.mouseY <= boundingBox.bottom
+        boundingBox.top <= UIStore.mouseY - UIStore.scrollTop &&
+        UIStore.mouseY - UIStore.scrollTop <= boundingBox.bottom
     ) {
       if (!UIStore.isMouseOverDemo) UIStore.mouseIsOverDemo();
     } else {

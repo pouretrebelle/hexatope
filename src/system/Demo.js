@@ -94,10 +94,12 @@ class Demo {
   }
 
   updateDimensions({ windowWidth, windowHeight }) {
-    this.renderer.setSize(windowWidth / 2, windowHeight);
+    this.renderer.setSize(windowWidth, windowHeight);
+    // this.renderer.setSize(1920, 1080);
 
     // update camera aspect ratio
-    this.camera.aspect = (windowWidth / 2) / windowHeight;
+    this.camera.aspect = (windowWidth) / windowHeight;
+    // this.camera.aspect = 1920/1080;
     this.camera.updateProjectionMatrix();
   }
 
@@ -110,7 +112,7 @@ class Demo {
 
   updateAndAnimateCurves() {
     // reset position and rotation of orbit controls
-    this.controls.reset();
+    // this.controls.reset();
     this.system.UIStore.demoHasBeenUpdated();
 
     this.scene.remove(this.mesh);
