@@ -31,13 +31,21 @@ class Demo extends Component {
       () => this.resizeDemo(),
     );
 
+    // render and animate demo when mobile tabs are changed
+    this.mobileTabsReaction = reaction(
+      () => [
+        UIStore.demoVisibleOnMobile,
+      ],
+      () => this.renderDemo(true),
+    );
+
     // render demo when settings are changed
     this.settingsReaction = reaction(
       () => [
         SettingsStore.depthOverlapScalar,
         SettingsStore.depthCurvatureScalar,
       ],
-      () => this.renderDemo(true),
+      () => this.renderDemo(false),
     );
 
     // check mouse position
@@ -65,9 +73,17 @@ class Demo extends Component {
     }
   }
 
-  renderDemo = () => {
-    if (!this.props.system || !this.props.system.demo) return;
-    this.props.system.demo.updateCurves();
+  renderDemo = (animate) => {
+    const { system } = this.props;
+
+    if (!system || !system.demo) return;
+
+    if (animate) {
+      system.demo.updateAndAnimateCurves();
+    }
+    else {
+      system.demo.updateCurves();
+    }
   }
 
   resizeDemo = () => {
