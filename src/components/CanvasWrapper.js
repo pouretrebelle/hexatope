@@ -12,11 +12,12 @@ class Canvas extends Component {
   constructor(props) {
     super(props);
     this.canvasElement = undefined;
+    this.canvasWrapperElement = undefined;
     this.mouseReaction = undefined;
   }
 
   componentDidMount() {
-    this.props.system.canvas.setup(this.canvasElement, UIStore);
+    this.props.system.canvas.setup(this.canvasElement, this.canvasWrapperElement, UIStore);
     this.renderCanvas();
 
     // render canvas when mouse position is changed
@@ -54,14 +55,17 @@ class Canvas extends Component {
 
   resizeCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
-    this.props.system.canvas.updateDimensions(UIStore);
+    this.props.system.canvas.updateDimensions(this.canvasWrapperElement, UIStore);
   }
 
   render() {
     this.renderCanvas();
 
     return (
-      <div className={styles.canvasWrapper}>
+      <div
+        className={styles.canvasWrapper}
+        ref={element => this.canvasWrapperElement = element}
+      >
         <CanvasSettings system={this.props.system} />
         <canvas
           ref={element => this.canvasElement = element}

@@ -13,10 +13,11 @@ class Demo extends Component {
   constructor(props) {
     super(props);
     this.demoElement = undefined;
+    this.demoWrapperElement = undefined;
   }
 
   componentDidMount() {
-    this.props.system.demo.setup(this.demoElement, UIStore);
+    this.props.system.demo.setup(this.demoElement, this.demoWrapperElement, UIStore);
 
     // resize canvas when window size is changed
     this.windowSizeReaction = reaction(
@@ -48,7 +49,7 @@ class Demo extends Component {
   }
 
   checkMousePosition = () => {
-    const boundingBox = this.demoElement.getBoundingClientRect();
+    const boundingBox = this.demoWrapperElement.getBoundingClientRect();
     if (boundingBox.left <= UIStore.mouseX &&
         UIStore.mouseX <= boundingBox.right &&
         boundingBox.top <= UIStore.mouseY &&
@@ -67,12 +68,15 @@ class Demo extends Component {
 
   resizeDemo = () => {
     if (!this.props.system || !this.props.system.demo) return;
-    this.props.system.demo.updateDimensions(UIStore);
+    this.props.system.demo.updateDimensions(this.demoWrapperElement);
   }
 
   render() {
     return (
-      <div className={styles.demoWrapper}>
+      <div
+        className={styles.demoWrapper}
+        ref={element => this.demoWrapperElement = element}
+      >
         <DemoSettings system={this.props.system} />
         <canvas ref={element => this.demoElement = element} />
       </div>

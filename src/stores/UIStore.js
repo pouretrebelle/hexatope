@@ -6,6 +6,7 @@ class UIStore {
   @observable windowHeight = 0;
   @observable mouseX = 0;
   @observable mouseY = 0;
+  @observable canvasBoundingBox = undefined;
   @observable lastMouseButton = 0;
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
@@ -45,6 +46,11 @@ class UIStore {
   updateMousePosition = (e) => {
     this.mouseX = e.pageX;
     this.mouseY = e.pageY;
+  }
+
+  @action
+  updateCanvasBoundingBox = (boundingBox) => {
+    this.canvasBoundingBox = boundingBox;
   }
 
   @action

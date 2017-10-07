@@ -22,7 +22,7 @@ class Canvas {
     this.pixelRatio = window.devicePixelRatio || 1;
   }
 
-  setup(canvas, UIStore) {
+  setup(canvas, wrapperElement, UIStore) {
     this.canvas = canvas;
     this.c = canvas.getContext('2d');
     this.c.scale(this.pixelRatio, this.pixelRatio);
@@ -31,22 +31,29 @@ class Canvas {
     this.internalWidth = (this.system.columns + 1 / 4) * (settings.hexRadius * 3);
     this.internalHeight = (this.system.rows + 1) * (hexHeight / 2);
 
-    this.updateDimensions(UIStore);
+    this.updateDimensions(wrapperElement, UIStore);
   }
 
-  updateMousePos({ mouseX, mouseY }) {
-    this.relativeMousePos.x = mouseX - (this.externalWidth - this.internalWidth) / (2 * this.pixelRatio);
-    this.relativeMousePos.y = mouseY - (this.externalHeight - this.internalHeight) / (2 * this.pixelRatio);
+  updateMousePos({ mouseX, mouseY, canvasBoundingBox }) {
+    const absoluteMouseX = mouseX - canvasBoundingBox.x;
+    const absoluteMouseY = mouseY - canvasBoundingBox.y;
+
+    this.relativeMousePos.x = absoluteMouseX - (this.externalWidth - this.internalWidth) / (2 * this.pixelRatio);
+    this.relativeMousePos.y = absoluteMouseY - (this.externalHeight - this.internalHeight) / (2 * this.pixelRatio);
 
     let mouseInside = true;
-    if (mouseX > this.externalWidth) mouseInside = false;
-    if (mouseY > this.externalHeight) mouseInside = false;
+    if (absoluteMouseX > this.externalWidth) mouseInside = false;
+    if (absoluteMouseY > this.externalHeight) mouseInside = false;
     this.isMouseInside = mouseInside;
   }
 
-  updateDimensions({ windowWidth, windowHeight }) {
-    this.externalWidth = windowWidth > 700 ? windowWidth / 2 : windowWidth;
-    this.externalHeight = windowHeight;
+  updateDimensions(wrapperElement, UIStore) {
+    const boundingBox = wrapperElement.getBoundingClientRect();
+
+    UIStore.updateCanvasBoundingBox(boundingBox);
+
+    this.externalWidth = boundingBox.width;
+    this.externalHeight = boundingBox.height;
     this.canvas.width = this.externalWidth * this.pixelRatio;
     this.canvas.style.width = `${this.externalWidth}px`;
     this.canvas.height = this.externalHeight * this.pixelRatio;
