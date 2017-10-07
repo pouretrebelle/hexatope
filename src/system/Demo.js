@@ -44,6 +44,7 @@ class Demo {
       canvas: this.canvas,
       antialias: true,
       alpha: true,
+      preserveDrawingBuffer: settings.showDownloadButtons, // only for png capture
     });
     this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 
@@ -325,6 +326,14 @@ class Demo {
 
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
+  }
+
+  downloadPNG() {
+    const pngData = this.canvas.toDataURL();
+    let link = document.createElement('a');
+    link.download = 'hexatope.png';
+    link.href = pngData;
+    link.click();
   }
 
   downloadSTL() {

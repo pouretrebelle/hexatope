@@ -13,6 +13,10 @@ class DownloadButtons extends Component {
     this.props.system.canvas.downloadSVG();
   }
 
+  onPNGButtonClicked = () => {
+    this.props.system.demo.downloadPNG();
+  }
+
   onSTLButtonClicked = () => {
     this.props.system.demo.downloadSTL();
   }
@@ -22,6 +26,9 @@ class DownloadButtons extends Component {
       <div className={styles.buttons}>
         <button className={styles.button} onClick={this.onSVGButtonClicked}>
           Download SVG
+        </button>
+        <button className={styles.button} onClick={this.onPNGButtonClicked}>
+          Download PNG
         </button>
         <button className={styles.button} onClick={this.onSTLButtonClicked}>
           Download STL
