@@ -83,6 +83,7 @@ class System {
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
         this.mouseTargetHexLast !== this.mouseTargetHex &&
+        this.mouseTargetHex &&
         !this.mouseTargetHex.editMode) {
 
       // increment on left mouse button in pencil mode
@@ -116,6 +117,7 @@ class System {
     // freeze layout if target is long hovering
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
+        this.mouseTargetHex &&
         this.mouseTargetHex.editMode) {
       this.mouseTargetHex.freezeLayout();
     }
