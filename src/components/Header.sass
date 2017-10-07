@@ -1,3 +1,6 @@
+@import '~styles/mixins/responsive'
+@import '~styles/mixins/buttons'
+
 .header
   background: linear-gradient(to bottom, #202020, #262626)
 
@@ -5,8 +8,26 @@
   line-height: 0
 
 .logo
-  padding: 16px 24px
+  padding: 16px
   width: 160px
   height: 16px
   vertical-align: bottom
   fill: #fff
+
+.mobileSelectorWrapper
+  position: relative
+  padding: 0 8px 8px
+  +bp('mobile')
+    display: none
+
+.mobileSelectorItem
+  +button--dark
+  flex: 1
+
+.mobileSelectorItemActive
+  @extend .mobileSelectorItem--active
+
+.mobileSelector
+  +button-group
+  justify-content: stretch
+  width: 100%

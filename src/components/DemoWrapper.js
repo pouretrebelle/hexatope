@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
+import classNames from 'classnames';
 
-import UIStore from 'stores/UIStore';
-import SettingsStore from 'stores/SettingsStore';
 import DemoSettings from 'components/DemoSettings';
 
 import styles from './DemoWrapper.sass';
 
+@inject('SettingsStore', 'UIStore') @observer
 class Demo extends Component {
 
   constructor(props) {
@@ -17,7 +18,9 @@ class Demo extends Component {
   }
 
   componentDidMount() {
-    this.props.system.demo.setup(this.demoElement, this.demoWrapperElement, UIStore);
+    const { system, UIStore, SettingsStore } = this.props;
+
+    system.demo.setup(this.demoElement, this.demoWrapperElement, UIStore);
 
     // resize canvas when window size is changed
     this.windowSizeReaction = reaction(
@@ -49,6 +52,7 @@ class Demo extends Component {
   }
 
   checkMousePosition = () => {
+    const { UIStore } = this.props;
     const boundingBox = this.demoWrapperElement.getBoundingClientRect();
     if (boundingBox.left <= UIStore.mouseX &&
         UIStore.mouseX <= boundingBox.right &&
@@ -72,12 +76,18 @@ class Demo extends Component {
   }
 
   render() {
+    const { system, UIStore } = this.props;
+    const wrapperClasses = classNames({
+      [styles.demoWrapper]: true,
+      [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
+    });
+
     return (
       <div
-        className={styles.demoWrapper}
+        className={wrapperClasses}
         ref={element => this.demoWrapperElement = element}
       >
-        <DemoSettings system={this.props.system} />
+        <DemoSettings system={system} />
         <canvas ref={element => this.demoElement = element} />
       </div>
     );
@@ -85,6 +95,8 @@ class Demo extends Component {
 }
 
 Demo.propTypes = {
+  UIStore: PropTypes.object,
+  SettingsStore: PropTypes.object,
   system: PropTypes.object,
 };
 

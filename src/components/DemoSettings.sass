@@ -1,3 +1,5 @@
+@import '~styles/mixins/responsive'
+
 .sliderSettings
   box-sizing: border-box
   position: absolute
@@ -12,7 +14,7 @@
 .range
   -webkit-appearance: none
   width: 15rem
-  max-width: 20vw
+  max-width: 60vw
   display: block
   margin: 1rem auto
   background: transparent
@@ -20,6 +22,8 @@
   transition: background 0.2s linear
   background: rgba(white, 0.5)
   border: 1px solid rgba(gainsboro, 0.6)
+  +bp('mobile')
+    max-width: 20vw
   &:hover
     background: rgba(white, 0.8)
   &:focus

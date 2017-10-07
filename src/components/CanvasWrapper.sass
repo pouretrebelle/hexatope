@@ -1,4 +1,18 @@
+@import '~styles/mixins/responsive'
+
 .canvasWrapper
   position: relative
   cursor: crosshair
-  width: 50%
+  width: 100%
+  +bp('mobile')
+    width: 50%
+
+.canvasHiddenOnMobile
+  +bp(0px, 'mobile')
+    visibility: hidden
+    position: absolute
+    height: 100%
+    width: 100%
+    top: 0
+    left: 0
+    z-index: -1

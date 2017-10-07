@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { inject, observer } from 'mobx-react';
 import { reaction } from 'mobx';
+import classNames from 'classnames';
 
-import UIStore from 'stores/UIStore';
 import CanvasSettings from './CanvasSettings';
 
 import styles from './CanvasWrapper.sass';
 
+@inject('UIStore') @observer
 class Canvas extends Component {
 
   constructor(props) {
@@ -17,7 +19,9 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    this.props.system.canvas.setup(this.canvasElement, this.canvasWrapperElement, UIStore);
+    const { system, UIStore } = this.props;
+
+    system.canvas.setup(this.canvasElement, this.canvasWrapperElement, UIStore);
     this.renderCanvas();
 
     // render canvas when mouse position is changed
@@ -41,32 +45,38 @@ class Canvas extends Component {
   }
 
   startDrawing = (e) => {
-    UIStore.startPoint(e);
+    this.props.UIStore.startPoint(e);
   }
 
   endDrawing = () => {
-    UIStore.endPoint();
+    this.props.UIStore.endPoint();
   }
 
   renderCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
-    this.props.system.render(UIStore);
+    this.props.system.render(this.props.UIStore);
   }
 
   resizeCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
-    this.props.system.canvas.updateDimensions(this.canvasWrapperElement, UIStore);
+    this.props.system.canvas.updateDimensions(this.canvasWrapperElement, this.props.UIStore);
   }
 
   render() {
+    const { system, UIStore } = this.props;
+    const wrapperClasses = classNames({
+      [styles.canvasWrapper]: true,
+      [styles.canvasHiddenOnMobile]: UIStore.demoVisibleOnMobile,
+    });
+
     this.renderCanvas();
 
     return (
       <div
-        className={styles.canvasWrapper}
+        className={wrapperClasses}
         ref={element => this.canvasWrapperElement = element}
       >
-        <CanvasSettings system={this.props.system} />
+        <CanvasSettings system={system} />
         <canvas
           ref={element => this.canvasElement = element}
           onMouseDown={this.startDrawing}
@@ -81,6 +91,7 @@ class Canvas extends Component {
 }
 
 Canvas.propTypes = {
+  UIStore: PropTypes.object,
   system: PropTypes.object,
 };
 
