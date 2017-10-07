@@ -9,6 +9,7 @@ import styles from 'styles/application.sass';
 
 import settings from 'system/settings';
 import System from 'system/System';
+import Header from 'components/Header';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
 import DownloadButtons from 'components/DownloadButtons';
@@ -50,16 +51,19 @@ class App extends Component {
           <meta name={'twitter:image'} content={this.metaTwitterCard}/>
         </Helmet>
 
-        <div className={styles.content}>
-          <CanvasWrapper
-            system={this.system}
-          />
-          <DemoWrapper
-            system={this.system}
-          />
-          { settings.showDownloadButtons && <DownloadButtons
-            system={this.system}
-          /> }
+        <div className={styles.page}>
+          <Header />
+          <div className={styles.content}>
+            <CanvasWrapper
+              system={this.system}
+            />
+            <DemoWrapper
+              system={this.system}
+            />
+            { settings.showDownloadButtons && <DownloadButtons
+              system={this.system}
+            /> }
+          </div>
           <Typekit kitId={'req1ouh'} />
         </div>
       </div>
