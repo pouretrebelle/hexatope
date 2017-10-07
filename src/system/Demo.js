@@ -17,7 +17,7 @@ class Demo {
     this.mesh = undefined;
   }
 
-  setup(canvas, UIStore) {
+  setup(canvas, wrapperElement, UIStore) {
     this.canvas = canvas;
 
     // scene
@@ -48,7 +48,7 @@ class Demo {
     });
     this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 
-    this.updateDimensions(UIStore);
+    this.updateDimensions(wrapperElement);
 
     // lights
     const light1 = new THREE.PointLight(0xffffff, 0.6);
@@ -94,11 +94,13 @@ class Demo {
     this.render();
   }
 
-  updateDimensions({ windowWidth, windowHeight }) {
-    this.renderer.setSize(windowWidth / 2, windowHeight);
+  updateDimensions(wrapperElement) {
+    const boundingBox = wrapperElement.getBoundingClientRect();
+
+    this.renderer.setSize(boundingBox.width, boundingBox.height);
 
     // update camera aspect ratio
-    this.camera.aspect = (windowWidth / 2) / windowHeight;
+    this.camera.aspect = boundingBox.width / boundingBox.height;
     this.camera.updateProjectionMatrix();
   }
 
