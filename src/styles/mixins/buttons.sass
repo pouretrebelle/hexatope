@@ -1,0 +1,73 @@
+@import '~styles/variables/colors'
+
+=button
+  position: relative
+  display: inline-block
+  margin: 0 3px
+  padding: 5px 10px
+  z-index: 1
+  user-select: none
+  cursor: pointer
+  background: transparent
+  font-family: Ratio, sans-serif
+  font-weight: 400
+  font-size: 14px
+  text-align: center
+  border-radius: 3px
+  border-style: solid
+  border-width: 1px
+  &:before
+    content: ''
+    position: absolute
+    z-index: -1
+    top: 2px
+    left: 2px
+    right: 2px
+    bottom: 2px
+    transition: all 0.15s linear
+  &--active, &:active
+    z-index: 2
+    &:before
+      top: 0px
+      left: 0px
+      right: 0px
+      bottom: 0px
+
+=button-group
+  display: flex
+  margin: 0 1px
+  > *
+    border-radius: 0
+    margin: 0 -1px 0 0
+  > *:first-child, > *:first-child:before
+    border-top-left-radius: 3px
+    border-bottom-left-radius: 3px
+  > *:last-child, > *:last-child:before
+    border-top-right-radius: 3px
+    border-bottom-right-radius: 3px
+
+=button-style($color, $border, $background, $focusOutline)
+  color: $color
+  border-color: $border
+  &:before
+    background: $background
+  &:focus
+    outline: 1px solid $focusOutline
+
+=button-style-active($color, $border, $background)
+  color: $color
+  border-color: $border
+  &:before
+    background: $background
+
+=button--light
+  +button
+  +button-style(#444, #aaa, #efefef, $color-accent-mint)
+  &--active, &:active
+    +button-style-active(#444, mix($color-accent-mint, #555), $color-accent-mint)
+
+=button--dark
+  +button
+  +button-style(#ddd, #444, transparent, rgba($color-accent-mint, 0.4))
+  &--active, &:active
+    +button-style-active(#fff, mix($color-accent-mint, #333), #333)

@@ -13,6 +13,7 @@ class UIStore {
   @observable demoIsAnimating = false;
   @observable curvesExist = false;
   @observable curvesChangedSinceDemoUpdate = true;
+  @observable demoVisibleOnMobile = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -98,6 +99,11 @@ class UIStore {
   @action
   demoAnimationEnded = () => {
     this.demoIsAnimating = false;
+  }
+
+  @action
+  demoIsVisibleOnMobile = (isDemoVisible) => {
+    this.demoVisibleOnMobile = isDemoVisible;
   }
 
   onWindowResized = () => this.updateDimensions();
