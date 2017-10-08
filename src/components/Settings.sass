@@ -14,13 +14,13 @@
 .settingsGroupWrapper
   margin: 0 0 8px 16px
   pointer-events: auto
+  transition: opacity 0.5s ease-out
   +bp('mobile')
     margin: 0 0 16px 24px
 
 .settingsGroup
   display: flex
   flex-wrap: wrap
-  transition: opacity 0.2s linear
 
 .settingsGroupHidden
   opacity: 0
@@ -53,29 +53,22 @@
   max-width: 200px
 
 .refreshButton
-  +bp(0px, 'mobile')
-    display: none
+  +button--light
+  +button--large
   position: absolute
-  top: 50%
-  left: 50%
+  bottom: 24px
+  left: 24px
   opacity: 0
   pointer-events: none
   cursor: pointer
-  transition: opacity 0.5s linear
-  transform: translate(-50%, -50%)
-  background: whitesmoke
-  padding: 1rem
-  font-size: 1.25rem
-  border: 1px solid silver
-  border-radius: 3px
-  text-transform: uppercase
+  transition: opacity 0.5s linear, bottom 0s linear 0.5s, left 0s linear 0.5s, transform 0s linear 0.5s
+  +bp(0px, 'mobile')
+    display: none
 
-.refreshButton:focus
-  outline: none
-  background: gainsboro
-
-.refreshButtonHint
-  opacity: 0.5
+.refreshButtonCentered
+  left: 50%
+  bottom: 50%
+  transform: translate(-50%, 50%)
 
 .refreshButtonVisible
   opacity: 1
