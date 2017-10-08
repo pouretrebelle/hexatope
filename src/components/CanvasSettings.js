@@ -33,9 +33,9 @@ class CanvasSettings extends Component {
   render() {
     const { toolMode } = this.props.SettingsStore;
 
-    const buttonClasses = (editMode) => classNames({
+    const buttonClasses = (buttonMode) => classNames({
       [styles.button]: true,
-      [styles.buttonActive]: toolMode === editMode,
+      [styles.buttonActive]: toolMode === buttonMode,
     });
 
     return (

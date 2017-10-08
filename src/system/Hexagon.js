@@ -31,7 +31,7 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
-    this.editMode = false;
+    this.layoutCycleMode = false;
 
     // chose random layout seed
     // regenerated when hex goes from inactive to active
@@ -159,7 +159,7 @@ class Hexagon {
 
   initialiseLayoutProgression = () => {
     // return if already initialised, aka nailed it
-    if (this.editMode) return;
+    if (this.layoutCycleMode) return;
 
     // reset wait timer
     this.layoutWaitTimer = undefined;
@@ -175,7 +175,7 @@ class Hexagon {
 
   cancelLayoutProgression = () => {
     // remove state, oh no
-    this.editMode = false;
+    this.layoutCycleMode = false;
 
     // reset current layout to initial
     this.layoutSeed = this.initialLayoutSeed;
@@ -204,7 +204,7 @@ class Hexagon {
     }
 
     // set hovering now and not at the start of timer
-    this.editMode = true;
+    this.layoutCycleMode = true;
 
     const formation = this.getFormation();
     if (formation > 0) {
@@ -410,8 +410,8 @@ class Hexagon {
 
   addCurves(formation, edgeOrder) {
     let layouts = [this.getLayout(formation, this.layoutSeed)];
-    // if editMode we want to show the initial layout curves but faded
-    if (this.editMode) {
+    // if layoutCycleMode we want to show the initial layout curves but faded
+    if (this.layoutCycleMode) {
       layouts.push(this.getLayout(formation, this.initialLayoutSeed));
     }
 
