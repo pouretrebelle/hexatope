@@ -40,10 +40,15 @@ class DemoSettings extends Component {
       [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
     });
 
+    const settingsGroupMaterialClasses = classNames({
+      [styles.settingsGroupWrapper]: true,
+      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
+    });
+
     const settingsGroupDepthClasses = classNames({
       [styles.settingsGroupWrapper]: true,
       [styles.settingsGroupDepth]: true,
-      [styles.settingsGroupDepthHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
+      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
     });
 
     const materialButtonClasses = (material) => classNames({
@@ -61,7 +66,7 @@ class DemoSettings extends Component {
         </button>
         <div className={styles.settings}>
 
-          <div className={styles.settingsGroupWrapper}>
+          <div className={settingsGroupMaterialClasses}>
             <legend className={styles.settingsGroupTitle}>
               Material
             </legend>
