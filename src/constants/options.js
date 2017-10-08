@@ -1,6 +1,6 @@
 export const TOOL_MODES = {
-  PENCIL: 'pencil',
-  ERASER: 'eraser',
+  DRAW: 'draw',
+  ERASE: 'erase',
 };
 
 export const MATERIALS = {

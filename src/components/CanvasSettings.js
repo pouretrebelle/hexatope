@@ -13,12 +13,12 @@ class CanvasSettings extends Component {
     super(props);
   }
 
-  onPencilButtonClicked = () => {
-    this.props.SettingsStore.setModeToPencil();
+  onDrawButtonClicked = () => {
+    this.props.SettingsStore.setModeToDraw();
   }
 
-  onEraserButtonClicked = () => {
-    this.props.SettingsStore.setModeToEraser();
+  onEraseButtonClicked = () => {
+    this.props.SettingsStore.setModeToErase();
   }
 
   onClearButtonClicked = () => {
@@ -43,14 +43,14 @@ class CanvasSettings extends Component {
           <div className={styles.settingsGroup}>
             <div className={styles.buttonGroup}>
               <button
-                className={buttonClasses(TOOL_MODES.PENCIL)}
-                onClick={this.onPencilButtonClicked}
+                className={buttonClasses(TOOL_MODES.DRAW)}
+                onClick={this.onDrawButtonClicked}
               >
                 Draw
               </button>
               <button
-                className={buttonClasses(TOOL_MODES.ERASER)}
-                onClick={this.onEraserButtonClicked}
+                className={buttonClasses(TOOL_MODES.ERASE)}
+                onClick={this.onEraseButtonClicked}
               >
                 Erase
               </button>

@@ -5,17 +5,17 @@ class SettingsStore {
 
   @observable depthOverlapScalar = 0.5;
   @observable depthCurvatureScalar = 0.5;
-  @observable toolMode = TOOL_MODES.PENCIL;
+  @observable toolMode = TOOL_MODES.DRAW;
   @observable material = MATERIALS.SILVER;
 
   @action
-  setModeToPencil = () => {
-    this.toolMode = TOOL_MODES.PENCIL;
+  setModeToDraw = () => {
+    this.toolMode = TOOL_MODES.DRAW;
   }
 
   @action
-  setModeToEraser = () => {
-    this.toolMode = TOOL_MODES.ERASER;
+  setModeToErase = () => {
+    this.toolMode = TOOL_MODES.ERASE;
   }
 
   @action

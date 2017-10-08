@@ -130,7 +130,7 @@ class Hexagon {
     // and not in the process at all
     // and it's not already the hovered hexagon
     if (mouseIsInside &&
-        SettingsStore.toolMode == TOOL_MODES.PENCIL &&
+        SettingsStore.toolMode == TOOL_MODES.DRAW &&
         this.active &&
         !this.layoutWaitTimer &&
         !this.layoutProgressionTimer &&
