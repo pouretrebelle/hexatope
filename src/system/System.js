@@ -4,7 +4,7 @@ import Demo from './Demo';
 import Hexagon from './Hexagon';
 import { matchCurves, configureDepth } from 'utils/curveUtils';
 import SettingsStore from 'stores/SettingsStore';
-import * as MODES from 'constants/toolModes';
+import { TOOL_MODES } from 'constants/options';
 
 class System {
   constructor(UIStore) {
@@ -88,7 +88,7 @@ class System {
 
       // increment on left mouse button in pencil mode
       if (lastMouseButton == 0 &&
-          SettingsStore.toolMode === MODES.PENCIL_MODE &&
+          SettingsStore.toolMode === TOOL_MODES.PENCIL &&
           this.mouseTargetHex.nextActive < 2) {
 
         // update UIStore value for demo ui changes
@@ -99,7 +99,7 @@ class System {
 
       // decrement on right mouse button or in eraser mode
       else if (
-        (lastMouseButton == 2 || SettingsStore.toolMode === MODES.ERASER_MODE) &&
+        (lastMouseButton == 2 || SettingsStore.toolMode === TOOL_MODES.ERASER) &&
         this.mouseTargetHex.nextActive > 0) {
 
         // update UIStore value for demo ui changes

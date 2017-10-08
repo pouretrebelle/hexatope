@@ -4,7 +4,7 @@ import Vector2 from 'utils/Vector2';
 import settings from './settings';
 import { drawFilledHexagon } from 'utils/hexagonUtils';
 import SettingsStore from 'stores/SettingsStore';
-import * as MODES from 'constants/toolModes';
+import { TOOL_MODES } from 'constants/options';
 
 class Canvas {
   constructor(system) {
@@ -96,7 +96,7 @@ class Canvas {
   }
 
   drawMouseHexagon() {
-    if (SettingsStore.toolMode === MODES.PENCIL_MODE) {
+    if (SettingsStore.toolMode === TOOL_MODES.PENCIL) {
       this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
     }
     else {
@@ -148,7 +148,7 @@ class Canvas {
       const { start, end } = curve;
       c.strokeStyle = settings.lineColor;
       if (curve.drawFaded ||
-          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === MODES.ERASER_MODE)) {
+          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === TOOL_MODES.ERASER)) {
         c.strokeStyle = settings.lineColorFaded;
       }
       c.beginPath();

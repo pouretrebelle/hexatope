@@ -5,6 +5,8 @@ import { clamp } from 'utils/numberUtils';
 import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
 import UIStore from 'stores/UIStore';
+import SettingsStore from 'stores/SettingsStore';
+import { MATERIALS } from 'constants/options';
 
 class Demo {
   constructor(system) {
@@ -13,7 +15,7 @@ class Demo {
     this.scene = undefined;
     this.camera = undefined;
     this.renderer = undefined;
-    this.material = undefined;
+    this.materials = {};
     this.mesh = undefined;
   }
 
@@ -79,19 +81,30 @@ class Demo {
     const envMap = new THREE.CubeTextureLoader().load(envMapURLs);
 
     // material
-    this.material = new THREE.MeshStandardMaterial({
-      color: 0xffffff,
-      roughness: 0.7,
+    this.materials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
+      color: 0xeff1f2,
+      roughness: 0.6,
       metalness: 0.75,
       envMap: envMap,
       envMapIntensity: 1,
     });
+    this.materials[MATERIALS.GOLD] = new THREE.MeshStandardMaterial({
+      color: 0xd3bb74,
+      roughness: 0.5,
+      metalness: 0.7,
+      envMap: envMap,
+      envMapIntensity: 1,
+    });
 
-    this.ghostMaterial = this.material.clone();
+    this.ghostMaterial = this.materials[MATERIALS.SILVER].clone();
     this.ghostMaterial.metalness = 0.6;
 
     // initialise render loop
     this.render();
+  }
+
+  getMaterial() {
+    return this.materials[SettingsStore.material];
   }
 
   updateDimensions(wrapperElement) {
@@ -136,7 +149,7 @@ class Demo {
       );
       const tube = new THREE.TubeBufferGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
 
-      const tubeMesh = new THREE.Mesh(tube, this.material);
+      const tubeMesh = new THREE.Mesh(tube, this.getMaterial());
       curve.tubeMesh = tubeMesh;
       group.add(tubeMesh);
 
@@ -147,7 +160,7 @@ class Demo {
           const point = this.getVec3PointMerge(curve.hexagonPosition, cap.pos, modelSettings.scale, cap.posZ);
           const sphere = new THREE.SphereBufferGeometry(tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, modelSettings.tubeRadiusSegments);
           sphere.translate(point.x, point.y, point.z);
-          const sphereMesh = new THREE.Mesh(sphere, this.material);
+          const sphereMesh = new THREE.Mesh(sphere, this.getMaterial());
           cap.sphereMesh = sphereMesh;
           group.add(sphereMesh);
         }
@@ -346,7 +359,7 @@ class Demo {
       exportGeometry.merge(new THREE.Geometry().fromBufferGeometry(mesh.geometry))
     );
 
-    const exportMesh = new THREE.Mesh(exportGeometry, this.material);
+    const exportMesh = new THREE.Mesh(exportGeometry, this.getMaterial());
 
     const blob = new Blob(
       [exporter.parse(exportMesh)],

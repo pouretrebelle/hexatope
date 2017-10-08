@@ -1,20 +1,31 @@
 import { observable, action } from 'mobx';
-import * as MODES from 'constants/toolModes';
+import { TOOL_MODES, MATERIALS } from 'constants/options';
 
 class SettingsStore {
 
   @observable depthOverlapScalar = 0.5;
   @observable depthCurvatureScalar = 0.5;
-  @observable toolMode = MODES.PENCIL_MODE;
+  @observable toolMode = TOOL_MODES.PENCIL;
+  @observable material = MATERIALS.GOLD;
 
   @action
   setModeToPencil = () => {
-    this.toolMode = MODES.PENCIL_MODE;
+    this.toolMode = TOOL_MODES.PENCIL;
   }
 
   @action
   setModeToEraser = () => {
-    this.toolMode = MODES.ERASER_MODE;
+    this.toolMode = TOOL_MODES.ERASER;
+  }
+
+  @action
+  setMaterialToGold = () => {
+    this.material = MATERIALS.GOLD;
+  }
+
+  @action
+  setMaterialToSilver = () => {
+    this.material = MATERIALS.SILVER;
   }
 
   @action

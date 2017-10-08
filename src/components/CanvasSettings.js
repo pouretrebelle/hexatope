@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import * as MODES from 'constants/toolModes';
+import { TOOL_MODES } from 'constants/options';
 
 import Tooltip from './common/Tooltip';
 import PencilIcon from './icons/PencilIcon';
@@ -43,7 +43,7 @@ class CanvasSettings extends Component {
       <div className={styles.settings}>
         <Tooltip label={'draw'}>
           <button
-            className={buttonClasses(MODES.PENCIL_MODE)}
+            className={buttonClasses(TOOL_MODES.PENCIL)}
             onClick={this.onPencilButtonClicked}
           >
             <PencilIcon className={styles.icon} />
@@ -51,7 +51,7 @@ class CanvasSettings extends Component {
         </Tooltip>
         <Tooltip label={'erase'}>
           <button
-            className={buttonClasses(MODES.ERASER_MODE)}
+            className={buttonClasses(TOOL_MODES.ERASER)}
             onClick={this.onEraserButtonClicked}
           >
             <EraserIcon className={styles.icon} />
