@@ -6,7 +6,7 @@ class SettingsStore {
   @observable depthOverlapScalar = 0.5;
   @observable depthCurvatureScalar = 0.5;
   @observable toolMode = TOOL_MODES.PENCIL;
-  @observable material = MATERIALS.GOLD;
+  @observable material = MATERIALS.SILVER;
 
   @action
   setModeToPencil = () => {
