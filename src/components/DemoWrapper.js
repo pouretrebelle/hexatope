@@ -44,6 +44,7 @@ class Demo extends Component {
       () => [
         SettingsStore.depthOverlapScalar,
         SettingsStore.depthCurvatureScalar,
+        SettingsStore.material,
       ],
       () => this.renderDemo(false),
     );

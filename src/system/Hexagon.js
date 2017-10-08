@@ -6,7 +6,7 @@ import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
 import SettingsStore from 'stores/SettingsStore';
 import { LAYOUT_PROGRESSION_DELAY, LAYOUT_PROGRESSION_INTERVAL } from 'constants/timing';
-import * as MODES from 'constants/toolModes';
+import { TOOL_MODES } from 'constants/options';
 import Curve from './Curve';
 
 class Hexagon {
@@ -130,7 +130,7 @@ class Hexagon {
     // and not in the process at all
     // and it's not already the hovered hexagon
     if (mouseIsInside &&
-        SettingsStore.toolMode == MODES.PENCIL_MODE &&
+        SettingsStore.toolMode == TOOL_MODES.PENCIL &&
         this.active &&
         !this.layoutWaitTimer &&
         !this.layoutProgressionTimer &&

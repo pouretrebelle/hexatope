@@ -42,6 +42,8 @@ class DemoSettings extends Component {
 
     return (
       <div>
+        <button onClick={SettingsStore.setMaterialToGold}>gold</button>
+        <button onClick={SettingsStore.setMaterialToSilver}>silver</button>
         <button
           className={refreshButtonClasses}
           onClick={this.refreshDemo}
