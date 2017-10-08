@@ -96,11 +96,11 @@ class Canvas {
   }
 
   drawMouseHexagon() {
-    if (SettingsStore.toolMode === TOOL_MODES.PENCIL) {
+    if (SettingsStore.toolMode === TOOL_MODES.DRAW) {
       this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
     }
     else {
-      this.c.fillStyle = this.system.isDrawing ? settings.mouseEraserActiveColor : settings.mouseEraserColor;
+      this.c.fillStyle = this.system.isDrawing ? settings.mouseEraseActiveColor : settings.mouseEraseColor;
     }
     const target = this.system.mouseTargetHex;
     if (target) {
@@ -148,7 +148,7 @@ class Canvas {
       const { start, end } = curve;
       c.strokeStyle = settings.lineColor;
       if (curve.drawFaded ||
-          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === TOOL_MODES.ERASER)) {
+          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === TOOL_MODES.ERASE)) {
         c.strokeStyle = settings.lineColorFaded;
       }
       c.beginPath();

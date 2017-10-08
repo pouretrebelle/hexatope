@@ -86,9 +86,9 @@ class System {
         this.mouseTargetHex &&
         !this.mouseTargetHex.editMode) {
 
-      // increment on left mouse button in pencil mode
+      // increment on left mouse button in draw mode
       if (lastMouseButton == 0 &&
-          SettingsStore.toolMode === TOOL_MODES.PENCIL &&
+          SettingsStore.toolMode === TOOL_MODES.DRAW &&
           this.mouseTargetHex.nextActive < 2) {
 
         // update UIStore value for demo ui changes
@@ -97,9 +97,9 @@ class System {
         this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
       }
 
-      // decrement on right mouse button or in eraser mode
+      // decrement on right mouse button or in erase mode
       else if (
-        (lastMouseButton == 2 || SettingsStore.toolMode === TOOL_MODES.ERASER) &&
+        (lastMouseButton == 2 || SettingsStore.toolMode === TOOL_MODES.ERASE) &&
         this.mouseTargetHex.nextActive > 0) {
 
         // update UIStore value for demo ui changes
