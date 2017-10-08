@@ -17,6 +17,10 @@ class CanvasSettings extends Component {
     this.props.SettingsStore.setModeToDraw();
   }
 
+  onEditButtonClicked = () => {
+    this.props.SettingsStore.setModeToEdit();
+  }
+
   onEraseButtonClicked = () => {
     this.props.SettingsStore.setModeToErase();
   }
@@ -47,6 +51,12 @@ class CanvasSettings extends Component {
                 onClick={this.onDrawButtonClicked}
               >
                 Draw
+              </button>
+              <button
+                className={buttonClasses(TOOL_MODES.EDIT)}
+                onClick={this.onEditButtonClicked}
+              >
+                Edit
               </button>
               <button
                 className={buttonClasses(TOOL_MODES.ERASE)}
