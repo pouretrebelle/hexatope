@@ -4,11 +4,6 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { TOOL_MODES } from 'constants/options';
 
-import Tooltip from './common/Tooltip';
-import PencilIcon from './icons/PencilIcon';
-import EraserIcon from './icons/EraserIcon';
-import ClearIcon from './icons/ClearIcon';
-
 import styles from './CanvasSettings.sass';
 
 @inject('SettingsStore', 'UIStore') @observer
@@ -41,30 +36,31 @@ class CanvasSettings extends Component {
 
     return (
       <div className={styles.settings}>
-        <Tooltip label={'draw'}>
-          <button
-            className={buttonClasses(TOOL_MODES.PENCIL)}
-            onClick={this.onPencilButtonClicked}
-          >
-            <PencilIcon className={styles.icon} />
-          </button>
-        </Tooltip>
-        <Tooltip label={'erase'}>
-          <button
-            className={buttonClasses(TOOL_MODES.ERASER)}
-            onClick={this.onEraserButtonClicked}
-          >
-            <EraserIcon className={styles.icon} />
-          </button>
-        </Tooltip>
-        <Tooltip label={'clear'}>
+        <div className={styles.settingsGroup}>
+          <legend className={styles.settingsGroupTitle}>
+            Drawing modes
+          </legend>
+          <div className={styles.buttonGroup}>
+            <button
+              className={buttonClasses(TOOL_MODES.PENCIL)}
+              onClick={this.onPencilButtonClicked}
+            >
+              Draw
+            </button>
+            <button
+              className={buttonClasses(TOOL_MODES.ERASER)}
+              onClick={this.onEraserButtonClicked}
+            >
+              Erase
+            </button>
+          </div>
           <button
             className={styles.button}
             onClick={this.onClearButtonClicked}
           >
-            <ClearIcon className={styles.icon} />
+            Clear
           </button>
-        </Tooltip>
+        </div>
       </div>
     );
   }
