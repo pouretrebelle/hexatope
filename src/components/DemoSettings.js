@@ -101,6 +101,7 @@ class DemoSettings extends Component {
                 min={'0'}
                 max={'1'}
                 step={'any'}
+                title={'Overlap'}
               />
               <input
                 type={'range'}
@@ -110,6 +111,7 @@ class DemoSettings extends Component {
                 min={'0'}
                 max={'1'}
                 step={'any'}
+                title={'Double Curve'}
               />
             </div>
           </div>
