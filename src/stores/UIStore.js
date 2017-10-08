@@ -11,6 +11,7 @@ class UIStore {
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
   @observable demoIsAnimating = false;
+  @observable demoIsEmpty = true;
   @observable curvesExist = false;
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
@@ -88,6 +89,7 @@ class UIStore {
 
   @action
   demoHasBeenUpdated = () => {
+    this.demoIsEmpty = false;
     this.curvesChangedSinceDemoUpdate = false;
   }
 

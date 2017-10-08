@@ -36,8 +36,8 @@ class DemoSettings extends Component {
 
     const refreshButtonClasses = classNames({
       [styles.refreshButton]: true,
-      [styles.refreshButtonHint]: UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
-      [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
+      [styles.refreshButtonCentered]: UIStore.demoIsEmpty,
+      [styles.refreshButtonVisible]: UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
     });
 
     const settingsGroupMaterialClasses = classNames({
@@ -62,7 +62,7 @@ class DemoSettings extends Component {
           className={refreshButtonClasses}
           onClick={this.refreshDemo}
         >
-          Render
+          Animate
         </button>
         <div className={styles.settings}>
 
