@@ -84,7 +84,7 @@ class System {
         this.isDrawing &&
         this.mouseTargetHexLast !== this.mouseTargetHex &&
         this.mouseTargetHex &&
-        !this.mouseTargetHex.editMode) {
+        !this.mouseTargetHex.layoutCycleMode) {
 
       // increment on left mouse button in draw mode
       if (lastMouseButton == 0 &&
@@ -118,7 +118,7 @@ class System {
     if (this.canvas.isMouseInside &&
         this.isDrawing &&
         this.mouseTargetHex &&
-        this.mouseTargetHex.editMode) {
+        this.mouseTargetHex.layoutCycleMode) {
       this.mouseTargetHex.freezeLayout();
     }
 
