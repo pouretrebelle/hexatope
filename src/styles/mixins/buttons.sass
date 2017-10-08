@@ -26,6 +26,8 @@
     right: 2px
     bottom: 2px
     transition: all 0.15s linear
+  &:focus
+    outline: none
   &Active, &:active
     z-index: 2
     &:before
@@ -53,7 +55,7 @@
   &:before
     background: $background
   &:focus
-    outline: 1px solid $focusOutline
+    box-shadow: 0 0 3px 1px $focusOutline
 
 =button-style-active($color, $border, $background)
   color: $color
