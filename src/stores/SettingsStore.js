@@ -14,6 +14,11 @@ class SettingsStore {
   }
 
   @action
+  setModeToEdit = () => {
+    this.toolMode = TOOL_MODES.EDIT;
+  }
+
+  @action
   setModeToErase = () => {
     this.toolMode = TOOL_MODES.ERASE;
   }

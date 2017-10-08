@@ -1,5 +1,6 @@
 export const TOOL_MODES = {
   DRAW: 'draw',
+  EDIT: 'edit',
   ERASE: 'erase',
 };
 
