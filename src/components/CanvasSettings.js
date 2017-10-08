@@ -36,30 +36,32 @@ class CanvasSettings extends Component {
 
     return (
       <div className={styles.settings}>
-        <div className={styles.settingsGroup}>
+        <div className={styles.settingsGroupWrapper}>
           <legend className={styles.settingsGroupTitle}>
             Drawing modes
           </legend>
-          <div className={styles.buttonGroup}>
+          <div className={styles.settingsGroup}>
+            <div className={styles.buttonGroup}>
+              <button
+                className={buttonClasses(TOOL_MODES.PENCIL)}
+                onClick={this.onPencilButtonClicked}
+              >
+                Draw
+              </button>
+              <button
+                className={buttonClasses(TOOL_MODES.ERASER)}
+                onClick={this.onEraserButtonClicked}
+              >
+                Erase
+              </button>
+            </div>
             <button
-              className={buttonClasses(TOOL_MODES.PENCIL)}
-              onClick={this.onPencilButtonClicked}
+              className={styles.button}
+              onClick={this.onClearButtonClicked}
             >
-              Draw
-            </button>
-            <button
-              className={buttonClasses(TOOL_MODES.ERASER)}
-              onClick={this.onEraserButtonClicked}
-            >
-              Erase
+              Clear
             </button>
           </div>
-          <button
-            className={styles.button}
-            onClick={this.onClearButtonClicked}
-          >
-            Clear
-          </button>
         </div>
       </div>
     );

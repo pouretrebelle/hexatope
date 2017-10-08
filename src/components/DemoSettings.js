@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
+import { MATERIALS } from 'constants/options';
 
 import styles from './Settings.sass';
 
@@ -36,15 +37,18 @@ class DemoSettings extends Component {
     });
 
     const settingsGroupDepthClasses = classNames({
-      [styles.settingsGroup]: true,
+      [styles.settingsGroupWrapper]: true,
       [styles.settingsGroupDepth]: true,
       [styles.settingsGroupDepthHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
     });
 
+    const materialButtonClasses = (material) => classNames({
+      [styles.button]: true,
+      [styles.buttonActive]: SettingsStore.material === material,
+    });
+
     return (
       <div>
-        <button onClick={SettingsStore.setMaterialToGold}>gold</button>
-        <button onClick={SettingsStore.setMaterialToSilver}>silver</button>
         <button
           className={refreshButtonClasses}
           onClick={this.refreshDemo}
@@ -52,29 +56,55 @@ class DemoSettings extends Component {
           Render
         </button>
         <div className={styles.settings}>
+
+          <div className={styles.settingsGroupWrapper}>
+            <legend className={styles.settingsGroupTitle}>
+              Material
+            </legend>
+            <div className={styles.settingsGroup}>
+              <div className={styles.buttonGroup}>
+                <button
+                  onClick={SettingsStore.setMaterialToSilver}
+                  className={materialButtonClasses(MATERIALS.SILVER)}
+                >
+                  Silver
+                </button>
+                <button
+                  onClick={SettingsStore.setMaterialToGold}
+                  className={materialButtonClasses(MATERIALS.GOLD)}
+                >
+                  Gold
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className={settingsGroupDepthClasses}>
             <legend className={styles.settingsGroupTitle}>
               Depth control
             </legend>
-            <input
-              type={'range'}
-              className={styles.range}
-              onChange={this.onDepthOverlapChanged}
-              value={SettingsStore.depthOverlapScalar}
-              min={'0'}
-              max={'1'}
-              step={'any'}
-            />
-            <input
-              type={'range'}
-              className={styles.range}
-              onChange={this.onDepthCurvatureChanged}
-              value={SettingsStore.depthCurvatureScalar}
-              min={'0'}
-              max={'1'}
-              step={'any'}
-            />
+            <div className={styles.settingsGroup}>
+              <input
+                type={'range'}
+                className={styles.range}
+                onChange={this.onDepthOverlapChanged}
+                value={SettingsStore.depthOverlapScalar}
+                min={'0'}
+                max={'1'}
+                step={'any'}
+              />
+              <input
+                type={'range'}
+                className={styles.range}
+                onChange={this.onDepthCurvatureChanged}
+                value={SettingsStore.depthCurvatureScalar}
+                min={'0'}
+                max={'1'}
+                step={'any'}
+              />
+            </div>
           </div>
+
         </div>
       </div>
     );
