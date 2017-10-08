@@ -13,14 +13,18 @@ class DemoSettings extends Component {
     super(props);
   }
 
+  componentWillMount() {
+    // randomise depth sliders on load
+    this.props.SettingsStore.updateDepthOverlap(Math.random());
+    this.props.SettingsStore.updateDepthCurvature(Math.random());
+  }
+
   onDepthOverlapChanged = (e) => {
     this.props.SettingsStore.updateDepthOverlap(e.target.value);
-    return true;
   }
 
   onDepthCurvatureChanged = (e) => {
     this.props.SettingsStore.updateDepthCurvature(e.target.value);
-    return true;
   }
 
   refreshDemo = () => {
