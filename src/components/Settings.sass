@@ -1,4 +1,38 @@
 @import '~styles/mixins/responsive'
+@import '~styles/mixins/buttons'
+@import '~styles/mixins/inputs'
+
+.settings
+  position: absolute
+  display: flex
+  flex-wrap: wrap
+  left: 0
+  bottom: 0
+  width: 100%
+
+.settingsGroup
+  display: flex
+  flex-wrap: wrap
+  margin: 0 0 8px 16px
+  +bp('mobile')
+    margin: 0 0 16px 24px
+
+.settingsGroupTitle
+  width: 100%
+  margin-bottom: 8px
+  text-transform: uppercase
+  font-size: 14px
+  font-weight: 400
+  +bp('mobile')
+    margin-bottom: 12px
+
+.button
+  +button--light
+  margin: 0 -1px 8px
+
+.buttonGroup
+  +button-group
+  margin-right: 9px
 
 .sliderSettings
   box-sizing: border-box
@@ -12,36 +46,16 @@
   transition: opacity 0.3s linear
 
 .range
-  -webkit-appearance: none
-  width: 15rem
-  max-width: 60vw
-  display: block
-  margin: 1rem auto
-  background: transparent
-  border-radius: 1.3px
-  transition: background 0.2s linear
-  background: rgba(white, 0.5)
-  border: 1px solid rgba(gainsboro, 0.6)
-  +bp('mobile')
-    max-width: 20vw
-  &:hover
-    background: rgba(white, 0.8)
-  &:focus
-    outline: none
-    background: rgba(snow, 0.8)
-  &::-webkit-slider-runnable-track
-    width: 100%
-    height: 1rem
-    cursor: pointer
-  &::-webkit-slider-thumb
-    cursor: pointer
-    -webkit-appearance: none
-    margin-top: -0.25rem
-    height: 1.5rem
-    width: 0.5rem
-    border-radius: 3px
-    background: whitesmoke
-    border: 1px solid silver
+  +range-input
+  margin: 0 0 8px
+
+.settingsGroupDepth
+  max-width: 200px
+  transition: opacity 0.2s linear
+
+.settingsGroupDepthHidden
+  opacity: 0
+  pointer-events: none
 
 .refreshButton
   +bp(0px, 'mobile')
@@ -68,7 +82,6 @@
 .refreshButtonHint
   opacity: 0.5
 
-.sliderSettingsVisible,
 .refreshButtonVisible
   opacity: 1
   pointer-events: auto

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 
-import styles from './DemoSettings.sass';
+import styles from './Settings.sass';
 
 @inject('SettingsStore', 'UIStore') @observer
 class DemoSettings extends Component {
@@ -35,9 +35,10 @@ class DemoSettings extends Component {
       [styles.refreshButtonVisible]: UIStore.isMouseOverDemo && UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
     });
 
-    const sliderWrapperClasses = classNames({
-      [styles.sliderSettings]: true,
-      [styles.sliderSettingsVisible]: UIStore.isMouseOverDemo && !UIStore.curvesChangedSinceDemoUpdate && !UIStore.demoIsAnimating,
+    const settingsGroupDepthClasses = classNames({
+      [styles.settingsGroup]: true,
+      [styles.settingsGroupDepth]: true,
+      [styles.settingsGroupDepthHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
     });
 
     return (
@@ -50,25 +51,30 @@ class DemoSettings extends Component {
         >
           Render
         </button>
-        <div className={sliderWrapperClasses}>
-          <input
-            type={'range'}
-            className={styles.range}
-            onChange={this.onDepthOverlapChanged}
-            value={SettingsStore.depthOverlapScalar}
-            min={'0'}
-            max={'1'}
-            step={'any'}
-          />
-          <input
-            type={'range'}
-            className={styles.range}
-            onChange={this.onDepthCurvatureChanged}
-            value={SettingsStore.depthCurvatureScalar}
-            min={'0'}
-            max={'1'}
-            step={'any'}
-          />
+        <div className={styles.settings}>
+          <div className={settingsGroupDepthClasses}>
+            <legend className={styles.settingsGroupTitle}>
+              Depth control
+            </legend>
+            <input
+              type={'range'}
+              className={styles.range}
+              onChange={this.onDepthOverlapChanged}
+              value={SettingsStore.depthOverlapScalar}
+              min={'0'}
+              max={'1'}
+              step={'any'}
+            />
+            <input
+              type={'range'}
+              className={styles.range}
+              onChange={this.onDepthCurvatureChanged}
+              value={SettingsStore.depthCurvatureScalar}
+              min={'0'}
+              max={'1'}
+              step={'any'}
+            />
+          </div>
         </div>
       </div>
     );

@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
 import { TOOL_MODES } from 'constants/options';
 
-import styles from './CanvasSettings.sass';
+import styles from './Settings.sass';
 
 @inject('SettingsStore', 'UIStore') @observer
 class CanvasSettings extends Component {
