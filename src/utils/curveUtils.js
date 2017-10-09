@@ -238,3 +238,63 @@ const splitCapGroup = (caps) => {
 
   return groups;
 };
+
+
+// takes an array of curves that have already been matched
+// and reduce it to the curves that are part of the largest contiguous shape
+export const isolateLargestShape = (curves) => {
+  let groups = [];
+  let currentGroupIndex = 0;
+
+  // recursive loop from starting curve
+  const triggerCurve = (curve, currentGroup) => {
+    // if it's already been touched recursivity will have happened already
+    if (curve.touched) return;
+
+    // set property so we know if it's been touched before
+    curve.touched = true;
+
+    // add curve to current group
+    currentGroup.push(curve);
+
+    // all of the curves that join onto this one
+    const tryContinuingFrom = [
+      curve.start.aligners,
+      curve.start.extenders,
+      curve.end.aligners,
+      curve.end.extenders,
+    ];
+
+    // trigger each curve that is attached to aligner or extender caps on start and end
+    tryContinuingFrom.forEach(attempt => {
+      attempt.forEach(cap => triggerCurve(cap.curve, currentGroup));
+    });
+  };
+
+  // start at zero, why not
+  let startCurve = curves[0];
+  while (startCurve) {
+    // initialise group as empty array
+    groups[currentGroupIndex] = [];
+
+    // recursively trigger that whole group
+    triggerCurve(startCurve, groups[currentGroupIndex]);
+    currentGroupIndex++;
+
+    // get untouched curves
+    const filteredCurves = curves.filter(curve => !curve.touched);
+    // setting startCurve to undefined will break the while loop
+    startCurve = filteredCurves.length ? filteredCurves[0] : undefined;
+  }
+
+  // remove touched key to avoid object bloat
+  curves.forEach(curve => delete curve.touched);
+
+  // find the biggest group
+  let biggestGroup = [];
+  groups.forEach(group => {
+    biggestGroup = (biggestGroup.length < group.length) ? group : biggestGroup;
+  });
+
+  return biggestGroup;
+};

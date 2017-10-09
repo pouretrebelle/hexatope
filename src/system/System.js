@@ -2,7 +2,7 @@ import settings from './settings';
 import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
-import { matchCurves, configureDepth } from 'utils/curveUtils';
+import { matchCurves, configureDepth, isolateLargestShape } from 'utils/curveUtils';
 
 class System {
   constructor(UIStore) {
@@ -125,6 +125,8 @@ class System {
       curves = matchCurves(curves);
       // smooth over the depths
       curves = configureDepth(curves);
+      // reduce to main piece
+      curves = isolateLargestShape(curves);
     }
 
     return curves;
