@@ -29,6 +29,6 @@ Tooltip.propTypes = {
 
 Tooltip.defaultProps = {
   direction: 'up',
-}
+};
 
 export default Tooltip;

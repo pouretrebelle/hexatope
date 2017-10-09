@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Header.sass';
 
+import Tooltip from 'components/common/Tooltip';
 import Logo from 'components/icons/Logo';
 
 @inject('UIStore') @observer
@@ -36,7 +37,11 @@ class Header extends Component {
           </a>
           <aside className={styles.navbarRight}>
             { !rewardVolumeApproved &&
-              <span>Too Big</span>
+              <Tooltip label={'This design is too large to qualify for a Kickstarter reward, if you\'d still like it please email hello@hexatope.io  and we can arrange somthing'} direction={'down'}>
+                <span className={styles.volumeWarning}>
+                  !
+                </span>
+              </Tooltip>
             }
           </aside>
         </header>
