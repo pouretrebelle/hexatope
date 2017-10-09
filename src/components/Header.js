@@ -26,7 +26,7 @@ class Header extends Component {
       [styles.mobileSelectorItem]: true,
       [styles.mobileSelectorItemActive]: isActive,
     });
-    const { demoVisibleOnMobile } = this.props.UIStore;
+    const { demoVisibleOnMobile, rewardVolumeApproved } = this.props.UIStore;
 
     return (
       <div className={styles.header}>
@@ -34,6 +34,11 @@ class Header extends Component {
           <a href={'/'} className={styles.logoLink}>
             <Logo className={styles.logo} />
           </a>
+          <aside className={styles.navbarRight}>
+            { !rewardVolumeApproved &&
+              <span>Too Big</span>
+            }
+          </aside>
         </header>
 
         <aside className={styles.mobileSelectorWrapper}>

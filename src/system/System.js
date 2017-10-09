@@ -2,7 +2,7 @@ import settings from './settings';
 import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
-import { matchCurves, configureDepth, isolateLargestShape } from 'utils/curveUtils';
+import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
 
 class System {
   constructor(UIStore) {
@@ -127,9 +127,15 @@ class System {
       curves = configureDepth(curves);
       // reduce to main piece
       curves = isolateLargestShape(curves);
+
+      this.calculateVolume(curves);
     }
 
     return curves;
+  }
+
+  calculateVolume(curves) {
+    this.UIStore.setRewardVolumeApproval(getTotalLength(curves) / settings.wireLengthPerCm3 < settings.maxRewardVolumeCm3);
   }
 
   clearHexagons() {

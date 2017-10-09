@@ -320,3 +320,8 @@ export const findMostCentralCurve = (curves, center) => {
 
   return centralCurve;
 };
+
+
+export const getTotalLength = (curves) => {
+  return curves.map(curve => curve.estLength).reduce((sum, value) => (sum + value), 1);
+};
