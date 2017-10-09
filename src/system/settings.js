@@ -14,6 +14,8 @@ export default {
   mouseActiveColor: '#e0e1e2',
   mouseEraseColor: '#ffffff',
   mouseEraseActiveColor: 'rgba(249, 250, 251, 0.8)',
+  mouseEditColor: 'rgba(255, 255, 255, 0)',
+  mouseEditActiveColor: '#e0e1e2',
   inactiveColor: '#ffffff',
   activeColor: '#f6f7f8',
   doubleActiveColor: '#eaebed',

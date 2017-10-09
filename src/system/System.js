@@ -3,8 +3,6 @@ import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
 import { matchCurves, configureDepth } from 'utils/curveUtils';
-import SettingsStore from 'stores/SettingsStore';
-import { TOOL_MODES } from 'constants/options';
 
 class System {
   constructor(UIStore) {
@@ -65,65 +63,37 @@ class System {
   render({ isMouseDownOverCanvas, lastMouseButton, ...props }) {
     this.canvas.updateMousePos(props);
 
-    if (isMouseDownOverCanvas && !this.isDrawing) {
-      // start drawing
-      this.isDrawing = true;
-    }
+    if (this.mouseTargetHex) {
 
-    if (!isMouseDownOverCanvas && this.isDrawing) {
-      // end drawing
-      this.isDrawing = false;
-      // reset last target for multiple clicks on the same hexagon
-      this.mouseTargetHexLast = undefined;
-    }
+      const wasDrawing = this.isDrawing;
+      const isDrawing = isMouseDownOverCanvas;
 
-    // don't do any target update if the mouse is out of bounds
-    // or if it's long hovering
-    // or if it's already been touched
-    if (this.canvas.isMouseInside &&
-        this.isDrawing &&
-        this.mouseTargetHexLast !== this.mouseTargetHex &&
-        this.mouseTargetHex &&
-        !this.mouseTargetHex.layoutCycleMode) {
+      const isNewTargetHex = this.mouseTargetHex !== this.mouseTargetHexLast;
 
-      // increment on left mouse button in draw mode
-      if (lastMouseButton == 0 &&
-          SettingsStore.toolMode === TOOL_MODES.DRAW &&
-          this.mouseTargetHex.nextActive < 2) {
-
-        // update UIStore value for demo ui changes
-        this.curvesHaveChanged();
-
-        this.mouseTargetHex.nextActive = (this.mouseTargetHex.nextActive + 1) % 3;
+      if (wasDrawing && !isDrawing) {
+        // reset last target for multiple clicks
+        this.mouseTargetHexLast = undefined;
       }
 
-      // decrement on right mouse button or in erase mode
-      else if (
-        (lastMouseButton == 2 || SettingsStore.toolMode === TOOL_MODES.ERASE) &&
-        this.mouseTargetHex.nextActive > 0) {
-
-        // update UIStore value for demo ui changes
-        // only if it's actually removing lines
-        this.curvesHaveChanged();
-
-        this.mouseTargetHex.nextActive--;
+      if (!wasDrawing && isDrawing) {
+        this.mouseTargetHex.onMouseClicked(lastMouseButton);
       }
 
-      // update current hex before general update so neighbours can propagate
+      if (isNewTargetHex) {
+        if (this.mouseTargetHexLast) this.mouseTargetHexLast.onMouseLeft();
+        this.mouseTargetHex.onMouseEntered(this.isDrawing, lastMouseButton);
+      }
+
+      // update global var for mouse colours
+      this.isDrawing = isDrawing;
+
       this.mouseTargetHex.update();
       this.mouseTargetHexLast = this.mouseTargetHex;
     }
 
-    // freeze layout if target is long hovering
-    if (this.canvas.isMouseInside &&
-        this.isDrawing &&
-        this.mouseTargetHex &&
-        this.mouseTargetHex.layoutCycleMode) {
-      this.mouseTargetHex.freezeLayout();
-    }
-
     this.updateHexagons();
     this.canvas.draw();
+
   }
 
   getCurvesData() {
