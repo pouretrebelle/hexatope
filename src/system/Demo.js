@@ -96,9 +96,6 @@ class Demo {
       envMapIntensity: 1,
     });
 
-    this.ghostMaterial = this.materials[MATERIALS.SILVER].clone();
-    this.ghostMaterial.metalness = 0.6;
-
     // initialise render loop
     this.render();
   }
@@ -315,21 +312,7 @@ class Demo {
   }
 
   endAnimation() {
-    // find the non-connected pieces
-    const leftoverCurves = this.animatingCurves.filter(curve => !curve.finishedAnimating);
-
-    // if there are no leftovers we're done! yay!
-    if (!leftoverCurves.length) {
-      UIStore.demoAnimationEnded();
-      return;
-    }
-
-    // otherwise we make the rest ghosts and restart the animation
-    leftoverCurves.forEach(curve => {
-      curve.tubeMesh.material = this.ghostMaterial;
-    });
-    leftoverCurves[0].isAnimating = true;
-    leftoverCurves[0].isAnimatingFromMiddle = true;
+    UIStore.demoAnimationEnded();
   }
 
   render = () => {
