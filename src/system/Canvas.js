@@ -96,12 +96,18 @@ class Canvas {
   }
 
   drawMouseHexagon() {
-    if (SettingsStore.toolMode === TOOL_MODES.DRAW) {
-      this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
+    switch (SettingsStore.toolMode) {
+      case TOOL_MODES.DRAW:
+        this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
+        break;
+      case TOOL_MODES.EDIT:
+        this.c.fillStyle = this.system.isDrawing ? settings.mouseEditActiveColor : settings.mouseEditColor;
+        break;
+      case TOOL_MODES.ERASE:
+        this.c.fillStyle = this.system.isDrawing ? settings.mouseEraseActiveColor : settings.mouseEraseColor;
+        break;
     }
-    else {
-      this.c.fillStyle = this.system.isDrawing ? settings.mouseEraseActiveColor : settings.mouseEraseColor;
-    }
+
     const target = this.system.mouseTargetHex;
     if (target) {
       drawFilledHexagon(this.c, target.layoutPos.multiplyNew(settings.hexRadius), this.pixelRatio);
@@ -147,6 +153,8 @@ class Canvas {
     hex.curves.forEach((curve) => {
       const { start, end } = curve;
       c.strokeStyle = settings.lineColor;
+      // fade the curves if in erase mode
+      // or it's the old curve when in layout cycle mode
       if (curve.drawFaded ||
           (hex === this.system.mouseTargetHex && SettingsStore.toolMode === TOOL_MODES.ERASE)) {
         c.strokeStyle = settings.lineColorFaded;

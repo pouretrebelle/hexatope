@@ -5,7 +5,7 @@ import { getPushDepth, getForceDepth } from 'utils/curveUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
 import SettingsStore from 'stores/SettingsStore';
-import { LAYOUT_PROGRESSION_DELAY, LAYOUT_PROGRESSION_INTERVAL } from 'constants/timing';
+import { LAYOUT_CYCLE_DELAY, LAYOUT_CYCLE_INTERVAL } from 'constants/timing';
 import { TOOL_MODES } from 'constants/options';
 import Curve from './Curve';
 
@@ -31,15 +31,16 @@ class Hexagon {
     // establish neighbours
     this.neighbours = [];
 
-    this.layoutCycleMode = false;
+    this.inLayoutCycleMode = false;
+    this.inLayoutEditModePreview = false;
 
     // chose random layout seed
     // regenerated when hex goes from inactive to active
     this.layoutSeed = random();
     // to return to layout on mouse out
     this.initialLayoutSeed = this.layoutSeed;
-    this.layoutWaitTimer = undefined;
-    this.layoutProgressionTimer = undefined;
+    this.layoutCycleWaitTimer = undefined;
+    this.layoutCycleTimer = undefined;
 
     this.curves = [];
   }
@@ -114,7 +115,12 @@ class Hexagon {
     this.active = this.nextActive;
 
     // check whether the mouse is in this hex
-    this.checkMouseTarget();
+    const mouseIsInside = this.checkMouseTarget();
+
+    // set system target to this hex
+    if (mouseIsInside) {
+      this.system.mouseTargetHex = this;
+    }
 
     // update the curves to draw
     this.planCurves();
@@ -122,68 +128,158 @@ class Hexagon {
 
   checkMouseTarget() {
     // roughly check whether the mouse is inside the hexagon
-    const mouseIsInside = (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
-
-    // init if it is inside
-    // and we're in go mode
-    // and it's active
-    // and not in the process at all
-    // and it's not already the hovered hexagon
-    if (mouseIsInside &&
-        SettingsStore.toolMode == TOOL_MODES.DRAW &&
-        this.active &&
-        !this.layoutWaitTimer &&
-        !this.layoutProgressionTimer &&
-        this.system.mouseTargetHex != this) {
-      const timeout = (LAYOUT_PROGRESSION_DELAY > LAYOUT_PROGRESSION_INTERVAL) ? LAYOUT_PROGRESSION_DELAY - LAYOUT_PROGRESSION_INTERVAL : 0;
-      this.layoutWaitTimer = setTimeout(() => {
-        this.initialiseLayoutProgression();
-      }, timeout);
-    }
-
-    // cancel if it's not inside
-    // and is anywhere along the process
-    else if (!mouseIsInside &&
-             (!!this.layoutProgressionTimer ||
-             !!this.layoutWaitTimer)) {
-      this.cancelLayoutProgression();
-    }
-
-    // set system target to this hex
-    if (mouseIsInside) {
-      this.system.mouseTargetHex = this;
-    }
-
-    return mouseIsInside;
+    return (this.system.canvas.relativeMousePos.dist(this.layoutPos.multiplyNew(settings.hexRadius)) < settings.hexRadius);
   }
 
-  initialiseLayoutProgression = () => {
+  incrementActivity = () => {
+    this.nextActive = (this.active === 2) ? 2 : this.active+1;
+    this.system.curvesHaveChanged();
+  }
+
+  decrementActivity = () => {
+    this.nextActive = (this.active === 0) ? 0 : this.active-1;
+    this.system.curvesHaveChanged();
+  }
+
+  onMouseEntered = (isDrawing, lastMouseButton) => {
+    if (isDrawing) {
+      switch (SettingsStore.toolMode) {
+
+        case TOOL_MODES.DRAW:
+          if (lastMouseButton == 2) {
+            this.decrementActivity();
+          } else {
+            this.incrementActivity();
+          }
+          break;
+
+        case TOOL_MODES.EDIT:
+          break;
+
+        case TOOL_MODES.ERASE:
+          this.decrementActivity();
+          break;
+
+      }
+    }
+    else {
+      switch (SettingsStore.toolMode) {
+
+        case TOOL_MODES.DRAW:
+          this.initialiseLayoutCycleWait();
+          break;
+
+        case TOOL_MODES.EDIT:
+          this.initialiseLayoutEdit();
+          break;
+
+        case TOOL_MODES.ERASE:
+          break;
+
+      }
+    }
+  }
+
+  onMouseLeft = () => {
+    switch (SettingsStore.toolMode) {
+
+      case TOOL_MODES.DRAW:
+        this.cancelLayoutCycle();
+        break;
+
+      case TOOL_MODES.EDIT:
+        this.cancelLayoutEdit();
+        break;
+
+      case TOOL_MODES.ERASE:
+        break;
+
+    }
+  }
+
+  onMouseClicked = (lastMouseButton) => {
+    switch (SettingsStore.toolMode) {
+
+      case TOOL_MODES.DRAW:
+        if (this.inLayoutCycleMode) {
+          this.freezeLayout();
+        }
+        else if (lastMouseButton == 2) {
+          this.decrementActivity();
+        }
+        else {
+          this.incrementActivity();
+        }
+        this.cancelLayoutCycle();
+        break;
+
+      case TOOL_MODES.EDIT:
+        this.enactLayoutEdit();
+        break;
+
+      case TOOL_MODES.ERASE:
+        this.decrementActivity();
+        break;
+
+    }
+  }
+
+  initialiseLayoutEdit = () => {
+    this.inLayoutEditModePreview = true;
+    this.progressLayout();
+  }
+
+  cancelLayoutEdit = () => {
+    this.resetLayoutSeed();
+    this.inLayoutEditModePreview = false;
+  }
+
+  enactLayoutEdit = () => {
+    if (!this.inLayoutEditModePreview) {
+      this.progressLayout();
+    }
+    this.freezeLayout();
+    this.inLayoutEditModePreview = false;
+  }
+
+  initialiseLayoutCycleWait = () => {
+    if (this.layoutCycleWaitTimer) return;
+
+    const timeout = (LAYOUT_CYCLE_DELAY > LAYOUT_CYCLE_INTERVAL) ? LAYOUT_CYCLE_DELAY - LAYOUT_CYCLE_INTERVAL : 0;
+
+    this.layoutCycleWaitTimer = setTimeout(() => {
+      this.initialiseLayoutCycle();
+    }, timeout);
+  }
+
+  initialiseLayoutCycle = () => {
     // return if already initialised, aka nailed it
-    if (this.layoutCycleMode) return;
+    if (this.inLayoutCycleMode) return;
 
     // reset wait timer
-    this.layoutWaitTimer = undefined;
+    this.layoutCycleWaitTimer = undefined;
 
     // set initial seed to current seet
     this.initialLayoutSeed = this.layoutSeed;
 
-    // start progression timer
-    this.layoutProgressionTimer = setInterval(() => {
+    // start cycle timer
+    this.layoutCycleTimer = setInterval(() => {
+      this.inLayoutCycleMode = true;
       this.progressLayout();
-    }, LAYOUT_PROGRESSION_INTERVAL);
+    }, LAYOUT_CYCLE_INTERVAL);
   }
 
-  cancelLayoutProgression = () => {
+  cancelLayoutCycle = () => {
     // remove state, oh no
-    this.layoutCycleMode = false;
+    this.inLayoutCycleMode = false;
 
-    // reset current layout to initial
-    this.layoutSeed = this.initialLayoutSeed;
+    this.resetLayoutSeed();
 
     // cancel and clear timers
-    clearInterval(this.layoutProgressionTimer);
-    this.layoutProgressionTimer = undefined;
-    this.layoutWaitTimer = undefined;
+    clearInterval(this.layoutCycleTimer);
+    clearTimeout(this.layoutCycleWaitTimer);
+    this.layoutCycleTimer = undefined;
+    this.layoutCycleWaitTimer = undefined;
   }
 
   freezeLayout() {
@@ -192,20 +288,9 @@ class Hexagon {
 
     // flag system as changed since last update
     this.system.curvesHaveChanged();
-
-    // cancel progression
-    this.cancelLayoutProgression();
   }
 
   progressLayout = () => {
-    if (!this.checkMouseTarget()) {
-      this.cancelLayoutProgression();
-      return;
-    }
-
-    // set hovering now and not at the start of timer
-    this.layoutCycleMode = true;
-
     const formation = this.getFormation();
     if (formation > 0) {
 
@@ -218,6 +303,11 @@ class Hexagon {
       this.planCurves();
       this.system.canvas.draw();
     }
+  }
+
+  resetLayoutSeed() {
+    // reset current layout to initial
+    this.layoutSeed = this.initialLayoutSeed;
   }
 
   countActiveNeighbours() {
@@ -410,8 +500,8 @@ class Hexagon {
 
   addCurves(formation, edgeOrder) {
     let layouts = [this.getLayout(formation, this.layoutSeed)];
-    // if layoutCycleMode we want to show the initial layout curves but faded
-    if (this.layoutCycleMode) {
+    // if layout seed is different to initial we want to show the inital layout as faded curves
+    if (this.initialLayoutSeed != this.layoutSeed) {
       layouts.push(this.getLayout(formation, this.initialLayoutSeed));
     }
 
