@@ -16,6 +16,7 @@ class UIStore {
   @observable curvesExist = false;
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
+  @observable rewardVolumeApproved = true;
   @observable drawMouseHexagon = true;
   @observable showChain = false;
   @observable hangingPointAngle = 0;
@@ -164,6 +165,11 @@ class UIStore {
   @action
   updateHangingPointAngle = (angle) => {
     this.hangingPointAngle = angle;
+  }
+
+  @action
+  setRewardVolumeApproval = (approved) => {
+    this.rewardVolumeApproved = approved;
   }
 
   onWindowResized = () => this.updateDimensions();

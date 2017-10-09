@@ -30,6 +30,8 @@ export default {
   animationStep: 8 * 6,
   animationRangeMax: 20 * 8 * 6,
   showDownloadButtons: false,
+  wireLengthPerCm3: 300,
+  maxRewardVolumeCm3: 0.7,
 };
 
 export const demoModelSettings = {
