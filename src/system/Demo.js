@@ -320,6 +320,10 @@ class Demo {
     UIStore.demoAnimationEnded();
   }
 
+  startChosingHangingPoint = () => {
+    UIStore.startChosingHangingPoint();
+  }
+
   render = () => {
     // autorotate when animating and when the mouse is over the canvas
     this.controls.autoRotate = UIStore.demoIsAnimating || !UIStore.isMouseOverDemo;
