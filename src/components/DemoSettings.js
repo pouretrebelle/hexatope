@@ -31,6 +31,10 @@ class DemoSettings extends Component {
     this.props.system.demo.updateAndAnimateCurves();
   }
 
+  onHangingPointButtonClicked = () => {
+    this.props.system.demo.startChosingHangingPoint();
+  }
+
   render() {
     const { SettingsStore, UIStore } = this.props;
 
@@ -113,6 +117,20 @@ class DemoSettings extends Component {
                 step={'any'}
                 title={'Double Curve'}
               />
+            </div>
+          </div>
+
+          <div className={settingsGroupDepthClasses}>
+            <legend className={styles.settingsGroupTitle}>
+              Pendant
+            </legend>
+            <div className={styles.settingsGroup}>
+              <button
+                onClick={this.onHangingPointButtonClicked}
+                className={styles.button}
+              >
+                Chose Hanging Position
+              </button>
             </div>
           </div>
 
