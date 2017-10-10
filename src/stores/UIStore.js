@@ -16,6 +16,7 @@ class UIStore {
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
   @observable drawMouseHexagon = true;
+  @observable isChosingHangingPoint = false;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -117,6 +118,15 @@ class UIStore {
   @action
   stopDrawingMouseHexagon = () => {
     this.drawMouseHexagon = false;
+  }
+
+  startChosingHangingPoint = () => {
+    this.isChosingHangingPoint = true;
+  }
+
+  @action
+  endChosingHangingPoint = () => {
+    this.isChosingHangingPoint = false;
   }
 
   onWindowResized = () => this.updateDimensions();
