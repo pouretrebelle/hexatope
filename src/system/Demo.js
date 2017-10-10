@@ -82,14 +82,14 @@ class Demo {
 
     // material
     this.materials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
-      color: 0xeff1f2,
+      color: 0xf7fafc,
       roughness: 0.6,
-      metalness: 0.75,
+      metalness: 0.7,
       envMap: envMap,
       envMapIntensity: 1,
     });
     this.materials[MATERIALS.GOLD] = new THREE.MeshStandardMaterial({
-      color: 0xd3bb74,
+      color: 0xf7d491,
       roughness: 0.5,
       metalness: 0.7,
       envMap: envMap,
