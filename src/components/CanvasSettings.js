@@ -28,6 +28,7 @@ class CanvasSettings extends Component {
   onClearButtonClicked = () => {
     this.props.system.clearHexagons();
     this.props.UIStore.canvasHasBeenCleared();
+    this.props.SettingsStore.setModeToDraw();
   }
 
   onRotationVerticalButtonClicked = () => {
