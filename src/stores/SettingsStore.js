@@ -8,6 +8,7 @@ class SettingsStore {
   @observable toolMode = TOOL_MODES.DRAW;
   @observable gridRotation = GRID_ROTATION.VERTICAL;
   @observable material = MATERIALS.SILVER;
+  @observable hangingPoint = undefined;
 
   @action
   setModeToDraw = () => {
@@ -47,6 +48,11 @@ class SettingsStore {
   @action
   updateDepthCurvature = (scalar) => {
     this.depthCurvatureScalar = scalar;
+  }
+
+  @action
+  choseHangingPoint = (curve) => {
+    this.hangingPoint = curve;
   }
 
 }
