@@ -46,7 +46,6 @@ class Canvas extends Component {
       () => this.resizeCanvas(),
     );
 
-    // temporarily disable mouse drawing on rotation
     this.windowRotationReaction = reaction(
       () => [
         SettingsStore.gridRotation,
@@ -74,8 +73,14 @@ class Canvas extends Component {
   }
 
   canvasRotated = () => {
-    this.props.UIStore.stopDrawingMouseHexagon();
-    setTimeout(this.props.UIStore.startDrawingMouseHexagon, CANVAS_ROTATION_TRANSITION_DURATION);
+    const { UIStore } = this.props;
+
+    // temporarily disable drawing the mouse hexagon
+    UIStore.stopDrawingMouseHexagon();
+    setTimeout(UIStore.startDrawingMouseHexagon, CANVAS_ROTATION_TRANSITION_DURATION);
+
+    // make animate button reappear because orientation has changed
+    UIStore.curvesHaveChanged();
   }
 
   render() {
