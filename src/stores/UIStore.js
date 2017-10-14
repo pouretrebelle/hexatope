@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, computed, action } from 'mobx';
 
 class UIStore {
 
@@ -7,6 +7,7 @@ class UIStore {
   @observable mouseX = 0;
   @observable mouseY = 0;
   @observable canvasBoundingBox = undefined;
+  @observable demoBoundingBox = undefined;
   @observable lastMouseButton = 0;
   @observable isMouseDownOverCanvas = false;
   @observable isMouseOverDemo = false;
@@ -16,7 +17,9 @@ class UIStore {
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
   @observable drawMouseHexagon = true;
+  @observable hangingPointAngle = 0;
   @observable isChosingHangingPoint = false;
+  initialHangingPointAngle = 0;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -34,6 +37,14 @@ class UIStore {
     window.addEventListener('contextmenu', (e) => {
       e.preventDefault();
     });
+  }
+
+  @computed
+  get angleToCenterOfDemo() {
+    return - Math.atan2(
+      this.mouseY - (this.demoBoundingBox.top + this.demoBoundingBox.height / 2),
+      this.mouseX - (this.demoBoundingBox.left + this.demoBoundingBox.width / 2),
+    ) - Math.PI / 2;
   }
 
   @action
@@ -55,6 +66,11 @@ class UIStore {
   @action
   updateCanvasBoundingBox = (boundingBox) => {
     this.canvasBoundingBox = boundingBox;
+  }
+
+  @action
+  updateDemoBoundingBox = (boundingBox) => {
+    this.demoBoundingBox = boundingBox;
   }
 
   @action
@@ -120,13 +136,21 @@ class UIStore {
     this.drawMouseHexagon = false;
   }
 
+  @action
   startChosingHangingPoint = () => {
     this.isChosingHangingPoint = true;
+    // update initial hanging point to avoid jerkiness
+    this.initialHangingPointAngle = this.angleToCenterOfDemo;
   }
 
   @action
   endChosingHangingPoint = () => {
     this.isChosingHangingPoint = false;
+  }
+
+  @action
+  updateHangingPointAngle = (angle) => {
+    this.hangingPointAngle = angle;
   }
 
   onWindowResized = () => this.updateDimensions();

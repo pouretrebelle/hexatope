@@ -51,7 +51,7 @@ class Demo {
     });
     this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 
-    this.updateDimensions(wrapperElement);
+    this.updateDimensions(wrapperElement, UIStore);
 
     // lights
     const light1 = new THREE.PointLight(0xffffff, 0.6);
@@ -105,8 +105,10 @@ class Demo {
     return this.materials[SettingsStore.material];
   }
 
-  updateDimensions(wrapperElement) {
+  updateDimensions(wrapperElement, UIStore) {
     const boundingBox = wrapperElement.getBoundingClientRect();
+
+    UIStore.updateDemoBoundingBox(boundingBox);
 
     this.renderer.setSize(boundingBox.width, boundingBox.height);
 
@@ -171,7 +173,6 @@ class Demo {
     group.translateY(-bBoxCenter.y);
     group.translateZ(-bBoxCenter.z);
 
-
     if (animate) {
       const curveCenter = bBoxCenter.clone().multiplyScalar(modelSettings.scale);
       const centralCurve = findMostCentralCurve(curves, curveCenter);
@@ -193,7 +194,11 @@ class Demo {
       this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
     }
 
-    return group;
+    // return wrapper group as so we can rotate the center of the mesh easily
+    let wrapperGroup = new THREE.Group();
+    wrapperGroup.add(group);
+
+    return wrapperGroup;
   }
 
   getVec3PointMerge(one, two, scale, twoZ) {
@@ -338,9 +343,20 @@ class Demo {
     UIStore.demoAnimationEnded();
   }
 
+  updateHangingPointAngle = () => {
+    const angle = UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle;
+    this.mesh.rotation.set(0, 0, angle);
+  }
+
   startChosingHangingPoint = () => {
     UIStore.startChosingHangingPoint();
+
+    // start from facing forward
+    this.controls.reset();
+
+    this.updateHangingPointAngle();
   }
+
 
   render = () => {
     // autorotate when animating and when the mouse is over the canvas

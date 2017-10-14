@@ -61,7 +61,7 @@ class Demo extends Component {
   }
 
   checkMousePosition = () => {
-    const { UIStore } = this.props;
+    const { UIStore, system } = this.props;
     const boundingBox = this.demoWrapperElement.getBoundingClientRect();
     if (boundingBox.left <= UIStore.mouseX &&
         UIStore.mouseX <= boundingBox.right &&
@@ -72,6 +72,8 @@ class Demo extends Component {
     } else {
       if (UIStore.isMouseOverDemo) UIStore.mouseNotOverDemo();
     }
+
+    if (UIStore.isChosingHangingPoint) system.demo.updateHangingPointAngle();
   }
 
   renderDemo = (animate) => {
@@ -89,7 +91,15 @@ class Demo extends Component {
 
   resizeDemo = () => {
     if (!this.props.system || !this.props.system.demo) return;
-    this.props.system.demo.updateDimensions(this.demoWrapperElement);
+    this.props.system.demo.updateDimensions(this.demoWrapperElement, this.props.UIStore);
+  }
+
+  endChosingHangingPoint = () => {
+    const { UIStore } = this.props;
+
+    if (UIStore.isChosingHangingPoint) {
+      UIStore.endChosingHangingPoint();
+    }
   }
 
   render() {
@@ -105,7 +115,11 @@ class Demo extends Component {
         ref={element => this.demoWrapperElement = element}
       >
         <DemoSettings system={system} />
-        <canvas ref={element => this.demoElement = element} />
+        <canvas
+          ref={element => this.demoElement = element}
+          onMouseOut={this.endChosingHangingPoint}
+          onMouseUp={this.endChosingHangingPoint}
+        />
       </div>
     );
   }
