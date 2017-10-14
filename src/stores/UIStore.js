@@ -15,6 +15,7 @@ class UIStore {
   @observable curvesExist = false;
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
+  @observable drawMouseHexagon = true;
 
   constructor() {
     if (typeof window !== 'undefined') {
@@ -106,6 +107,16 @@ class UIStore {
   @action
   demoIsVisibleOnMobile = (isDemoVisible) => {
     this.demoVisibleOnMobile = isDemoVisible;
+  }
+
+  @action
+  startDrawingMouseHexagon = () => {
+    this.drawMouseHexagon = true;
+  }
+
+  @action
+  stopDrawingMouseHexagon = () => {
+    this.drawMouseHexagon = false;
   }
 
   onWindowResized = () => this.updateDimensions();

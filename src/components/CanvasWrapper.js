@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import CanvasSettings from './CanvasSettings';
 
 import { GRID_ROTATION } from 'constants/options';
+import { CANVAS_ROTATION_TRANSITION_DURATION } from 'constants/timing';
 
 import styles from './CanvasWrapper.sass';
 
@@ -21,7 +22,7 @@ class Canvas extends Component {
   }
 
   componentDidMount() {
-    const { system, UIStore } = this.props;
+    const { system, UIStore, SettingsStore } = this.props;
 
     system.canvas.setup(this.canvasElement, this.canvasWrapperElement, UIStore);
     this.renderCanvas();
@@ -44,6 +45,14 @@ class Canvas extends Component {
       ],
       () => this.resizeCanvas(),
     );
+
+    // temporarily disable mouse drawing on rotation
+    this.windowRotationReaction = reaction(
+      () => [
+        SettingsStore.gridRotation,
+      ],
+      () => this.canvasRotated(),
+    );
   }
 
   startDrawing = (e) => {
@@ -62,6 +71,11 @@ class Canvas extends Component {
   resizeCanvas = () => {
     if (!this.props.system || !this.props.system.canvas.c) return;
     this.props.system.canvas.updateDimensions(this.canvasWrapperElement, this.props.UIStore);
+  }
+
+  canvasRotated = () => {
+    this.props.UIStore.stopDrawingMouseHexagon();
+    setTimeout(this.props.UIStore.startDrawingMouseHexagon, CANVAS_ROTATION_TRANSITION_DURATION);
   }
 
   render() {

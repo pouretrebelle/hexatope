@@ -8,7 +8,6 @@ export default {
   drawHex: true,
   drawGrid: true,
   drawCurves: true,
-  drawMouse: true,
   gridColor: '#fafafa',
   mouseColor: '#e5e6e8',
   mouseActiveColor: '#e0e1e2',
