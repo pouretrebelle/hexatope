@@ -6,7 +6,7 @@ import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
 import UIStore from 'stores/UIStore';
 import SettingsStore from 'stores/SettingsStore';
-import { MATERIALS } from 'constants/options';
+import { GRID_ROTATION, MATERIALS } from 'constants/options';
 
 class Demo {
   constructor(system) {
@@ -179,7 +179,12 @@ class Demo {
     // we have to flip the x-axis, no idea why
     // also we're swapping the x and z axes so orbit control resets to the z plane
     // makes animation fold forwards instead of away
-    return new THREE.Vector3(-scale * (twoZ ? twoZ : two.z), scale * (-one.y - two.y), scale * (one.x + two.x));
+
+    const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
+    const x = isHorizontal ? (-one.y - two.y) : (one.x + two.x);
+    const y = isHorizontal ? (-one.x - two.x) : (-one.y - two.y);
+    const z = -scale * (twoZ ? twoZ : two.z);
+    return new THREE.Vector3(z, scale * y, scale * x);
   }
 
   initialiseAnimation(curves, step, rangeMax) {
