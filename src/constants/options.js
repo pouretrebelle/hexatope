@@ -4,6 +4,11 @@ export const TOOL_MODES = {
   ERASE: 'erase',
 };
 
+export const GRID_ROTATION = {
+  VERTICAL: 'vertical',
+  HORIZONTAL: 'horizontal',
+};
+
 export const MATERIALS = {
   GOLD: 'gold',
   SILVER: 'silver',
