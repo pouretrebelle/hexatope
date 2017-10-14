@@ -60,7 +60,7 @@ class System {
     }
   }
 
-  render({ isMouseDownOverCanvas, lastMouseButton, ...props }) {
+  render({ isMouseDownOverCanvas, lastMouseButton, drawMouseHexagon, ...props }) {
     this.canvas.updateMousePos(props);
 
     if (this.mouseTargetHex) {
@@ -92,7 +92,7 @@ class System {
     }
 
     this.updateHexagons();
-    this.canvas.draw();
+    this.canvas.draw(drawMouseHexagon);
 
   }
 

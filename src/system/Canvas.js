@@ -74,7 +74,7 @@ class Canvas {
     this.draw();
   }
 
-  draw() {
+  draw(drawMouseHexagon) {
     if (!this.c) return;
 
     this.c.fillStyle = settings.gridColor;
@@ -97,7 +97,7 @@ class Canvas {
     }
 
     // draw hexagon at mouse position
-    if (settings.drawMouse && this.isMouseInside) this.drawMouseHexagon();
+    if (drawMouseHexagon && this.isMouseInside) this.drawMouseHexagon();
 
     if (settings.drawCurves) {
       this.drawAllHexCurves(this.c);
