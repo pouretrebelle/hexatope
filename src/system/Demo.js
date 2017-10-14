@@ -176,6 +176,20 @@ class Demo {
       const curveCenter = bBoxCenter.clone().multiplyScalar(modelSettings.scale);
       const centralCurve = findMostCentralCurve(curves, curveCenter);
 
+      // run through the animation to get number of frames for complete animation
+      this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
+      let animationFrames = 0;
+      while (UIStore.demoIsAnimating) {
+        animationFrames++;
+        this.updateAnimation(false);
+      }
+      // if speed = 1 it's 12s per round when fps is 60
+      const rounds = animationFrames / (60 * 12 / this.controls.autoRotateSpeed);
+      // rotation goes from -PI to +PI, front-facing at 0
+      const rotation = ((rounds + 0.5) % 1) * 2 * Math.PI - Math.PI;
+      this.controls.resetAtAngle(rotation);
+
+      // actually start animation
       this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
     }
 
@@ -220,7 +234,7 @@ class Demo {
     startingCurve.isAnimatingFromMiddle = true;
   }
 
-  updateAnimation() {
+  updateAnimation(setDrawRange) {
     this.animatingCurves.forEach(curve => {
       // skip if it's not animating at all
       if (!curve.isAnimating) return;
@@ -235,23 +249,25 @@ class Demo {
       const steppedProgress = Math.round(curve.animationProgress / this.animationStep) * this.animationStep;
 
       // set the ranges
-      if (curve.isAnimatingFromStart) {
-        curve.tubeMesh.geometry.setDrawRange(
-          0,
-          Math.round(steppedProgress * this.animationRangeMax)
-        );
-      }
-      else if (curve.isAnimatingFromEnd) {
-        curve.tubeMesh.geometry.setDrawRange(
-          Math.round((1 - steppedProgress) * this.animationRangeMax),
-          this.animationRangeMax
-        );
-      }
-      else if (curve.isAnimatingFromMiddle) {
-        curve.tubeMesh.geometry.setDrawRange(
-          Math.round((1 - steppedProgress) * this.animationRangeMax / 2),
-          Math.round(steppedProgress * this.animationRangeMax)
-        );
+      if (setDrawRange) {
+        if (curve.isAnimatingFromStart) {
+          curve.tubeMesh.geometry.setDrawRange(
+            0,
+            Math.round(steppedProgress * this.animationRangeMax)
+          );
+        }
+        else if (curve.isAnimatingFromEnd) {
+          curve.tubeMesh.geometry.setDrawRange(
+            Math.round((1 - steppedProgress) * this.animationRangeMax),
+            this.animationRangeMax
+          );
+        }
+        else if (curve.isAnimatingFromMiddle) {
+          curve.tubeMesh.geometry.setDrawRange(
+            Math.round((1 - steppedProgress) * this.animationRangeMax / 2),
+            Math.round(steppedProgress * this.animationRangeMax)
+          );
+        }
       }
 
       if (curve.animationProgress >= 1) this.finishCurveAnimation(curve);
@@ -327,7 +343,7 @@ class Demo {
     this.controls.autoRotate = UIStore.demoIsAnimating || !UIStore.isMouseOverDemo;
     this.controls.update();
 
-    if (UIStore.demoIsAnimating) this.updateAnimation();
+    if (UIStore.demoIsAnimating) this.updateAnimation(true);
 
     requestAnimationFrame(this.render);
     this.renderer.render(this.scene, this.camera);
