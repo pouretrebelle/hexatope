@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import OrbitControls from './vendor/OrbitControls';
 import { saveAs } from 'file-saver';
 import { clamp } from 'utils/numberUtils';
+import { findMostCentralCurve } from 'utils/curveUtils';
 import STLExporter from 'utils/STLExporter';
 import settings, { demoModelSettings, exportModelSettings } from './settings';
 import UIStore from 'stores/UIStore';
@@ -172,21 +173,8 @@ class Demo {
 
 
     if (animate) {
-      let closestDistance = Infinity;
-      let centralCurve = undefined;
-
-      curves.forEach(curve => {
-        // math the distance between the center of the box and the start of each curve
-        const dist = Math.sqrt(
-          Math.pow((bBoxCenter.x + (-(curve.hexagonPosition.x + curve.start.pos.x) * modelSettings.scale)), 2)
-          +
-          Math.pow((bBoxCenter.y + ((curve.hexagonPosition.y + curve.start.pos.y) * modelSettings.scale)), 2)
-        );
-        if (dist < closestDistance) {
-          closestDistance = dist;
-          centralCurve = curve;
-        }
-      });
+      const curveCenter = bBoxCenter.clone().multiplyScalar(modelSettings.scale);
+      const centralCurve = findMostCentralCurve(curves, curveCenter);
 
       this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
     }

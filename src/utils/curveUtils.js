@@ -298,3 +298,25 @@ export const isolateLargestShape = (curves) => {
 
   return biggestGroup;
 };
+
+
+// takes array of curves and central point and returns the curve that's closest to the center
+export const findMostCentralCurve = (curves, center) => {
+  let closestDistance = Infinity;
+  let centralCurve = undefined;
+
+  curves.forEach(curve => {
+    // math the distance between the center of the box and the start of each curve
+    const dist = Math.sqrt(
+      Math.pow((center.x - (curve.hexagonPosition.x + curve.start.pos.x + curve.end.pos.x)), 2)
+      +
+      Math.pow((center.y + (curve.hexagonPosition.y + curve.start.pos.y + curve.end.pos.y)), 2)
+    );
+    if (dist < closestDistance) {
+      closestDistance = dist;
+      centralCurve = curve;
+    }
+  });
+
+  return centralCurve;
+};
