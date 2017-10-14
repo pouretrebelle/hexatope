@@ -17,6 +17,8 @@ class Canvas {
     this.externalWidth = undefined;
     this.externalHeight = undefined;
 
+    this.centralHexTranslation = new Vector2((settings.hexRadius * 1.5), -(Math.sqrt(3) * settings.hexRadius / 2));
+
     this.relativeMousePos = new Vector2();
     this.isMouseInside = false;
     this.pixelRatio = window.devicePixelRatio || 1;
@@ -40,8 +42,8 @@ class Canvas {
     let absoluteMouseY = mouseY - canvasBoundingBox.y;
 
     // margin between the canvas and its wrapper (negative)
-    const widthOverflowDiff = (canvasBoundingBox.width - this.externalWidth) / 2;
-    const heightOverflowDiff = (canvasBoundingBox.height - this.externalHeight) / 2;
+    const widthOverflowDiff = (canvasBoundingBox.width - this.externalWidth) / 2 + this.centralHexTranslation.x;
+    const heightOverflowDiff = (canvasBoundingBox.height - this.externalHeight) / 2 + this.centralHexTranslation.y;
 
     // this is confusing
     const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
@@ -83,8 +85,8 @@ class Canvas {
     this.c.save();
     // center hexagons in canvas
     this.c.translate(
-      (this.externalWidth - this.internalWidth) / 2,
-      (this.externalHeight - this.internalHeight) / 2,
+      (this.externalWidth - this.internalWidth) / 2 + this.centralHexTranslation.x,
+      (this.externalHeight - this.internalHeight) / 2 + this.centralHexTranslation.y,
     );
 
     // draw all hexagons before lines to avoid overlap
