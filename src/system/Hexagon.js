@@ -1,6 +1,6 @@
 import Vector2 from 'utils/Vector2';
 import { wrap6, random } from 'utils/numberUtils';
-import { getEdgePoint, getControlMagnitudeAdjacent, getControlMagnitudeWide } from 'utils/hexagonUtils';
+import { getEdgePoint, getControlMagnitudeAdjacent, getControlMagnitudeWide, rotateLayout } from 'utils/hexagonUtils';
 import { getPushDepth, getForceDepth } from 'utils/curveUtils';
 import settings from './settings';
 import curveLayouts from 'constants/curveLayouts';
@@ -433,11 +433,7 @@ class Hexagon {
 
     // 6 neighbours
     else if (formation === 6) {
-      // make an array of 1-6 that start at a random value
-      // start position determined by layout seed
-      const randomStart = Math.floor((this.layoutSeed * 10 - 9) * 6);
-      const randomPositions = Array.from({ length: 6 }, (v, i) => wrap6(i + randomStart));
-      this.addCurves(formation, randomPositions);
+      this.addCurves(formation);
     }
   }
 
@@ -500,9 +496,16 @@ class Hexagon {
     const layouts = curveLayouts[formation].layouts;
 
     // chose layout based on seed
-    const layoutChoice = Math.floor(layouts.length * seed);
+    const layoutNumber = Math.floor(layouts.length * seed);
+    let layoutChoice = layouts[layoutNumber];
 
-    return layouts[layoutChoice];
+    // if it has six neighbours we need to rotate the layout according to the seed
+    if (formation === 6) {
+      const layoutRotation = Math.floor((seed * layouts.length - Math.floor(seed * layouts.length)) * 6);
+      layoutChoice = rotateLayout(layoutChoice, layoutRotation);
+    }
+
+    return layoutChoice;
   }
 
   addCurves(formation, edgeOrder) {
