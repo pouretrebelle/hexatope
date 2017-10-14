@@ -99,6 +99,7 @@ function OrbitControls(object, domElement) {
   };
 
   this.resetAtAngle = (angle) => {
+
     // setup 2 variables
     let newPosition = new THREE.Vector3();
     let newSpherical = new THREE.Spherical();
