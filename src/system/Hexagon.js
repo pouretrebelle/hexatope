@@ -295,10 +295,17 @@ class Hexagon {
     if (formation > 0) {
 
       const layoutCount = curveLayouts[formation].layouts.length;
-      // increment is enough to forward the layout by 7/6ths of a layout
-      // the extra is so the rotation that relies on seeds also progresses
-      const increment = 1 / (layoutCount + 1 / (6 * layoutCount));
-      this.layoutSeed = (this.layoutSeed + increment) % 1;
+      let layoutIncrement = (1 / layoutCount);
+
+      // this is so the rotation that relies on seeds also progresses once every round
+      let rotationIncrement = (1 / (layoutCount * layoutCount * 6));
+
+      // if the rotation increment pushes it into the next layout then we don't need the layout increment
+      if (Math.floor(this.layoutSeed * layoutCount) != Math.floor((this.layoutSeed + rotationIncrement) * layoutCount)) {
+        layoutIncrement = 0;
+      }
+
+      this.layoutSeed = (this.layoutSeed + layoutIncrement + rotationIncrement) % 1;
 
       this.planCurves();
       this.system.canvas.draw();
