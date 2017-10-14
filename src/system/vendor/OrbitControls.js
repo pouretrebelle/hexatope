@@ -98,6 +98,27 @@ function OrbitControls(object, domElement) {
 
   };
 
+  this.resetAtAngle = (angle) => {
+    // setup 2 variables
+    let newPosition = new THREE.Vector3();
+    let newSpherical = new THREE.Spherical();
+
+    // copy the spherical position from the reset position
+    newSpherical.setFromVector3(scope.position0);
+
+    // change the angle
+    newSpherical.theta = angle;
+
+    // bring it back to vector3 position
+    newPosition.setFromSpherical(newSpherical);
+
+    // set the object position
+    scope.object.position.copy(newPosition);
+
+    // update everything
+    this.update();
+  };
+
   this.reset = function () {
 
     scope.target.copy(scope.target0);
