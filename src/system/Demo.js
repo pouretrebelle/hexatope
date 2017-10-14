@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import OrbitControls from 'three-orbitcontrols';
+import OrbitControls from './vendor/OrbitControls';
 import { saveAs } from 'file-saver';
 import { clamp } from 'utils/numberUtils';
 import STLExporter from 'utils/STLExporter';
