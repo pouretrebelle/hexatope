@@ -1,4 +1,5 @@
 import Vector2 from 'utils/Vector2';
+import { wrap6 } from 'utils/numberUtils';
 import settings from 'system/settings';
 
 export const drawFilledHexagon = (c, pixelPos, pixelRatio) => {
@@ -51,3 +52,20 @@ export const getControlMagnitudeWide = (offset) => (
   // the magnitude of the control point for 1/6th of a circle, give or take offset
   (8 - 4 * Math.sqrt(3)) / 3 * ((3 - offset * settings.hexDoubleLineOffset) / 2)
 );
+
+export const rotateLayout = (layout, rotation) => {
+  const rotatePairs = pairs => (pairs || []).map(pair => [
+    wrap6(pair[0] + rotation),
+    wrap6(pair[1] + rotation),
+  ]);
+  const rotateArray = group => (group || []).map(edge => wrap6(edge + rotation));
+
+  // create a new object so you don't fuck up the actual layout
+  return {
+    pairs: rotatePairs(layout.pairs),
+    pushUp: rotateArray(layout.pushUp),
+    pushDown: rotateArray(layout.pushDown),
+    forceUp: rotateArray(layout.forceUp),
+    forceDown: rotateArray(layout.forceDown),
+  };
+};
