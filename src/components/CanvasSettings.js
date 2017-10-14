@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
-import { TOOL_MODES } from 'constants/options';
+import { TOOL_MODES, GRID_ROTATION } from 'constants/options';
 
 import styles from './Settings.sass';
 
@@ -30,12 +30,25 @@ class CanvasSettings extends Component {
     this.props.UIStore.canvasHasBeenCleared();
   }
 
-  render() {
-    const { toolMode } = this.props.SettingsStore;
+  onRotationVerticalButtonClicked = () => {
+    this.props.SettingsStore.setGridRotation(GRID_ROTATION.VERTICAL);
+  }
 
-    const buttonClasses = (buttonMode) => classNames({
+  onRotationHorizontalButtonClicked = () => {
+    this.props.SettingsStore.setGridRotation(GRID_ROTATION.HORIZONTAL);
+  }
+
+  render() {
+    const { toolMode, gridRotation } = this.props.SettingsStore;
+
+    const toolButtonClasses = (buttonMode) => classNames({
       [styles.button]: true,
       [styles.buttonActive]: toolMode === buttonMode,
+    });
+
+    const rotationButtonClasses = (rotation) => classNames({
+      [styles.button]: true,
+      [styles.buttonActive]: gridRotation === rotation,
     });
 
     return (
@@ -47,19 +60,19 @@ class CanvasSettings extends Component {
           <div className={styles.settingsGroup}>
             <div className={styles.buttonGroup}>
               <button
-                className={buttonClasses(TOOL_MODES.DRAW)}
+                className={toolButtonClasses(TOOL_MODES.DRAW)}
                 onClick={this.onDrawButtonClicked}
               >
                 Draw
               </button>
               <button
-                className={buttonClasses(TOOL_MODES.EDIT)}
+                className={toolButtonClasses(TOOL_MODES.EDIT)}
                 onClick={this.onEditButtonClicked}
               >
                 Edit
               </button>
               <button
-                className={buttonClasses(TOOL_MODES.ERASE)}
+                className={toolButtonClasses(TOOL_MODES.ERASE)}
                 onClick={this.onEraseButtonClicked}
               >
                 Erase
@@ -71,6 +84,33 @@ class CanvasSettings extends Component {
             >
               Clear
             </button>
+          </div>
+        </div>
+        <div className={styles.settingsGroupWrapper}>
+          <legend className={styles.settingsGroupTitle}>
+            Orientation
+          </legend>
+          <div className={styles.settingsGroup}>
+            <div className={styles.buttonGroup}>
+              <button
+                className={rotationButtonClasses(GRID_ROTATION.VERTICAL)}
+                onClick={this.onRotationVerticalButtonClicked}
+                title={'Columns'}
+              >
+                <svg viewBox={'0 0 18 18'} className={styles.icon}>
+                  <polygon strokeMiterlimit={'10'} points={'13,2.1 5,2.1 1,9 5,15.9 13,15.9 17,9'} />
+                </svg>
+              </button>
+              <button
+                className={rotationButtonClasses(GRID_ROTATION.HORIZONTAL)}
+                onClick={this.onRotationHorizontalButtonClicked}
+                title={'Rows'}
+              >
+                <svg viewBox={'0 0 18 18'} className={styles.icon}>
+                  <polygon strokeMiterlimit={'10'} points={'2.1,5 2.1,13 9,17 15.9,13 15.9,5 9,1'} />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>

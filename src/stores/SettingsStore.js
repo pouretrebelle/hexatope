@@ -1,11 +1,12 @@
 import { observable, action } from 'mobx';
-import { TOOL_MODES, MATERIALS } from 'constants/options';
+import { TOOL_MODES, GRID_ROTATION, MATERIALS } from 'constants/options';
 
 class SettingsStore {
 
   @observable depthOverlapScalar = 0.5;
   @observable depthCurvatureScalar = 0.5;
   @observable toolMode = TOOL_MODES.DRAW;
+  @observable gridRotation = GRID_ROTATION.VERTICAL;
   @observable material = MATERIALS.SILVER;
 
   @action
@@ -21,6 +22,11 @@ class SettingsStore {
   @action
   setModeToErase = () => {
     this.toolMode = TOOL_MODES.ERASE;
+  }
+
+  @action
+  setGridRotation = (rotation) => {
+    this.gridRotation = rotation;
   }
 
   @action
