@@ -4,7 +4,7 @@ import Vector2 from 'utils/Vector2';
 import settings from './settings';
 import { drawFilledHexagon } from 'utils/hexagonUtils';
 import SettingsStore from 'stores/SettingsStore';
-import { TOOL_MODES } from 'constants/options';
+import { TOOL_MODES, GRID_ROTATION } from 'constants/options';
 
 class Canvas {
   constructor(system) {
@@ -35,15 +35,26 @@ class Canvas {
   }
 
   updateMousePos({ mouseX, mouseY, canvasBoundingBox }) {
-    const absoluteMouseX = mouseX - canvasBoundingBox.x;
-    const absoluteMouseY = mouseY - canvasBoundingBox.y;
+    // pixel position of mouse relative to canvas wrapper
+    let absoluteMouseX = mouseX - canvasBoundingBox.x;
+    let absoluteMouseY = mouseY - canvasBoundingBox.y;
 
-    this.relativeMousePos.x = absoluteMouseX - (this.externalWidth - this.internalWidth) / (2 * this.pixelRatio);
-    this.relativeMousePos.y = absoluteMouseY - (this.externalHeight - this.internalHeight) / (2 * this.pixelRatio);
+    // margin between the canvas and its wrapper (negative)
+    const widthOverflowDiff = (canvasBoundingBox.width - this.externalWidth) / 2;
+    const heightOverflowDiff = (canvasBoundingBox.height - this.externalHeight) / 2;
+
+    // this is confusing
+    const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
+    let rotatedMouseX = isHorizontal ? absoluteMouseY - heightOverflowDiff : absoluteMouseX - widthOverflowDiff;
+    let rotatedMouseY = isHorizontal ? canvasBoundingBox.width - absoluteMouseX - widthOverflowDiff : absoluteMouseY - heightOverflowDiff;
+
+    // dealing with pixel ratio and the difference between the actual hexagons and the canvas
+    this.relativeMousePos.x = rotatedMouseX - (this.externalWidth - this.internalWidth) / (2 * this.pixelRatio);
+    this.relativeMousePos.y = rotatedMouseY - (this.externalHeight - this.internalHeight) / (2 * this.pixelRatio);
 
     let mouseInside = true;
-    if (absoluteMouseX > this.externalWidth) mouseInside = false;
-    if (absoluteMouseY > this.externalHeight) mouseInside = false;
+    if (absoluteMouseX > canvasBoundingBox.width || absoluteMouseX < 0) mouseInside = false;
+    if (absoluteMouseY > canvasBoundingBox.height || absoluteMouseY < 0) mouseInside = false;
     this.isMouseInside = mouseInside;
   }
 
@@ -52,8 +63,8 @@ class Canvas {
 
     UIStore.updateCanvasBoundingBox(boundingBox);
 
-    this.externalWidth = boundingBox.width;
-    this.externalHeight = boundingBox.height;
+    this.externalWidth = boundingBox.width > boundingBox.height ? boundingBox.width : boundingBox.height;
+    this.externalHeight = this.externalWidth;
     this.canvas.width = this.externalWidth * this.pixelRatio;
     this.canvas.style.width = `${this.externalWidth}px`;
     this.canvas.height = this.externalHeight * this.pixelRatio;
