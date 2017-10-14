@@ -170,24 +170,41 @@ class Demo {
     group.translateY(-bBoxCenter.y);
     group.translateZ(-bBoxCenter.z);
 
-    if (animate) this.initialiseAnimation(curves, settings.animationStep, settings.animationRangeMax);
+
+    if (animate) {
+      let closestDistance = Infinity;
+      let centralCurve = undefined;
+
+      curves.forEach(curve => {
+        // math the distance between the center of the box and the start of each curve
+        const dist = Math.sqrt(
+          Math.pow((bBoxCenter.x + (-(curve.hexagonPosition.x + curve.start.pos.x) * modelSettings.scale)), 2)
+          +
+          Math.pow((bBoxCenter.y + ((curve.hexagonPosition.y + curve.start.pos.y) * modelSettings.scale)), 2)
+        );
+        if (dist < closestDistance) {
+          closestDistance = dist;
+          centralCurve = curve;
+        }
+      });
+
+      this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
+    }
 
     return group;
   }
 
   getVec3PointMerge(one, two, scale, twoZ) {
     // we have to flip the x-axis, no idea why
-    // also we're swapping the x and z axes so orbit control resets to the z plane
-    // makes animation fold forwards instead of away
 
     const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
     const x = isHorizontal ? (-one.y - two.y) : (one.x + two.x);
     const y = isHorizontal ? (-one.x - two.x) : (-one.y - two.y);
-    const z = -scale * (twoZ ? twoZ : two.z);
-    return new THREE.Vector3(z, scale * y, scale * x);
+    const z = scale * (twoZ ? twoZ : two.z);
+    return new THREE.Vector3(scale * x, scale * y, z);
   }
 
-  initialiseAnimation(curves, step, rangeMax) {
+  initialiseAnimation(startingCurve, curves, step, rangeMax) {
     if (curves.length === 0) return;
 
     UIStore.demoAnimationStarted();
@@ -211,11 +228,8 @@ class Demo {
       if (curve.end.sphereMesh) curve.end.sphereMesh.visible = false;
     });
 
-    // start midway through the pack
-    // TODO: chose this with intelligence?
-    const chosenCurve = Math.floor(curves.length/2);
-    curves[chosenCurve].isAnimating = true;
-    curves[chosenCurve].isAnimatingFromMiddle = true;
+    startingCurve.isAnimating = true;
+    startingCurve.isAnimatingFromMiddle = true;
   }
 
   updateAnimation() {
