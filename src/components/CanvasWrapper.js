@@ -6,9 +6,11 @@ import classNames from 'classnames';
 
 import CanvasSettings from './CanvasSettings';
 
+import { GRID_ROTATION } from 'constants/options';
+
 import styles from './CanvasWrapper.sass';
 
-@inject('UIStore') @observer
+@inject('UIStore', 'SettingsStore') @observer
 class Canvas extends Component {
 
   constructor(props) {
@@ -63,10 +65,15 @@ class Canvas extends Component {
   }
 
   render() {
-    const { system, UIStore } = this.props;
+    const { system, UIStore, SettingsStore } = this.props;
     const wrapperClasses = classNames({
       [styles.canvasWrapper]: true,
       [styles.canvasHiddenOnMobile]: UIStore.demoVisibleOnMobile,
+    });
+    const canvasClasses = classNames({
+      [styles.canvas]: true,
+      [styles.canvasVertical]: SettingsStore.gridRotation === GRID_ROTATION.VERTICAL,
+      [styles.canvasHorizontal]: SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL,
     });
 
     this.renderCanvas();
@@ -79,6 +86,7 @@ class Canvas extends Component {
         <CanvasSettings system={system} />
         <canvas
           ref={element => this.canvasElement = element}
+          className={canvasClasses}
           onMouseDown={this.startDrawing}
           onTouchStart={this.startDrawing}
           onMouseOut={this.endDrawing}
@@ -91,6 +99,7 @@ class Canvas extends Component {
 }
 
 Canvas.propTypes = {
+  SettingsStore: PropTypes.object,
   UIStore: PropTypes.object,
   system: PropTypes.object,
 };
