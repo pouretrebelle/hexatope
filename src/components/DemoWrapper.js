@@ -39,14 +39,21 @@ class Demo extends Component {
       () => this.renderDemo(true),
     );
 
-    // render demo when settings are changed
+    // render demo and update chain position when settings are changed
     this.settingsReaction = reaction(
       () => [
         SettingsStore.depthOverlapScalar,
         SettingsStore.depthCurvatureScalar,
+      ],
+      () => this.reactToSettingsChange(),
+    );
+
+    // render demo and update chain material when settings are changed
+    this.materialReaction = reaction(
+      () => [
         SettingsStore.material,
       ],
-      () => this.renderDemo(false),
+      () => this.reactToMaterialChange(),
     );
 
     // check mouse position
@@ -74,6 +81,15 @@ class Demo extends Component {
     }
 
     if (UIStore.isChosingHangingPoint) system.demo.updateHangingPointAngle();
+  }
+
+  reactToSettingsChange = () => {
+    this.renderDemo(false);
+  }
+
+  reactToMaterialChange = () => {
+    this.props.system.demo.updateChainMaterial();
+    this.renderDemo(false);
   }
 
   renderDemo = (animate) => {

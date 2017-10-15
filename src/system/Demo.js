@@ -115,7 +115,7 @@ class Demo {
       normalMap: texturedNormalMap,
     });
     this.texturedMaterials[MATERIALS.GOLD] = new THREE.MeshStandardMaterial({
-      color: 0xdbb876,
+      color: 0xba9e6a,
       roughness: 0.5,
       metalness: 0.5,
       envMap: envMap,
@@ -449,6 +449,13 @@ class Demo {
 
     this.chain = group;
     this.scene.add(this.chain);
+  }
+
+  updateChainMaterial = () => {
+    // jump ring
+    this.chain.children[0].material = this.getMaterial(false);
+    // chain
+    this.chain.children[1].material = this.getMaterial(true);
   }
 
   updateHangingPointAngle = () => {
