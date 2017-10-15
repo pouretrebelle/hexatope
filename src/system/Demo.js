@@ -166,8 +166,10 @@ class Demo {
 
     this.scene.remove(this.mesh);
     this.mesh = this.generateMeshes(demoModelSettings, true);
-
     this.scene.add(this.mesh);
+
+    // hacky hack hack hack
+    setTimeout(this.calculateEdgePoints, 0);
   }
 
   generateMeshes(modelSettings, animate) {
@@ -378,7 +380,6 @@ class Demo {
 
   endAnimation() {
     UIStore.demoAnimationEnded();
-    this.calculateEdgePoints();
   }
 
   calculateEdgePoints = () => {
@@ -421,15 +422,16 @@ class Demo {
       if (closestIntersection) {
         edgePoints.push({
           distanceFromCenter: RAY_DISTANCE_FROM_ORIGIN - closestIntersection.distance,
-          point: closestIntersection.point,
+          z: closestIntersection.point.z,
         });
       } else {
-        // if there are no intersections then just add a false ot the array
+        // if there are no intersections then just add a false to the array
         edgePoints.push(false);
       }
 
-      this.objectEdgePoints = edgePoints;
     }
+
+    this.objectEdgePoints = edgePoints;
   }
 
   addChain = () => {
@@ -516,7 +518,7 @@ class Demo {
       if (edgePoint) {
         visibility = true;
         y = edgePoint.distanceFromCenter;
-        z = edgePoint.point.z;
+        z = edgePoint.z;
       }
     }
 
