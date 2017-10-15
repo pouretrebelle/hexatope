@@ -6,6 +6,7 @@
   position: absolute
   display: flex
   flex-wrap: wrap-reverse
+  align-items: flex-start
   left: 0
   bottom: 0
   width: 100%
@@ -17,7 +18,7 @@
   pointer-events: auto
   transition: opacity 0.5s ease-out
   +bp('mobile')
-    margin: 0 0 16px 24px
+    margin: -8px 0 16px 24px
 
 .settingsGroup
   display: flex
@@ -49,7 +50,7 @@
 .icon
   width: 18px
   height: 18px
-  margin: 0 -2px
+  margin: 0 4px
   vertical-align: bottom
   fill: none
   stroke: currentColor
@@ -59,7 +60,9 @@
 
 .range
   +range-input
-  margin: 0 0 8px
+  margin: 0 0 10px
+  &:last-child
+    margin-bottom: 8px
 
 .settingsGroupDepth
   max-width: 200px
