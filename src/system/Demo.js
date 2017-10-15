@@ -447,7 +447,7 @@ class Demo {
 
       if (furthestIntersection) {
         edgePointsSecondHalf.push({
-          distanceFromCenter: furthestIntersection.distance - RAY_DISTANCE_FROM_ORIGIN,
+          distanceFromCenter: furthestIntersection.distance - RAY_DISTANCE_FROM_ORIGIN + 0.14, // add tube radius to get to other side of tube
           z: furthestIntersection.point.z,
         });
       } else {
