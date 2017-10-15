@@ -17,6 +17,7 @@ class UIStore {
   @observable curvesChangedSinceDemoUpdate = true;
   @observable demoVisibleOnMobile = false;
   @observable drawMouseHexagon = true;
+  @observable showChain = false;
   @observable hangingPointAngle = 0;
   @observable isChosingHangingPoint = false;
   initialHangingPointAngle = 0;
@@ -106,6 +107,12 @@ class UIStore {
   }
 
   @action
+  resetDemo = () => {
+    this.showChain = false;
+    this.hangingPointAngle = 0;
+  }
+
+  @action
   demoHasBeenUpdated = () => {
     this.demoIsEmpty = false;
     this.curvesChangedSinceDemoUpdate = false;
@@ -139,12 +146,14 @@ class UIStore {
   @action
   startChosingHangingPoint = () => {
     this.isChosingHangingPoint = true;
+    this.showChain = true;
     // update initial hanging point to avoid jerkiness
     this.initialHangingPointAngle = this.angleToCenterOfDemo;
   }
 
   @action
   endChosingHangingPoint = () => {
+    this.initialHangingPointAngle = 0;
     this.isChosingHangingPoint = false;
   }
 
