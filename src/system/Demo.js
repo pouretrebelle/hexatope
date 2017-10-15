@@ -99,6 +99,8 @@ class Demo {
       envMapIntensity: 1,
     });
 
+    this.addChain();
+
     // initialise render loop
     this.render();
   }
@@ -387,9 +389,7 @@ class Demo {
       if (closestIntersection) {
         edgePoints.push({
           distanceFromCenter: RAY_DISTANCE_FROM_ORIGIN - closestIntersection.distance,
-          angle: angle,
           point: closestIntersection.point,
-          object: closestIntersection.object,
         });
       } else {
         // if there are no intersections then just add a false ot the array
@@ -400,9 +400,54 @@ class Demo {
     }
   }
 
+  addChain = () => {
+    const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
+    const geometry = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.8, 10, 40);
+    let group = new THREE.Group();
+
+    let torus = new THREE.Mesh(geometry, this.getMaterial());
+    torus.rotation.y = Math.PI / 2;
+
+    group.add(torus);
+    group.visible = false;
+
+    this.chain = group;
+    this.scene.add(this.chain);
+  }
+
   updateHangingPointAngle = () => {
     const angle = (UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle + Math.PI * 2) % (Math.PI * 2);
     this.mesh.rotation.set(0, 0, angle);
+    this.updateChainPosition(angle, false);
+  }
+
+  updateChainPosition = (angle, raycast) => {
+    let y = 0;
+    let z = 0;
+    let visibility = false;
+
+    // get live position
+    if (raycast) {
+      // to be completed
+    }
+
+    // use objectEdgePoints array
+    else {
+      if (!this.objectEdgePoints.length) return;
+
+      const edgePointIndex = Math.round(angle * 50 / Math.PI);
+      const edgePoint = this.objectEdgePoints[edgePointIndex];
+
+      if (edgePoint) {
+        visibility = true;
+        y = edgePoint.distanceFromCenter;
+        z = edgePoint.point.z;
+      }
+    }
+
+    this.chain.visible = visibility;
+    this.chain.position.y = y;
+    this.chain.position.z = z;
   }
 
   startChosingHangingPoint = () => {
