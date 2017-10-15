@@ -149,6 +149,8 @@ class Demo {
   updateCurves() {
     this.scene.remove(this.mesh);
     this.mesh = this.generateMeshes(demoModelSettings, false);
+    this.mesh.rotation.set(0, 0, UIStore.hangingPointAngle);
+
     this.scene.add(this.mesh);
     this.system.UIStore.demoHasBeenUpdated();
   }
@@ -156,10 +158,15 @@ class Demo {
   updateAndAnimateCurves() {
     // reset position and rotation of orbit controls
     this.controls.reset();
+    this.system.UIStore.resetDemo();
     this.system.UIStore.demoHasBeenUpdated();
+
+    // hide chain until hanging position is chosen
+    this.chain.visible = false;
 
     this.scene.remove(this.mesh);
     this.mesh = this.generateMeshes(demoModelSettings, true);
+
     this.scene.add(this.mesh);
   }
 
@@ -390,7 +397,7 @@ class Demo {
       let closestIntersection = undefined;
 
       // pan across up z-axis to find the nearest point at different depths
-      for (let directionZ = -2; directionZ < 2; directionZ += 0.02) {
+      for (let directionZ = -2; directionZ < 2; directionZ += 0.1) {
 
         // set the direction to point towards the origin +- a bit of z
         direction.copy(startingPoint).setZ(directionZ).negate().normalize();
@@ -461,6 +468,7 @@ class Demo {
   updateHangingPointAngle = () => {
     const angle = (UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle + Math.PI * 2) % (Math.PI * 2);
     this.mesh.rotation.set(0, 0, angle);
+    UIStore.updateHangingPointAngle(angle);
     this.updateChainPosition(angle, false);
   }
 
@@ -471,7 +479,31 @@ class Demo {
 
     // get live position
     if (raycast) {
-      // to be completed
+      // copied from calculateEdgePoints
+      // optimised for performance of new instances there
+      // too hard to make common
+      const RAY_DISTANCE_FROM_ORIGIN = 100;
+      let direction = new THREE.Vector3();
+      let raycaster = new THREE.Raycaster(startingPoint, direction);
+      const startingPoint = new THREE.Vector3(Math.sin(angle) * RAY_DISTANCE_FROM_ORIGIN, Math.cos(angle) * RAY_DISTANCE_FROM_ORIGIN, 0);
+      let closestIntersection = undefined;
+      for (let directionZ = -2; directionZ < 2; directionZ += 0.02) {
+        direction.copy(startingPoint).setZ(directionZ).negate().normalize();
+        raycaster.set(startingPoint, direction);
+        const intersection = raycaster.intersectObject(this.mesh, true);
+        if (intersection.length &&
+          intersection[0].distance < RAY_DISTANCE_FROM_ORIGIN &&
+          (!closestIntersection ||
+            intersection[0].distance < closestIntersection.distance)
+        ) {
+          closestIntersection = intersection[0];
+        }
+      }
+      if (closestIntersection) {
+        visibility = true;
+        y = RAY_DISTANCE_FROM_ORIGIN - closestIntersection.distance;
+        z = closestIntersection.point.z;
+      }
     }
 
     // use objectEdgePoints array
@@ -488,7 +520,7 @@ class Demo {
       }
     }
 
-    this.chain.visible = visibility;
+    this.chain.visible = UIStore.showChain ? visibility : false;
     this.chain.position.y = y;
     this.chain.position.z = z;
   }

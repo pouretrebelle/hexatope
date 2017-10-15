@@ -60,6 +60,11 @@ class DemoSettings extends Component {
       [styles.buttonActive]: SettingsStore.material === material,
     });
 
+    const hangingButtonClasses = classNames({
+      [styles.button]: true,
+      [styles.buttonActive]: UIStore.isChosingHangingPoint,
+    });
+
     return (
       <div>
         <button
@@ -127,7 +132,7 @@ class DemoSettings extends Component {
             <div className={styles.settingsGroup}>
               <button
                 onClick={this.onHangingPointButtonClicked}
-                className={styles.button}
+                className={hangingButtonClasses}
               >
                 Chose Hanging Position
               </button>

@@ -84,6 +84,7 @@ class Demo extends Component {
   }
 
   reactToSettingsChange = () => {
+    this.props.system.demo.updateChainPosition(0, true);
     this.renderDemo(false);
   }
 
