@@ -87,7 +87,7 @@ class Demo {
     const texturedNormalMapUrl = require('assets/images/chaintexture.jpg');
     const texturedNormalMap = new THREE.TextureLoader().load(texturedNormalMapUrl);
     texturedNormalMap.wrapS = texturedNormalMap.wrapT = THREE.RepeatWrapping;
-    texturedNormalMap.repeat.x = 200;
+    texturedNormalMap.repeat.x = 500;
 
     // material
     this.materials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
@@ -436,7 +436,7 @@ class Demo {
     const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
     let group = new THREE.Group();
 
-    const jumpRing = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.8, 10, 40);
+    const jumpRing = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.7, 10, 40);
     let jumpRingMesh = new THREE.Mesh(jumpRing, this.getMaterial(false));
     jumpRingMesh.rotation.y = Math.PI / 2;
 
@@ -521,7 +521,7 @@ class Demo {
     }
 
     this.chain.visible = UIStore.showChain ? visibility : false;
-    this.chain.position.y = y;
+    this.chain.position.y = y + 0.05; // puts piece hanging at the bottom of jump ring
     this.chain.position.z = z;
   }
 
