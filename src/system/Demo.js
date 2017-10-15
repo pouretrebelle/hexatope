@@ -17,6 +17,7 @@ class Demo {
     this.camera = undefined;
     this.renderer = undefined;
     this.materials = {};
+    this.texturedMaterials = {};
     this.mesh = undefined;
     this.meshCenter = undefined;
     this.objectEdgePoints = undefined;
@@ -83,6 +84,11 @@ class Demo {
     ];
     const envMap = new THREE.CubeTextureLoader().load(envMapURLs);
 
+    const texturedNormalMapUrl = require('assets/images/chaintexture.jpg');
+    const texturedNormalMap = new THREE.TextureLoader().load(texturedNormalMapUrl);
+    texturedNormalMap.wrapS = texturedNormalMap.wrapT = THREE.RepeatWrapping;
+    texturedNormalMap.repeat.x = 200;
+
     // material
     this.materials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
       color: 0xf7fafc,
@@ -99,14 +105,33 @@ class Demo {
       envMapIntensity: 1,
     });
 
+    // textured material for chain
+    this.texturedMaterials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
+      color: 0xb7babc,
+      roughness: 0.6,
+      metalness: 0.5,
+      envMap: envMap,
+      envMapIntensity: 1,
+      normalMap: texturedNormalMap,
+    });
+    this.texturedMaterials[MATERIALS.GOLD] = new THREE.MeshStandardMaterial({
+      color: 0xdbb876,
+      roughness: 0.5,
+      metalness: 0.5,
+      envMap: envMap,
+      envMapIntensity: 1,
+      normalMap: texturedNormalMap,
+    });
+
+    // add geometry for chain
     this.addChain();
 
     // initialise render loop
     this.render();
   }
 
-  getMaterial() {
-    return this.materials[SettingsStore.material];
+  getMaterial(useTexture) {
+    return useTexture ? this.texturedMaterials[SettingsStore.material] : this.materials[SettingsStore.material];
   }
 
   updateDimensions(wrapperElement, UIStore) {
@@ -153,7 +178,7 @@ class Demo {
       );
       const tube = new THREE.TubeBufferGeometry(bezier, modelSettings.tubeSegments, tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, false);
 
-      const tubeMesh = new THREE.Mesh(tube, this.getMaterial());
+      const tubeMesh = new THREE.Mesh(tube, this.getMaterial(false));
       curve.tubeMesh = tubeMesh;
       group.add(tubeMesh);
 
@@ -164,7 +189,7 @@ class Demo {
           const point = this.getVec3PointMerge(curve.hexagonPosition, cap.pos, modelSettings.scale, cap.posZ);
           const sphere = new THREE.SphereBufferGeometry(tubeRadius * modelSettings.scale, modelSettings.tubeRadiusSegments, modelSettings.tubeRadiusSegments);
           sphere.translate(point.x, point.y, point.z);
-          const sphereMesh = new THREE.Mesh(sphere, this.getMaterial());
+          const sphereMesh = new THREE.Mesh(sphere, this.getMaterial(false));
           cap.sphereMesh = sphereMesh;
           group.add(sphereMesh);
         }
@@ -402,13 +427,24 @@ class Demo {
 
   addChain = () => {
     const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
-    const geometry = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.8, 10, 40);
     let group = new THREE.Group();
 
-    let torus = new THREE.Mesh(geometry, this.getMaterial());
-    torus.rotation.y = Math.PI / 2;
+    const jumpRing = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.8, 10, 40);
+    let jumpRingMesh = new THREE.Mesh(jumpRing, this.getMaterial(false));
+    jumpRingMesh.rotation.y = Math.PI / 2;
 
-    group.add(torus);
+    // bezier curve of chain
+    const bezier = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-10, 20, 0),
+      new THREE.Vector3(3, -6.55, 0),
+      new THREE.Vector3(-3, -6.55, 0),
+      new THREE.Vector3(10, 20, 0),
+    );
+    const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.2, 12, false);
+    const chainMesh = new THREE.Mesh(chain, this.getMaterial(true));
+
+    group.add(jumpRingMesh);
+    group.add(chainMesh);
     group.visible = false;
 
     this.chain = group;
@@ -487,7 +523,7 @@ class Demo {
       exportGeometry.merge(new THREE.Geometry().fromBufferGeometry(mesh.geometry))
     );
 
-    const exportMesh = new THREE.Mesh(exportGeometry, this.getMaterial());
+    const exportMesh = new THREE.Mesh(exportGeometry, this.getMaterial(false));
 
     const blob = new Blob(
       [exporter.parse(exportMesh)],
