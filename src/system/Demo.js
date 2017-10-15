@@ -18,6 +18,8 @@ class Demo {
     this.renderer = undefined;
     this.materials = {};
     this.mesh = undefined;
+    this.meshCenter = undefined;
+    this.objectEdgePoints = undefined;
   }
 
   setup(canvas, wrapperElement, UIStore) {
@@ -173,9 +175,10 @@ class Demo {
     group.translateY(-bBoxCenter.y);
     group.translateZ(-bBoxCenter.z);
 
+    this.meshCenter = bBoxCenter.clone().multiplyScalar(-modelSettings.scale);
+
     if (animate) {
-      const curveCenter = bBoxCenter.clone().multiplyScalar(modelSettings.scale);
-      const centralCurve = findMostCentralCurve(curves, curveCenter);
+      const centralCurve = findMostCentralCurve(curves, this.meshCenter);
 
       // run through the animation to get number of frames for complete animation
       this.initialiseAnimation(centralCurve, curves, settings.animationStep, settings.animationRangeMax);
@@ -341,10 +344,64 @@ class Demo {
 
   endAnimation() {
     UIStore.demoAnimationEnded();
+    this.calculateEdgePoints();
+  }
+
+  calculateEdgePoints = () => {
+    const RAY_DISTANCE_FROM_ORIGIN = 100;
+    let startingPoint = new THREE.Vector3();
+    let direction = new THREE.Vector3();
+    let raycaster = new THREE.Raycaster(startingPoint, direction);
+    let edgePoints = [];
+
+    // rotate around the z-axis
+    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI/50) {
+
+      // set the starting point of the ray 100 away from the origin
+      startingPoint.set(Math.sin(angle) * RAY_DISTANCE_FROM_ORIGIN, Math.cos(angle) * RAY_DISTANCE_FROM_ORIGIN, 0);
+
+      let closestIntersection = undefined;
+
+      // pan across up z-axis to find the nearest point at different depths
+      for (let directionZ = -2; directionZ < 2; directionZ += 0.02) {
+
+        // set the direction to point towards the origin +- a bit of z
+        direction.copy(startingPoint).setZ(directionZ).negate().normalize();
+        raycaster.set(startingPoint, direction);
+
+        // do some recursive raycasting
+        const intersection = raycaster.intersectObject(this.scene, true);
+        // if there's an intersection
+        // whose distance is less than the current closest one
+        // but is still on the right side of the origin
+        // update the closest one
+        if (intersection.length &&
+            intersection[0].distance < RAY_DISTANCE_FROM_ORIGIN &&
+            (!closestIntersection ||
+            intersection[0].distance < closestIntersection.distance)
+        ) {
+          closestIntersection = intersection[0];
+        }
+      }
+
+      if (closestIntersection) {
+        edgePoints.push({
+          distanceFromCenter: RAY_DISTANCE_FROM_ORIGIN - closestIntersection.distance,
+          angle: angle,
+          point: closestIntersection.point,
+          object: closestIntersection.object,
+        });
+      } else {
+        // if there are no intersections then just add a false ot the array
+        edgePoints.push(false);
+      }
+
+      this.objectEdgePoints = edgePoints;
+    }
   }
 
   updateHangingPointAngle = () => {
-    const angle = UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle;
+    const angle = (UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle + Math.PI * 2) % (Math.PI * 2);
     this.mesh.rotation.set(0, 0, angle);
   }
 
