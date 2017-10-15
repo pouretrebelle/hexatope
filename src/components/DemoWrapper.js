@@ -111,14 +111,6 @@ class Demo extends Component {
     this.props.system.demo.updateDimensions(this.demoWrapperElement, this.props.UIStore);
   }
 
-  endChosingHangingPoint = () => {
-    const { UIStore } = this.props;
-
-    if (UIStore.isChosingHangingPoint) {
-      UIStore.endChosingHangingPoint();
-    }
-  }
-
   render() {
     const { system, UIStore } = this.props;
     const wrapperClasses = classNames({
@@ -134,8 +126,6 @@ class Demo extends Component {
         <DemoSettings system={system} />
         <canvas
           ref={element => this.demoElement = element}
-          onMouseOut={this.endChosingHangingPoint}
-          onMouseUp={this.endChosingHangingPoint}
         />
       </div>
     );

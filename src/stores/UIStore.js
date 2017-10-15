@@ -149,12 +149,16 @@ class UIStore {
     this.showChain = true;
     // update initial hanging point to avoid jerkiness
     this.initialHangingPointAngle = this.angleToCenterOfDemo;
+
+    window.addEventListener('mousedown', this.endChosingHangingPoint);
   }
 
   @action
   endChosingHangingPoint = () => {
     this.initialHangingPointAngle = 0;
     this.isChosingHangingPoint = false;
+
+    window.removeEventListener('mousedown', this.endChosingHangingPoint);
   }
 
   @action
