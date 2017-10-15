@@ -387,21 +387,25 @@ class Demo {
     let startingPoint = new THREE.Vector3();
     let direction = new THREE.Vector3();
     let raycaster = new THREE.Raycaster(startingPoint, direction);
-    let edgePoints = [];
+    let edgePointsFirstHalf = [];
+    let edgePointsSecondHalf = [];
 
-    // rotate around the z-axis
-    for (let angle = 0; angle < Math.PI * 2; angle += Math.PI/50) {
+    // rotate around half the z-axis
+    for (let angle = 0; angle < Math.PI; angle += Math.PI/50) {
 
       // set the starting point of the ray 100 away from the origin
+      // and the direction pointing towards the origin
       startingPoint.set(Math.sin(angle) * RAY_DISTANCE_FROM_ORIGIN, Math.cos(angle) * RAY_DISTANCE_FROM_ORIGIN, 0);
+      direction.set(-Math.sin(angle), -Math.cos(angle), 0);
 
       let closestIntersection = undefined;
+      let furthestIntersection = undefined;
 
-      // pan across up z-axis to find the nearest point at different depths
-      for (let directionZ = -2; directionZ < 2; directionZ += 0.1) {
+      // scan at different depths to find the closest
+      for (let posZ = -0.5; posZ < 0.5; posZ += 0.05) {
 
-        // set the direction to point towards the origin +- a bit of z
-        direction.copy(startingPoint).setZ(directionZ).negate().normalize();
+        // set the starting point parallel to direction
+        startingPoint.setZ(posZ);
         raycaster.set(startingPoint, direction);
 
         // do some recursive raycasting
@@ -417,21 +421,44 @@ class Demo {
         ) {
           closestIntersection = intersection[0];
         }
+
+        // if there's an intersection
+        // whose last object's distance is more than the current farthest one
+        // but is still on the far side of the origin
+        // update the farthest one
+        if (intersection.length &&
+          intersection[intersection.length-1].distance > RAY_DISTANCE_FROM_ORIGIN &&
+          (!furthestIntersection ||
+            intersection[intersection.length-1].distance > furthestIntersection.distance)
+        ) {
+          furthestIntersection = intersection[intersection.length-1];
+        }
       }
 
       if (closestIntersection) {
-        edgePoints.push({
+        edgePointsFirstHalf.push({
           distanceFromCenter: RAY_DISTANCE_FROM_ORIGIN - closestIntersection.distance,
           z: closestIntersection.point.z,
         });
       } else {
         // if there are no intersections then just add a false to the array
-        edgePoints.push(false);
+        edgePointsFirstHalf.push(false);
+      }
+
+      if (furthestIntersection) {
+        edgePointsSecondHalf.push({
+          distanceFromCenter: furthestIntersection.distance - RAY_DISTANCE_FROM_ORIGIN,
+          z: furthestIntersection.point.z,
+        });
+      } else {
+        // if there are no intersections then just add a false to the array
+        edgePointsSecondHalf.push(false);
       }
 
     }
 
-    this.objectEdgePoints = edgePoints;
+    // join the arrays together
+    this.objectEdgePoints = edgePointsFirstHalf.concat(edgePointsSecondHalf);
   }
 
   addChain = () => {
@@ -481,16 +508,16 @@ class Demo {
 
     // get live position
     if (raycast) {
-      // copied from calculateEdgePoints
+      // copied from calculateEdgePoints with finer detail
       // optimised for performance of new instances there
       // too hard to make common
       const RAY_DISTANCE_FROM_ORIGIN = 100;
-      let direction = new THREE.Vector3();
       let raycaster = new THREE.Raycaster(startingPoint, direction);
-      const startingPoint = new THREE.Vector3(Math.sin(angle) * RAY_DISTANCE_FROM_ORIGIN, Math.cos(angle) * RAY_DISTANCE_FROM_ORIGIN, 0);
+      let startingPoint = new THREE.Vector3(Math.sin(angle) * RAY_DISTANCE_FROM_ORIGIN, Math.cos(angle) * RAY_DISTANCE_FROM_ORIGIN, 0);
+      const direction = new THREE.Vector3(-Math.sin(angle), -Math.cos(angle), 0);
       let closestIntersection = undefined;
-      for (let directionZ = -2; directionZ < 2; directionZ += 0.02) {
-        direction.copy(startingPoint).setZ(directionZ).negate().normalize();
+      for (let posZ = -0.5; posZ < 0.5; posZ += 0.025) {
+        startingPoint.setZ(posZ);
         raycaster.set(startingPoint, direction);
         const intersection = raycaster.intersectObject(this.mesh, true);
         if (intersection.length &&
@@ -512,7 +539,7 @@ class Demo {
     else {
       if (!this.objectEdgePoints.length) return;
 
-      const edgePointIndex = Math.round(angle * 50 / Math.PI);
+      const edgePointIndex = Math.round(angle * 50 / Math.PI) % 100;
       const edgePoint = this.objectEdgePoints[edgePointIndex];
 
       if (edgePoint) {
