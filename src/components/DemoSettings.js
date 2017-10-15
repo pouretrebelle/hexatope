@@ -126,15 +126,12 @@ class DemoSettings extends Component {
           </div>
 
           <div className={settingsGroupDepthClasses}>
-            <legend className={styles.settingsGroupTitle}>
-              Pendant
-            </legend>
             <div className={styles.settingsGroup}>
               <button
                 onClick={this.onHangingPointButtonClicked}
                 className={hangingButtonClasses}
               >
-                Chose Hanging Position
+                Chose Hanging Point
               </button>
             </div>
           </div>
