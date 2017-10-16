@@ -50,7 +50,7 @@ class Demo {
       canvas: this.canvas,
       antialias: true,
       alpha: true,
-      preserveDrawingBuffer: settings.showDownloadButtons, // only for png capture
+      preserveDrawingBuffer: this.system.preserveDrawingBuffer, // only for png capture
     });
     this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1);
 

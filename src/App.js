@@ -19,7 +19,6 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.system = new System(this.props.UIStore);
 
     if (process.env.NODE_ENV === 'production') {
       ReactGA.initialize('UA-106084023-1');
@@ -31,6 +30,11 @@ class App extends Component {
     this.favicon = require('assets/favicon.png');
     this.metaOpenGraph = require('assets/opengraph.jpg');
     this.metaTwitterCard = require('assets/twittercard.jpg');
+
+    // show download buttons if url is /?buttons
+    this.showDownloadButtons = /^\?buttons/.test(window.location.search);
+
+    this.system = new System(this.props.UIStore, this.showDownloadButtons);
   }
 
   render() {
@@ -61,7 +65,7 @@ class App extends Component {
             <DemoWrapper
               system={this.system}
             />
-            { settings.showDownloadButtons && <DownloadButtons
+            { this.showDownloadButtons && <DownloadButtons
               system={this.system}
             /> }
           </div>

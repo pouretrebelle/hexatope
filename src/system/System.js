@@ -5,7 +5,7 @@ import Hexagon from './Hexagon';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
 
 class System {
-  constructor(UIStore) {
+  constructor(UIStore, preserveDrawingBuffer) {
     this.hexagons = [];
     this.columns = undefined;
     this.rows = undefined;
@@ -15,6 +15,7 @@ class System {
     this.mouseTargetHexLast = undefined;
     this.isDrawing = false;
     this.UIStore = UIStore;
+    this.preserveDrawingBuffer = preserveDrawingBuffer; // for three screenshotting
 
     this.setup(UIStore);
   }
