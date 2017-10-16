@@ -1,4 +1,5 @@
 @import '~styles/variables/typography'
+@import '~styles/mixins/responsive'
 
 .tooltipWrapper
   position: relative
@@ -24,6 +25,11 @@
   font-size: 12px
   line-height: 16px
   text-align: center
+  &.tooltipTiltMobileLeft
+    +bp(0, 'mobile')
+      left: auto
+      right: 0
+      transform: translate(0, 0)
 
 .tooltipUp
   bottom: 100%
@@ -42,6 +48,11 @@
   border-style: solid
   border-color: #3f3f3f transparent
 
+.tooltipTiltMobileLeft:before
+  +bp(0, 'mobile')
+    left: auto
+    right: 11px
+
 .tooltipUp:before
   top: 100%
   border-width: 8px 8px 0
@@ -59,3 +70,8 @@
     transform: translate(-50%, -8px)
   .tooltipDown
     transform: translate(-50%, 8px)
+  +bp(0, 'mobile')
+    .tooltipUp.tooltipTiltMobileLeft
+      transform: translate(0, -8px)
+    .tooltipDown.tooltipTiltMobileLeft
+      transform: translate(0, 8px)
