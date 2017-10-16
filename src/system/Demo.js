@@ -465,18 +465,18 @@ class Demo {
     const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
     let group = new THREE.Group();
 
-    const jumpRing = new THREE.TorusGeometry(tubeRadius*3, tubeRadius*0.7, 10, 40);
+    const jumpRing = new THREE.TorusGeometry(tubeRadius*3.3, tubeRadius*0.7, 10, 40);
     let jumpRingMesh = new THREE.Mesh(jumpRing, this.getMaterial(false));
     jumpRingMesh.rotation.y = Math.PI / 2;
 
     // bezier curve of chain
     const bezier = new THREE.CubicBezierCurve3(
       new THREE.Vector3(-10, 20, 0),
-      new THREE.Vector3(3, -6.55, 0),
-      new THREE.Vector3(-3, -6.55, 0),
+      new THREE.Vector3(3, -6.5, 0),
+      new THREE.Vector3(-3, -6.5, 0),
       new THREE.Vector3(10, 20, 0),
     );
-    const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.2, 12, false);
+    const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.1, 12, false);
     const chainMesh = new THREE.Mesh(chain, this.getMaterial(true));
 
     group.add(jumpRingMesh);
