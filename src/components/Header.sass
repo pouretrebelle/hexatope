@@ -22,17 +22,33 @@
 .navbarRight
   padding: 8px 16px
 
+.kickstarterMobile
+  width: 32px
+  height: 32px
+  +bp('mobile')
+    display: none
+
+.kickstarterDesktop
+  height: 20px
+  width: 171px
+  margin: 6px 0
+  +bp(0, 'mobile')
+    display: none
+
 .volumeWarning
   display: inline-block
   width: 16px
   height: 16px
   padding: 2px
+  margin: 5px 8px
   border: 1px solid red
   border-radius: 50%
   color: red
   text-align: center
   font-weight: 400
   line-height: 16px
+  +bp('mobile')
+    margin-right: 16px
 
 .mobileSelectorWrapper
   position: relative
