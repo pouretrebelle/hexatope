@@ -39,7 +39,7 @@ class Header extends Component {
           </a>
           <aside className={styles.navbarRight}>
             { !rewardVolumeApproved &&
-              <Tooltip label={'This design is too large to qualify for a Kickstarter reward, please email hello@hexatope.io if you still want it and we can arrange something'} direction={'down'} mobileTilt={'left'}>
+              <Tooltip label={'This design is too large to qualify for a Kickstarter reward, please email charlotte@hexatope.io if you still want it and we can arrange something'} direction={'down'} mobileTilt={'left'}>
                 <span className={styles.volumeWarning}>
                   !
                 </span>
