@@ -138,7 +138,7 @@ class DemoSettings extends Component {
                 onClick={this.onHangingPointButtonClicked}
                 className={hangingButtonClasses}
               >
-                Chose Hanging Point
+                Choose Hanging Point
               </button>
             </div>
           </div>
