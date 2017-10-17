@@ -31,7 +31,7 @@ class GTMTracking {
       () => UIStore.lastMouseDownTimeTaken,
       (time) => {
         this.trackEvent('mouseDownOverCanvas', {
-          timeElapsed: time,
+          timeElapsed: time/1000,
           toolMode: (UIStore.lastMouseButton == 2) ? TOOL_MODES.ERASE : SettingsStore.toolMode, // todo: refactor actual tool mode
         });
       }
