@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
+import GTMTracking from 'GTMTracking';
 import { MATERIALS } from 'constants/options';
 
 import styles from './Settings.sass';
@@ -31,7 +32,13 @@ class DemoSettings extends Component {
     this.props.system.demo.updateAndAnimateCurves();
   }
 
+  onAnimateButtonClicked = () => {
+    GTMTracking.trackEvent('clickAnimate');
+    this.refreshDemo();
+  }
+
   onHangingPointButtonClicked = () => {
+    GTMTracking.trackEvent('clickHangingPoint');
     this.props.system.demo.startChosingHangingPoint();
   }
 
@@ -69,7 +76,7 @@ class DemoSettings extends Component {
       <div>
         <button
           className={refreshButtonClasses}
-          onClick={this.refreshDemo}
+          onClick={this.onAnimateButtonClicked}
         >
           Animate
         </button>

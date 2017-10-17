@@ -7,7 +7,7 @@ import TagManager from 'react-gtm-module';
 
 import styles from 'styles/application.sass';
 
-import TrackingEvents from './TrackingEvents';
+import GTMTracking from './GTMTracking';
 import System from 'system/System';
 import Header from 'components/Header';
 import CanvasWrapper from 'components/CanvasWrapper';
@@ -22,7 +22,7 @@ class App extends Component {
 
     if (process.env.NODE_ENV === 'production') {
       TagManager.initialize({ gtmId: 'GTM-5HJ5GVK' });
-      TrackingEvents.initialize(TagManager);
+      GTMTracking.initialize(TagManager);
     }
 
     this.title = 'Hexatope.io';
