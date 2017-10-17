@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import { TOOL_MODES, GRID_ROTATION, MATERIALS } from 'constants/options';
 
 class SettingsStore {
@@ -9,6 +9,16 @@ class SettingsStore {
   @observable gridRotation = GRID_ROTATION.VERTICAL;
   @observable material = MATERIALS.SILVER;
   @observable hangingPoint = undefined;
+
+  @computed get trackableSettings() {
+    return {
+      'depthOverlapScalar': this.depthOverlapScalar,
+      'depthCurvatureScalar': this.depthCurvatureScalar,
+      'toolMode': this.toolMode,
+      'gridRotation': this.gridRotation,
+      'material': this.material,
+    };
+  }
 
   @action
   setModeToDraw = () => {
