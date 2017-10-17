@@ -17,7 +17,9 @@ class GTMTracking {
     // debounced by a second so slider changes aren't over-registered
     this.settingsReaction = reaction(
       () => SettingsStore.trackableSettings,
-      this.addToDataLayer,
+      (settings) => {
+        this.addToDataLayer('settingsChange', settings);
+      },
       {
         fireImmediately: true,
         delay: 1000,
