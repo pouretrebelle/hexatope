@@ -23,6 +23,9 @@ class UIStore {
   @observable isChosingHangingPoint = false;
   initialHangingPointAngle = 0;
 
+  @observable lastMouseDownTimeTaken = 0;
+  mouseDownStartTime = 0;
+
   constructor() {
     if (typeof window !== 'undefined') {
       this.createListeners();
@@ -79,11 +82,13 @@ class UIStore {
   startPoint = (e) => {
     this.lastMouseButton = e.button || 0; // default to left button
     this.isMouseDownOverCanvas = true;
+    this.mouseDownStartTime = performance.now();
   }
 
   @action
   endPoint = () => {
     this.isMouseDownOverCanvas = false;
+    this.lastMouseDownTimeTaken = performance.now() - this.mouseDownStartTime;
   }
 
   @action

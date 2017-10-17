@@ -1,5 +1,7 @@
 import SettingsStore from 'stores/SettingsStore';
+import UIStore from 'stores/UIStore';
 import { action, reaction } from 'mobx';
+import { TOOL_MODES } from 'constants/options';
 
 class GTMTracking {
   constructor() {
@@ -13,12 +15,23 @@ class GTMTracking {
 
     // track initial state and any changes to settings
     // debounced by a second so slider changes aren't over-registered
-    this.testReaction = reaction(
+    this.settingsReaction = reaction(
       () => SettingsStore.trackableSettings,
       this.addToDataLayer,
       {
         fireImmediately: true,
         delay: 1000,
+      }
+    );
+
+    // track drawing time incl length of interaction
+    this.canvasMouseReaction = reaction(
+      () => UIStore.lastMouseDownTimeTaken,
+      (time) => {
+        this.trackEvent('mouseDownOverCanvas', {
+          timeElapsed: time,
+          toolMode: (UIStore.lastMouseButton == 2) ? TOOL_MODES.ERASE : SettingsStore.toolMode, // todo: refactor actual tool mode
+        });
       }
     );
   }
