@@ -2,6 +2,7 @@ import settings from './settings';
 import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
+import GTMTracking from 'GTMTracking';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
 
 class System {
@@ -136,7 +137,15 @@ class System {
   }
 
   calculateVolume(curves) {
-    this.UIStore.setRewardVolumeApproval(getTotalLength(curves) / settings.wireLengthPerCm3 < settings.maxRewardVolumeCm3);
+    const volumeCm3 = getTotalLength(curves) / settings.wireLengthPerCm3;
+    this.UIStore.setRewardVolumeApproval(volumeCm3 < settings.maxRewardVolumeCm3);
+
+    GTMTracking.trackEvent(
+      'volumeCalculated',
+      {
+        volume: volumeCm3,
+      }
+    );
   }
 
   clearHexagons() {
