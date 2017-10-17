@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import OrbitControls from './vendor/OrbitControls';
 import { saveAs } from 'file-saver';
+import GIF from 'gif.js';
 import { clamp } from 'utils/numberUtils';
 import { findMostCentralCurve } from 'utils/curveUtils';
 import STLExporter from 'utils/STLExporter';
@@ -21,6 +22,17 @@ class Demo {
     this.mesh = undefined;
     this.meshCenter = undefined;
     this.objectEdgePoints = undefined;
+
+    this.gif = new GIF({
+      workers: 2,
+      quality: 10,
+      width: 500,
+      height: 500,
+    });
+
+    this.gif.on('finished', function (blob) {
+      window.open(URL.createObjectURL(blob));
+    });
   }
 
   setup(canvas, wrapperElement, UIStore) {
@@ -276,6 +288,13 @@ class Demo {
 
     startingCurve.isAnimating = true;
     startingCurve.isAnimatingFromMiddle = true;
+
+
+    // or a canvas element
+    setTimeout(() => this.gif.addFrame(this.canvas, { delay: 50 }), 50);
+    setTimeout(() => this.gif.addFrame(this.canvas, { delay: 50 }), 150);
+    setTimeout(() => this.gif.addFrame(this.canvas, { delay: 50 }), 250);
+    setTimeout(() => this.gif.addFrame(this.canvas, { delay: 50 }), 350);
   }
 
   updateAnimation(setDrawRange) {
@@ -556,6 +575,8 @@ class Demo {
 
   startChosingHangingPoint = () => {
     UIStore.startChosingHangingPoint();
+
+    this.gif.render();
 
     // start from facing forward
     this.controls.reset();
