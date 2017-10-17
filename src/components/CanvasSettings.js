@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { inject, observer } from 'mobx-react';
+import GTMTracking from 'GTMTracking';
 import { TOOL_MODES, GRID_ROTATION } from 'constants/options';
 
 import styles from './Settings.sass';
@@ -26,6 +27,7 @@ class CanvasSettings extends Component {
   }
 
   onClearButtonClicked = () => {
+    GTMTracking.trackEvent('clickClearCanvas');
     this.props.system.clearHexagons();
     this.props.UIStore.canvasHasBeenCleared();
     this.props.SettingsStore.setModeToDraw();
