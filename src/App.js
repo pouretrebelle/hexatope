@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import Typekit from 'react-typekit';
-import ReactGA from 'react-ga';
+import TagManager from 'react-gtm-module';
 
 import styles from 'styles/application.sass';
 
-import settings from 'system/settings';
 import System from 'system/System';
 import Header from 'components/Header';
 import CanvasWrapper from 'components/CanvasWrapper';
@@ -20,9 +19,9 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+
     if (process.env.NODE_ENV === 'production') {
-      ReactGA.initialize('UA-106084023-1');
-      ReactGA.pageview(window.location.pathname + window.location.search);
+      TagManager.initialize({ gtmId: 'GTM-5HJ5GVK' });
     }
 
     this.title = 'Hexatope.io';
