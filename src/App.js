@@ -23,6 +23,7 @@ class App extends Component {
     if (process.env.NODE_ENV === 'production') {
       TagManager.initialize({ gtmId: 'GTM-5HJ5GVK' });
       GTMTracking.initialize(TagManager);
+      window.fbq('track', 'ViewContent');
     }
 
     this.title = 'Hexatope.io';
