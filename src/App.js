@@ -13,6 +13,7 @@ import Header from 'components/Header';
 import CanvasWrapper from 'components/CanvasWrapper';
 import DemoWrapper from 'components/DemoWrapper';
 import DownloadButtons from 'components/DownloadButtons';
+import VideoModal from 'components/VideoModal';
 
 @inject('UIStore') @observer
 class App extends Component {
@@ -69,6 +70,7 @@ class App extends Component {
             { this.showDownloadButtons && <DownloadButtons
               system={this.system}
             /> }
+            <VideoModal />
           </div>
           <Typekit kitId={'req1ouh'} />
         </div>
