@@ -27,7 +27,7 @@ class App extends Component {
     }
 
     this.title = 'Hexatope.io';
-    this.metaDescription = 'Hexatope is an experiment in generative jewellery by Charlotte Dann, opening shop in Winter 2017.';
+    this.metaDescription = 'Hexatope is a system that allows you to design your own unique jewellery using intuitive interaction with a hexagonal grid. Designs are fabricated using cutting-edge 3D-printing technology and cast into Sterling Silver or 18ct Gold.';
     this.favicon = require('assets/favicon.png');
     this.metaOpenGraph = require('assets/opengraph.jpg');
     this.metaTwitterCard = require('assets/twittercard.jpg');
