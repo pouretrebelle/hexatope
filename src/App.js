@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import { Helmet } from 'react-helmet';
 import Typekit from 'react-typekit';
 import TagManager from 'react-gtm-module';
+import { withCookies, Cookies } from 'react-cookie';
 
 import styles from 'styles/application.sass';
 
@@ -40,6 +41,9 @@ class App extends Component {
   }
 
   render() {
+    const { cookies } = this.props;
+    const modalClosed = cookies.get('hexatopeTutorialModalClosed');
+
     return (
       <div>
 
@@ -70,7 +74,9 @@ class App extends Component {
             { this.showDownloadButtons && <DownloadButtons
               system={this.system}
             /> }
-            <VideoModal />
+            { !modalClosed &&
+              <VideoModal />
+            }
           </div>
           <Typekit kitId={'req1ouh'} />
         </div>
@@ -81,6 +87,7 @@ class App extends Component {
 
 App.propTypes = {
   UIStore: PropTypes.object,
+  cookies: PropTypes.instanceOf(Cookies).isRequired,
 };
 
-export default App;
+export default withCookies(App);
