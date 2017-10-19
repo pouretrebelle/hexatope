@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { observable } from 'mobx';
 import { observer } from 'mobx-react';
+import { withCookies, Cookies } from 'react-cookie';
 
 import styles from './VideoModal.sass';
 
@@ -17,6 +18,8 @@ class VideoModal extends Component {
 
   closeModal = () => {
     this.modalIsHidden = true;
+    // save cookie
+    this.props.cookies.set('hexatopeTutorialModalClosed', true);
   }
 
   render() {
@@ -41,6 +44,7 @@ class VideoModal extends Component {
 
 VideoModal.propTypes = {
   UIStore: PropTypes.object,
+  cookies: PropTypes.instanceOf(Cookies).isRequired,
 };
 
-export default VideoModal;
+export default withCookies(VideoModal);

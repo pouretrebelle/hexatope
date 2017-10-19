@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Provider } from 'mobx-react';
+import { CookiesProvider } from 'react-cookie';
 import UIStore from 'stores/UIStore';
 import SettingsStore from 'stores/SettingsStore';
 
@@ -17,7 +18,9 @@ class AppProvider extends Component {
         UIStore={UIStore}
         SettingsStore={SettingsStore}
       >
-        <App />
+        <CookiesProvider>
+          <App />
+        </CookiesProvider>
       </Provider>
     );
   }
