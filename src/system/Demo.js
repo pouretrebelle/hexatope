@@ -32,16 +32,16 @@ class Demo {
     // camera
     // (fov, aspect, near, far)
     this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
-    this.camera.position.z = UIStore.windowHeight * 0.05;
+    this.camera.position.z = UIStore.windowHeight * 0.04;
     this.scene.add(this.camera);
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
-    this.controls.enableDamping = true;
+    this.controls.enableDamping = false;
     this.controls.dampingFactor = settings.cameraDampingFactor;
     this.controls.autoRotate = true;
-    this.controls.autoRotateSpeed = settings.cameraRotateSpeed * settings.cameraDampingFactor;
-    this.controls.rotateSpeed = settings.cameraDampingFactor;
+    this.controls.autoRotateSpeed = settings.cameraRotateSpeed;
+    this.controls.rotateSpeed = settings.cameraRotateSpeed;
     this.controls.minDistance = settings.cameraMinDistance;
     this.controls.maxDistance = settings.cameraMaxDistance;
 
@@ -167,9 +167,6 @@ class Demo {
     this.scene.remove(this.mesh);
     this.mesh = this.generateMeshes(demoModelSettings, true);
     this.scene.add(this.mesh);
-
-    // hacky hack hack hack
-    setTimeout(this.calculateEdgePoints, 0);
   }
 
   generateMeshes(modelSettings, animate) {
@@ -557,7 +554,9 @@ class Demo {
   startChosingHangingPoint = () => {
     UIStore.startChosingHangingPoint();
 
+
     // start from facing forward
+    this.calculateEdgePoints();
     this.controls.reset();
 
     this.updateHangingPointAngle();
