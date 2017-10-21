@@ -104,6 +104,13 @@ class Demo {
       envMap: envMap,
       envMapIntensity: 1,
     });
+    this.materials[MATERIALS.ROSE_GOLD] = new THREE.MeshStandardMaterial({
+      color: 0xffd9c6,
+      roughness: 0.6,
+      metalness: 0.7,
+      envMap: envMap,
+      envMapIntensity: 1,
+    });
 
     // textured material for chain
     this.texturedMaterials[MATERIALS.SILVER] = new THREE.MeshStandardMaterial({
@@ -116,6 +123,14 @@ class Demo {
     });
     this.texturedMaterials[MATERIALS.GOLD] = new THREE.MeshStandardMaterial({
       color: 0xba9e6a,
+      roughness: 0.5,
+      metalness: 0.5,
+      envMap: envMap,
+      envMapIntensity: 1,
+      normalMap: texturedNormalMap,
+    });
+    this.texturedMaterials[MATERIALS.ROSE_GOLD] = new THREE.MeshStandardMaterial({
+      color: 0xc4a395,
       roughness: 0.5,
       metalness: 0.5,
       envMap: envMap,

@@ -100,6 +100,12 @@ class DemoSettings extends Component {
                 >
                   Gold
                 </button>
+                <button
+                  onClick={SettingsStore.setMaterialToRoseGold}
+                  className={materialButtonClasses(MATERIALS.ROSE_GOLD)}
+                >
+                  Rose Gold
+                </button>
               </div>
             </div>
           </div>

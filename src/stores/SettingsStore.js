@@ -7,7 +7,7 @@ class SettingsStore {
   @observable depthCurvatureScalar = 0.5;
   @observable toolMode = TOOL_MODES.DRAW;
   @observable gridRotation = GRID_ROTATION.VERTICAL;
-  @observable material = MATERIALS.SILVER;
+  @observable material = MATERIALS.ROSE_GOLD;
   @observable hangingPoint = undefined;
 
   @computed get trackableSettings() {
@@ -41,13 +41,18 @@ class SettingsStore {
   }
 
   @action
+  setMaterialToSilver = () => {
+    this.material = MATERIALS.SILVER;
+  }
+
+  @action
   setMaterialToGold = () => {
     this.material = MATERIALS.GOLD;
   }
 
   @action
-  setMaterialToSilver = () => {
-    this.material = MATERIALS.SILVER;
+  setMaterialToRoseGold = () => {
+    this.material = MATERIALS.ROSE_GOLD;
   }
 
   @action

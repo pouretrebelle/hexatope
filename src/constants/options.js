@@ -12,4 +12,5 @@ export const GRID_ROTATION = {
 export const MATERIALS = {
   GOLD: 'gold',
   SILVER: 'silver',
+  ROSE_GOLD: 'rose gold',
 };
