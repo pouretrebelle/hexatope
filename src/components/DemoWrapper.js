@@ -5,6 +5,7 @@ import { reaction } from 'mobx';
 import classNames from 'classnames';
 
 import DemoSettings from 'components/DemoSettings';
+import CurvedArrowIcon from 'components/icons/CurvedArrowIcon';
 
 import styles from './DemoWrapper.sass';
 
@@ -117,12 +118,20 @@ class Demo extends Component {
       [styles.demoWrapper]: true,
       [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
     });
+    const ctaClasses = classNames({
+      [styles.cta]: true,
+      [styles.ctaVisible]: UIStore.showChain && !UIStore.isChosingHangingPoint,
+    });
 
     return (
       <div
         className={wrapperClasses}
         ref={element => this.demoWrapperElement = element}
       >
+        <div className={ctaClasses}>
+          <span>You can preorder this pendant by pledging to our Kickstarter campaign</span>
+          <CurvedArrowIcon className={styles.ctaArrow}/>
+        </div>
         <DemoSettings system={system} />
         <canvas
           ref={element => this.demoElement = element}

@@ -1,4 +1,5 @@
 @import '~styles/mixins/responsive'
+@import '~styles/variables/typography'
 
 .demoWrapper
   position: relative
@@ -17,3 +18,34 @@
     top: 0
     left: 0
     z-index: -1
+
+.cta
+  display: flex
+  justify-content: space-between
+  align-items: center
+  position: absolute
+  top: 0
+  left: 0
+  width: 100%
+  box-sizing: border-box
+  padding: 16px 24px
+  background: rgba(#e3e3e3, 0.8)
+  font-weight: $font-weight-heavy
+  cursor: default
+  font-size: 12px
+  opacity: 0
+  pointer-events: none
+  user-select: false
+  +bp('mobile')
+    font-size: 16px
+
+.ctaVisible
+  pointer-events: auto
+  opacity: 1
+  transition: opacity 0.4s linear 1s
+
+.ctaArrow
+  width: 24px
+  height: 24px
+  margin-left: 16px
+  transform: rotate(-20deg)
