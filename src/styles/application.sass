@@ -2,6 +2,7 @@
 @import 'variables/colors'
 @import 'variables/typography'
 @import 'includes/layout'
+@import '~styles/mixins/responsive'
 
 html
   font-size: 16px
@@ -13,6 +14,19 @@ body
   -moz-osx-font-smoothing: grayscale
   background: $color-background
   overflow-x: hidden
+
++bp(0, 'mobile')
+  html
+    overflow: hidden
+  body
+    height: 100%
+    width: 100%
+    position: fixed
+    overflow: hidden
+    -webkit-overflow-scrolling: touch
+
+#root, #root > *
+  height: 100%
 
 body,
 input,

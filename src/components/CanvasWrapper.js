@@ -55,10 +55,12 @@ class Canvas extends Component {
   }
 
   startDrawing = (e) => {
+    e.preventDefault();
     this.props.UIStore.startPoint(e);
   }
 
-  endDrawing = () => {
+  endDrawing = (e) => {
+    e.preventDefault();
     this.props.UIStore.endPoint();
   }
 

@@ -179,7 +179,10 @@ class UIStore {
 
   onWindowResized = () => this.updateDimensions();
   onMouseMoved = (e) => this.updateMousePosition(e);
-  onTouchMoved = (e) => this.updateMousePosition(e.touches[0]);
+  onTouchMoved = (e) => {
+    e.preventDefault();
+    this.updateMousePosition(e.touches[0]);
+  }
 }
 
 export default new UIStore();
