@@ -29,7 +29,11 @@ class Header extends Component {
       [styles.mobileSelectorItem]: true,
       [styles.mobileSelectorItemActive]: isActive,
     });
-    const { demoVisibleOnMobile, rewardVolumeApproved } = this.props.UIStore;
+    const { showChain, isChosingHangingPoint, demoVisibleOnMobile, rewardVolumeApproved } = this.props.UIStore;
+    let kickstarterUrl = KICKSTARTER_URL;
+    if (showChain && !isChosingHangingPoint) {
+      kickstarterUrl += '?utm_keyword=ctaVisible';
+    }
 
     return (
       <div className={styles.header}>
@@ -46,7 +50,7 @@ class Header extends Component {
               </Tooltip>
             }
 
-            { KICKSTARTER_URL && <a href={KICKSTARTER_URL} target={'_blank'} title={'Support Hexatope on Kickstarter'}>
+            { kickstarterUrl && <a href={kickstarterUrl} target={'_blank'} title={'Support Hexatope on Kickstarter'}>
               <div className={styles.kickstarterDesktop}>
                 <div className={styles.kickstarterDesktopHint}>
                   support Hexatope on
