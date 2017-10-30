@@ -471,12 +471,12 @@ class Demo {
 
     // bezier curve of chain
     const bezier = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(-10, 20, 0),
-      new THREE.Vector3(3, -6.5, 0),
-      new THREE.Vector3(-3, -6.5, 0),
-      new THREE.Vector3(10, 20, 0),
+      new THREE.Vector3(-5, 20, 0),
+      new THREE.Vector3(2, -6.5, 0),
+      new THREE.Vector3(-2, -6.5, 0),
+      new THREE.Vector3(5, 20, 0),
     );
-    const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.1, 12, false);
+    const chain = new THREE.TubeBufferGeometry(bezier, 500, tubeRadius*1.1, 12, false);
     const chainMesh = new THREE.Mesh(chain, this.getMaterial(true));
 
     group.add(jumpRingMesh);
