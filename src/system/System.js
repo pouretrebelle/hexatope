@@ -6,6 +6,7 @@ import GTMTracking from 'GTMTracking';
 import { saveAs } from 'file-saver';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
 import { exportDesignData } from 'utils/exportUtils';
+import { importDesignData } from 'utils/importUtils';
 
 class System {
   constructor(UIStore, preserveDrawingBuffer) {
@@ -150,7 +151,7 @@ class System {
     );
   }
 
-  clearHexagons() {
+  clearHexagons = () => {
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
         this.hexagons[x][y].clear();
@@ -174,6 +175,10 @@ class System {
       }
     );
     saveAs(blob, 'hexatope.json');
+  }
+
+  importJSONDesign(json) {
+    importDesignData(this, json);
   }
 }
 
