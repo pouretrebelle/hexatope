@@ -1,4 +1,13 @@
+import exampleDesigns from 'constants/exampleDesigns';
+import { randomInteger } from 'utils/numberUtils';
+
+export const getRandomExampleDesign = () => (
+  exampleDesigns[randomInteger(exampleDesigns.length - 1)]
+);
+
 export const importDesignData = ({ hexagons, columns, rows, ...system }, json) => {
+  if (!json) return;
+
   // clear grid
   system.clearHexagons();
 
