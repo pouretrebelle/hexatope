@@ -6,12 +6,12 @@ export const exportDesignData = ({ hexagons, columns, rows }) => {
   for (let x = 0; x < columns; x++) {
     grid.push([]);
     for (let y = 0; y < rows; y++) {
-      let hexagon = hexagons[x][y];
-      hexagon = {
-        active: hexagon.active,
-        layoutSeed: roundToDecimalPlace(hexagon.layoutSeed, 3),
-      };
-      grid[x][y] = hexagon;
+      const hexagon = hexagons[x][y];
+      let newHexagonData = {};
+      newHexagonData.active = hexagon.active;
+      // only save seed if active
+      if (hexagon.active) newHexagonData.layoutSeed = roundToDecimalPlace(hexagon.layoutSeed, 3);
+      grid[x][y] = newHexagonData;
     }
   }
 
