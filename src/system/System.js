@@ -3,7 +3,9 @@ import Canvas from './Canvas';
 import Demo from './Demo';
 import Hexagon from './Hexagon';
 import GTMTracking from 'GTMTracking';
+import { saveAs } from 'file-saver';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
+import { exportDesignData } from 'utils/exportUtils';
 
 class System {
   constructor(UIStore, preserveDrawingBuffer) {
@@ -160,6 +162,18 @@ class System {
 
   curvesHaveChanged() {
     this.UIStore.curvesHaveChanged();
+  }
+
+  exportJSON() {
+    const json = JSON.stringify(exportDesignData(this));
+
+    const blob = new Blob(
+      [json],
+      {
+        type: 'application/json',
+      }
+    );
+    saveAs(blob, 'hexatope.json');
   }
 }
 
