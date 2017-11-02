@@ -1,3 +1,5 @@
+import { roundToDecimalPlace } from 'utils/numberUtils';
+
 export const exportDesignData = ({ hexagons, columns, rows }) => {
   let grid = [];
 
@@ -7,7 +9,7 @@ export const exportDesignData = ({ hexagons, columns, rows }) => {
       let hexagon = hexagons[x][y];
       hexagon = {
         active: hexagon.active,
-        layoutSeed: hexagon.layoutSeed,
+        layoutSeed: roundToDecimalPlace(hexagon.layoutSeed, 3),
       };
       grid[x][y] = hexagon;
     }
