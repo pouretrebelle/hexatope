@@ -9,6 +9,10 @@ class DownloadButtons extends Component {
     super(props);
   }
 
+  onExportButtonClicked = () => {
+    this.props.system.exportJSON();
+  }
+
   onSVGButtonClicked = () => {
     this.props.system.canvas.downloadSVG();
   }
@@ -24,7 +28,10 @@ class DownloadButtons extends Component {
   render() {
     return (
       <div className={styles.buttons}>
-        <button className={styles.button} onClick={this.onSVGButtonClicked}>
+        <button className={styles.button} onClick={this.onExportButtonClicked}>
+          Export JSON
+        </button>
+        <button className={styles.button} onClick={this.onExportButtonClicked}>
           Download SVG
         </button>
         <button className={styles.button} onClick={this.onPNGButtonClicked}>
