@@ -42,6 +42,7 @@ class CanvasSettings extends Component {
   }
 
   onRandomDesignButtonClicked = () => {
+    GTMTracking.trackEvent('clickRandomDesign');
     this.props.system.importRandomDesign();
   }
 
