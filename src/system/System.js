@@ -57,7 +57,7 @@ class System {
     }
   }
 
-  updateHexagons() {
+  updateHexagons = () => {
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.columns; x++) {
         this.hexagons[x][y].update();
@@ -161,7 +161,7 @@ class System {
     this.canvas.draw();
   }
 
-  curvesHaveChanged() {
+  curvesHaveChanged = () => {
     this.UIStore.curvesHaveChanged();
   }
 
