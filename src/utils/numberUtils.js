@@ -43,3 +43,7 @@ export const clamp = (value, min, max) => {
 
   return Math.max(min, Math.min(value, max));
 };
+
+export const roundToDecimalPlace = (num, degree) => (
+  Math.round(num * (Math.pow(10, degree))) / (Math.pow(10, degree))
+);
