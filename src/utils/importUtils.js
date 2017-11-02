@@ -16,17 +16,16 @@ export const importDesignData = ({ hexagons, columns, rows, ...system }, json) =
   for (let x = 0; x < importColumns; x++) {
     for (let y = 0; y < importRows; y++) {
       const hexagonData = json[x][y];
-      // ignore if off the grid
-      if (hexagons[x + columnOffset] && hexagons[x + columnOffset][y + rowOffset]) {
+      // ignore if data is false (empty hexagon)
+      // or if off the grid
+      if (hexagonData && hexagons[x + columnOffset] && hexagons[x + columnOffset][y + rowOffset]) {
         const hexagonTarget = hexagons[x + columnOffset][y + rowOffset];
         // set the active and next active so it doesn't reset the layout seed
-        hexagonTarget.active = hexagonData.active;
-        hexagonTarget.nextActive = hexagonData.active;
+        hexagonTarget.active = hexagonData[0];
+        hexagonTarget.nextActive = hexagonData[0];
         // set the initial seed as well so it doesn't show it ghosted like in edit mode
-        if (hexagonData.layoutSeed) {
-          hexagonTarget.layoutSeed = hexagonData.layoutSeed;
-          hexagonTarget.initialLayoutSeed = hexagonData.layoutSeed;
-        }
+        hexagonTarget.layoutSeed = hexagonData[1];
+        hexagonTarget.initialLayoutSeed = hexagonData[1];
       }
     }
   }
