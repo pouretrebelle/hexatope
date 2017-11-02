@@ -41,6 +41,10 @@ class CanvasSettings extends Component {
     this.props.SettingsStore.setGridRotation(GRID_ROTATION.HORIZONTAL);
   }
 
+  onRandomDesignButtonClicked = () => {
+    this.props.system.importRandomDesign();
+  }
+
   render() {
     const { toolMode, gridRotation } = this.props.SettingsStore;
 
@@ -89,6 +93,7 @@ class CanvasSettings extends Component {
             </button>
           </div>
         </div>
+
         <div className={styles.settingsGroupWrapper}>
           <legend className={styles.settingsGroupTitle}>
             Orientation
@@ -114,6 +119,17 @@ class CanvasSettings extends Component {
                 </svg>
               </button>
             </div>
+          </div>
+        </div>
+
+        <div className={styles.settingsGroupWrapper}>
+          <div className={styles.settingsGroup}>
+            <button
+              onClick={this.onRandomDesignButtonClicked}
+              className={styles.button}
+            >
+              Random Design
+            </button>
           </div>
         </div>
       </div>

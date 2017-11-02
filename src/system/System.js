@@ -6,7 +6,7 @@ import GTMTracking from 'GTMTracking';
 import { saveAs } from 'file-saver';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
 import { exportDesignData } from 'utils/exportUtils';
-import { importDesignData } from 'utils/importUtils';
+import { getRandomExampleDesign, importDesignData } from 'utils/importUtils';
 
 class System {
   constructor(UIStore, preserveDrawingBuffer) {
@@ -175,6 +175,10 @@ class System {
       }
     );
     saveAs(blob, 'hexatope.json');
+  }
+
+  importRandomDesign = () => {
+    this.importJSONDesign(getRandomExampleDesign());
   }
 
   importJSONDesign(json) {
