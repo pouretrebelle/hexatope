@@ -38,4 +38,9 @@ export const importDesignData = ({ hexagons, columns, rows, ...system }, json) =
       }
     }
   }
+
+  // force canvas draw
+  system.curvesHaveChanged();
+  system.updateHexagons();
+  system.canvas.draw();
 };
