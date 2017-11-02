@@ -7,10 +7,10 @@ export const exportDesignData = ({ hexagons, columns, rows }) => {
     grid.push([]);
     for (let y = 0; y < rows; y++) {
       const hexagon = hexagons[x][y];
-      let newHexagonData = {};
-      newHexagonData.active = hexagon.active;
-      // only save seed if active
-      if (hexagon.active) newHexagonData.layoutSeed = roundToDecimalPlace(hexagon.layoutSeed, 3);
+      let newHexagonData = hexagon.active ? [
+        hexagon.active,
+        roundToDecimalPlace(hexagon.layoutSeed, 3),
+      ] : false;
       grid[x][y] = newHexagonData;
     }
   }
@@ -22,10 +22,9 @@ export const exportDesignData = ({ hexagons, columns, rows }) => {
 };
 
 const removeUnusedColumns = (grid) => (
-  // add up the active values of each column
-  // filter out if they add up to 0
+  // filter out columns that are all false
   grid.filter(column => (
-    column.reduce((sum, value) => sum + value.active, 0) > 0
+    column.filter(value => !!value).length
   ))
 );
 
@@ -34,26 +33,24 @@ const removeUnusedRows = (grid) => {
   // because the odd ones are offset
 
   // loop through rows from the top and remove them
-  let activeTotal = 0;
-  while (activeTotal == 0) {
+  let triggerTripped = false;
+  while (!triggerTripped) {
     grid.forEach(column => {
-      activeTotal += column[0].active;
-      activeTotal += column[1].active;
+      if (column[0] || column[1]) triggerTripped = true;
     });
 
-    if (!activeTotal) grid = grid.map(column => column.slice(2));
+    if (!triggerTripped) grid = grid.map(column => column.slice(2));
   }
 
   // loop through rows from the bottom and remove them
-  activeTotal = 0;
-  while (activeTotal == 0) {
+  triggerTripped = false;
+  while (!triggerTripped) {
     const rows = grid[0].length;
     grid.forEach(column => {
-      activeTotal += column[rows-1].active;
-      activeTotal += column[rows-2].active;
+      if (column[rows-1] || column[rows-2]) triggerTripped = true;
     });
 
-    if (!activeTotal) grid = grid.map(column => column.slice(0, rows-2));
+    if (!triggerTripped) grid = grid.map(column => column.slice(0, rows-2));
   }
 
   return grid;
