@@ -9,7 +9,7 @@ class CurveCap {
     this.pos = point;
 
     this.controlDirection = getEdgePoint(point.edge, 0).normalise();
-    this.controlMagnitude = controlMagnitude;
+    this.controlMagnitude = controlMagnitude * (0.6 + Math.random() * 0.8);
 
     this.pair = undefined;
     this.extenders = [];
