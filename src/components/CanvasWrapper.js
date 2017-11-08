@@ -85,6 +85,10 @@ class Canvas extends Component {
 
   render() {
     const { system, UIStore, SettingsStore } = this.props;
+    const mobileWarningClasses = classNames({
+      [styles.mobileWarning]: true,
+      [styles.mobileWarningVisible]: !UIStore.curvesExist,
+    });
     const wrapperClasses = classNames({
       [styles.canvasWrapper]: true,
       [styles.canvasHiddenOnMobile]: UIStore.demoVisibleOnMobile,
@@ -102,6 +106,9 @@ class Canvas extends Component {
         className={wrapperClasses}
         ref={element => this.canvasWrapperElement = element}
       >
+        { UIStore.demoIsEmpty && <div className={mobileWarningClasses}>
+          Hexatope’s mobile interface is still in&nbsp;development please&nbsp;visit the site on desktop for full&nbsp;functionality
+        </div> }
         <CanvasSettings system={system} />
         <canvas
           ref={element => this.canvasElement = element}
