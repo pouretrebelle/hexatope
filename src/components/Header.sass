@@ -23,31 +23,15 @@
   display: flex
   padding: 8px 16px
 
-.kickstarterMobile
+.kickstarterLink
+  color: #fff
+  &:focus
+    color: #aaa
+
+.kickstarterLogo
   width: 32px
   height: 32px
-  +bp('mobile')
-    display: none
-
-.kickstarterDesktop
-  display: flex
-  align-items: center
-  +bp(0, 'mobile')
-    display: none
-
-.kickstarterDesktopHint
-  color: #fff
-  text-style: italic
-  font-size: 12px
-  line-height: 12px
-  max-width: 70px
-  text-align: right
-  margin-right: 8px
-
-.kickstarterDesktopIcon
-  height: 20px
-  width: 171px
-  margin: 6px 0
+  fill: currentColor
 
 .volumeWarning
   display: inline-block
