@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
-import { withCookies, Cookies } from 'react-cookie';
 import { reaction } from 'mobx';
 import classNames from 'classnames';
 
+import NewsletterPopup from 'components/NewsletterPopup';
 import DemoSettings from 'components/DemoSettings';
 
 import styles from './DemoWrapper.sass';
@@ -16,11 +16,6 @@ class Demo extends Component {
     super(props);
     this.demoElement = undefined;
     this.demoWrapperElement = undefined;
-
-    this.state = {
-      newsletterEmail: '',
-      newsletterPopupClosed: this.props.cookies.get('hexatopeSignedUpToNewsletter'),
-    };
   }
 
   componentDidMount() {
@@ -117,33 +112,11 @@ class Demo extends Component {
     this.props.system.demo.updateDimensions(this.demoWrapperElement, this.props.UIStore);
   }
 
-  onNewsletterEmailChanged = (e) => {
-    this.setState({
-      newsletterEmail: e.target.value,
-    });
-  }
-
-  closeNewsletterPopup = (e) => {
-    e.preventDefault();
-    this.setState({
-      newsletterPopupClosed: true,
-    });
-  }
-
-  submitNewsletterForm = () => {
-    this.props.cookies.set('hexatopeSignedUpToNewsletter', true);
-  }
-
   render() {
     const { system, UIStore } = this.props;
-    const { newsletterEmail, newsletterPopupClosed } = this.state;
     const wrapperClasses = classNames({
       [styles.demoWrapper]: true,
       [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
-    });
-    const newsletterPopupClasses = classNames({
-      [styles.newsletterPopup]: true,
-      [styles.newsletterPopupVisible]: !UIStore.demoIsEmpty && !newsletterPopupClosed,
     });
 
     return (
@@ -151,64 +124,7 @@ class Demo extends Component {
         className={wrapperClasses}
         ref={element => this.demoWrapperElement = element}
       >
-        <div className={newsletterPopupClasses}>
-          <form
-            action={'https://hexatope.us17.list-manage.com/subscribe/post?u=4c51e43f1162adc62d41e6ea5&amp;id=7a87ac0c36'}
-            method={'post'}
-            target={'_blank'}
-            className={styles.newsletterPopupForm}
-            noValidate
-            onSubmit={this.submitNewsletterForm}
-          >
-            <button
-              onClick={this.closeNewsletterPopup}
-              className={styles.newsletterPopupCloseButton}
-              type={'button'}
-            >
-              close
-            </button>
-            <p className={styles.newsletterPopupHint}>
-              Sign up to our newsletter to hear when Hexatope products become available for purchase:
-            </p>
-            <div className={styles.newsletterPopupFields}>
-              <label
-                htmlFor={'mce-EMAIL'}
-                style={{ display: 'none' }}
-              >
-                Email Address
-              </label>
-              <input
-                type={'email'}
-                name={'EMAIL'}
-                id={'mce-EMAIL'}
-                onChange={this.onNewsletterEmailChanged}
-                value={newsletterEmail}
-                className={styles.newsletterPopupEmailField}
-                placeholder={'Email Address'}
-              />
-              <div
-                style={{ position: 'absolute', left: -5000 }}
-                aria-hidden={true}
-              >
-                <input
-                  type={'text'}
-                  name={'b_4c51e43f1162adc62d41e6ea5_7a87ac0c36'}
-                  tabIndex={-1}
-                  value={''}
-                />
-              </div>
-              <div className={styles.newsletterPopupSubmitButtonWrapper}>
-                <button
-                  type={'submit'}
-                  name={'subscribe'}
-                  className={styles.newsletterPopupSubmitButton}
-                >
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+        <NewsletterPopup />
         <DemoSettings system={system} />
         <canvas
           ref={element => this.demoElement = element}
@@ -222,7 +138,6 @@ Demo.propTypes = {
   UIStore: PropTypes.object,
   SettingsStore: PropTypes.object,
   system: PropTypes.object,
-  cookies: PropTypes.instanceOf(Cookies).isRequired,
 };
 
-export default withCookies(Demo);
+export default Demo;
