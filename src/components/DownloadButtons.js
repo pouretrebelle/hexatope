@@ -31,7 +31,7 @@ class DownloadButtons extends Component {
         <button className={styles.button} onClick={this.onExportButtonClicked}>
           Export JSON
         </button>
-        <button className={styles.button} onClick={this.onExportButtonClicked}>
+        <button className={styles.button} onClick={this.onSVGButtonClicked}>
           Download SVG
         </button>
         <button className={styles.button} onClick={this.onPNGButtonClicked}>
