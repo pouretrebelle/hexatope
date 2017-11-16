@@ -32,18 +32,21 @@
   opacity: 0
   pointer-events: none
   user-select: none
+  transition: opacity 0.4s linear
   +bp('mobile')
     font-size: 16px
     padding: 36px
 
 .newsletterPopupVisible
   pointer-events: auto
+  user-select: auto
   opacity: 1
-  transition: opacity 0.4s linear 2s // 2 second entrance delay
+  transition-delay: 2s
 
 .newsletterPopupForm
   background: rgba(#e3e3e3, 0.8)
   padding: 8px
+  position: relative
   +bp('mobile')
     padding: 16px
     border-radius: 4px
@@ -85,3 +88,34 @@
     border-color: #aaa
     outline: none
     box-shadow: 0 0 3px 1px $color-accent-mint
+
+.newsletterPopupCloseButton
+  position: absolute
+  right: 0
+  top: 0
+  padding: 0
+  width: 16px
+  height: 16px
+  margin: 4px
+  cursor: pointer
+  background: transparent
+  border: 0
+  font-size: 0
+  color: transparent
+  &:focus
+    outline: none
+    &:before, &:after
+      background: $color-accent-cornflower
+  &:before, &:after
+    content: ''
+    position: absolute
+    width: 100%
+    height: 1px
+    left: 0
+    background: #555
+  &:before
+    transform: rotate(45deg)
+  &:after
+    transform: rotate(-45deg)
+  +bp('mobile')
+    margin: 8px

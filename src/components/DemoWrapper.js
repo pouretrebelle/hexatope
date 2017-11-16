@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { withCookies, Cookies } from 'react-cookie';
 import { reaction } from 'mobx';
 import classNames from 'classnames';
 
@@ -18,6 +19,7 @@ class Demo extends Component {
 
     this.state = {
       newsletterEmail: '',
+      newsletterPopupClosed: this.props.cookies.get('hexatopeSignedUpToNewsletter'),
     };
   }
 
@@ -121,15 +123,27 @@ class Demo extends Component {
     });
   }
 
+  closeNewsletterPopup = (e) => {
+    e.preventDefault();
+    this.setState({
+      newsletterPopupClosed: true,
+    });
+  }
+
+  submitNewsletterForm = () => {
+    this.props.cookies.set('hexatopeSignedUpToNewsletter', true);
+  }
+
   render() {
     const { system, UIStore } = this.props;
+    const { newsletterEmail, newsletterPopupClosed } = this.state;
     const wrapperClasses = classNames({
       [styles.demoWrapper]: true,
       [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
     });
     const newsletterPopupClasses = classNames({
       [styles.newsletterPopup]: true,
-      [styles.newsletterPopupVisible]: !UIStore.demoIsEmpty,
+      [styles.newsletterPopupVisible]: !UIStore.demoIsEmpty && !newsletterPopupClosed,
     });
 
     return (
@@ -144,7 +158,15 @@ class Demo extends Component {
             target={'_blank'}
             className={styles.newsletterPopupForm}
             noValidate
+            onSubmit={this.submitNewsletterForm}
           >
+            <button
+              onClick={this.closeNewsletterPopup}
+              className={styles.newsletterPopupCloseButton}
+              type={'button'}
+            >
+              close
+            </button>
             <p className={styles.newsletterPopupHint}>
               Sign up to our newsletter to hear when Hexatope products become available for purchase:
             </p>
@@ -160,7 +182,7 @@ class Demo extends Component {
                 name={'EMAIL'}
                 id={'mce-EMAIL'}
                 onChange={this.onNewsletterEmailChanged}
-                value={this.state.newsletterEmail}
+                value={newsletterEmail}
                 className={styles.newsletterPopupEmailField}
                 placeholder={'Email Address'}
               />
@@ -176,12 +198,13 @@ class Demo extends Component {
                 />
               </div>
               <div className={styles.newsletterPopupSubmitButtonWrapper}>
-                <input
+                <button
                   type={'submit'}
-                  value={'Subscribe'}
                   name={'subscribe'}
                   className={styles.newsletterPopupSubmitButton}
-                />
+                >
+                  Subscribe
+                </button>
               </div>
             </div>
           </form>
@@ -199,6 +222,7 @@ Demo.propTypes = {
   UIStore: PropTypes.object,
   SettingsStore: PropTypes.object,
   system: PropTypes.object,
+  cookies: PropTypes.instanceOf(Cookies).isRequired,
 };
 
-export default Demo;
+export default withCookies(Demo);
