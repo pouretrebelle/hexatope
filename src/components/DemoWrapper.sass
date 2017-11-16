@@ -1,5 +1,7 @@
 @import '~styles/mixins/responsive'
+@import '~styles/mixins/buttons'
 @import '~styles/variables/typography'
+@import '~styles/variables/colors'
 
 .demoWrapper
   position: relative
@@ -19,18 +21,12 @@
     left: 0
     z-index: -1
 
-.cta
-  display: flex
-  justify-content: space-between
-  align-items: center
+.newsletterPopup
   position: absolute
   top: 0
   left: 0
   width: 100%
   box-sizing: border-box
-  padding: 8px 16px 8px 8px
-  background: rgba(#e3e3e3, 0.8)
-  font-weight: $font-weight-heavy
   cursor: default
   font-size: 12px
   opacity: 0
@@ -38,15 +34,54 @@
   user-select: none
   +bp('mobile')
     font-size: 16px
-    padding: 16px 24px
+    padding: 36px
 
-.ctaVisible
+.newsletterPopupVisible
   pointer-events: auto
   opacity: 1
-  transition: opacity 0.4s linear 1s
+  transition: opacity 0.4s linear 2s // 2 second entrance delay
 
-.ctaArrow
-  width: 24px
-  height: 24px
-  margin-left: 16px
-  transform: rotate(-20deg)
+.newsletterPopupForm
+  background: rgba(#e3e3e3, 0.8)
+  padding: 8px
+  +bp('mobile')
+    padding: 16px
+    border-radius: 4px
+    float: right
+    box-sizing: border-box
+    width: 100%
+    max-width: 360px
+
+.newsletterPopupHint
+  margin-bottom: 8px
+  color: #222
+  font-size: 14px
+  +bp('mobile')
+    margin-bottom: 16px
+
+.newsletterPopupFields
+  display: flex
+
+.newsletterPopupSubmitButtonWrapper
+  +button--highlight
+  padding: 0
+  margin-left: 8px
+
+.newsletterPopupSubmitButton
+  +button
+  border: 0
+  padding: 8px 10px
+
+.newsletterPopupEmailField
+  flex: 1
+  font-family: $font-family-default
+  font-size: 14px
+  border-radius: 3px
+  padding-left: 8px
+  background: #fff
+  border: 1px solid #fff
+  color: #222
+  &:focus
+    border-color: #aaa
+    outline: none
+    box-shadow: 0 0 3px 1px $color-accent-mint

@@ -5,7 +5,6 @@ import { reaction } from 'mobx';
 import classNames from 'classnames';
 
 import DemoSettings from 'components/DemoSettings';
-import CurvedArrowIcon from 'components/icons/CurvedArrowIcon';
 
 import styles from './DemoWrapper.sass';
 
@@ -16,6 +15,10 @@ class Demo extends Component {
     super(props);
     this.demoElement = undefined;
     this.demoWrapperElement = undefined;
+
+    this.state = {
+      newsletterEmail: '',
+    };
   }
 
   componentDidMount() {
@@ -112,15 +115,21 @@ class Demo extends Component {
     this.props.system.demo.updateDimensions(this.demoWrapperElement, this.props.UIStore);
   }
 
+  onNewsletterEmailChanged = (e) => {
+    this.setState({
+      newsletterEmail: e.target.value,
+    });
+  }
+
   render() {
     const { system, UIStore } = this.props;
     const wrapperClasses = classNames({
       [styles.demoWrapper]: true,
       [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
     });
-    const ctaClasses = classNames({
-      [styles.cta]: true,
-      [styles.ctaVisible]: UIStore.showChain && !UIStore.isChosingHangingPoint,
+    const newsletterPopupClasses = classNames({
+      [styles.newsletterPopup]: true,
+      [styles.newsletterPopupVisible]: !UIStore.demoIsEmpty,
     });
 
     return (
@@ -128,9 +137,54 @@ class Demo extends Component {
         className={wrapperClasses}
         ref={element => this.demoWrapperElement = element}
       >
-        <div className={ctaClasses}>
-          <span>You can preorder this pendant by pledging to our Kickstarter campaign</span>
-          <CurvedArrowIcon className={styles.ctaArrow}/>
+        <div className={newsletterPopupClasses}>
+          <form
+            action={'https://hexatope.us17.list-manage.com/subscribe/post?u=4c51e43f1162adc62d41e6ea5&amp;id=7a87ac0c36'}
+            method={'post'}
+            target={'_blank'}
+            className={styles.newsletterPopupForm}
+            noValidate
+          >
+            <p className={styles.newsletterPopupHint}>
+              Sign up to our newsletter to hear when Hexatope products become available for purchase:
+            </p>
+            <div className={styles.newsletterPopupFields}>
+              <label
+                htmlFor={'mce-EMAIL'}
+                style={{ display: 'none' }}
+              >
+                Email Address
+              </label>
+              <input
+                type={'email'}
+                name={'EMAIL'}
+                id={'mce-EMAIL'}
+                onChange={this.onNewsletterEmailChanged}
+                value={this.state.newsletterEmail}
+                className={styles.newsletterPopupEmailField}
+                placeholder={'Email Address'}
+              />
+              <div
+                style={{ position: 'absolute', left: -5000 }}
+                aria-hidden={true}
+              >
+                <input
+                  type={'text'}
+                  name={'b_4c51e43f1162adc62d41e6ea5_7a87ac0c36'}
+                  tabIndex={-1}
+                  value={''}
+                />
+              </div>
+              <div className={styles.newsletterPopupSubmitButtonWrapper}>
+                <input
+                  type={'submit'}
+                  value={'Subscribe'}
+                  name={'subscribe'}
+                  className={styles.newsletterPopupSubmitButton}
+                />
+              </div>
+            </div>
+          </form>
         </div>
         <DemoSettings system={system} />
         <canvas

@@ -1,4 +1,5 @@
 @import '~styles/variables/colors'
+@import '~styles/variables/typography'
 
 =button
   position: relative
@@ -9,7 +10,7 @@
   user-select: none
   cursor: pointer
   background: transparent
-  font-family: Ratio, sans-serif
+  font-family: $font-family-default
   font-weight: 400
   font-size: 14px
   line-height: 18px
@@ -89,3 +90,9 @@
   +button-style(#ddd, #444, transparent, rgba($color-accent-mint, 0.4))
   &Active, &:active
     +button-style-active(#fff, mix($color-accent-mint, #333), #333)
+
+=button--highlight
+  +button
+  +button-style(#444, #aaa, $color-accent-mint, $color-accent-mint)
+  &Active, &:active
+    +button-style-active(#444, mix($color-accent-mint, #555), $color-accent-mint)
