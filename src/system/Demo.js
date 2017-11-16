@@ -585,7 +585,7 @@ class Demo {
 
   downloadSTL() {
     const exporter = new STLExporter();
-    const meshes = this.generateMeshes(exportModelSettings);
+    const meshes = this.generateMeshes(exportModelSettings).children[0];
     let exportGeometry = new THREE.Geometry();
     meshes.children.forEach(mesh =>
       exportGeometry.merge(new THREE.Geometry().fromBufferGeometry(mesh.geometry))
