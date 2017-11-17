@@ -28,9 +28,9 @@ class System {
 
     let columns, rows;
     // determnine size by width if width is bigger
-    if (windowWidth / 2 > windowHeight) {
-      columns = Math.ceil(windowWidth / 2 / (settings.hexRadius * 3));
-      rows = Math.ceil(windowWidth / 2 / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
+    if (windowWidth > windowHeight) {
+      columns = Math.ceil(windowWidth / (settings.hexRadius * 3));
+      rows = Math.ceil(windowWidth / (Math.sqrt(3) * settings.hexRadius / 2)) + 1;
     }
     // otherwise determine it by height
     else {

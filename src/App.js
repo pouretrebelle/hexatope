@@ -68,9 +68,6 @@ class App extends Component {
             <CanvasWrapper
               system={this.system}
             />
-            <DemoWrapper
-              system={this.system}
-            />
             { this.showDownloadButtons && <DownloadButtons
               system={this.system}
             /> }
