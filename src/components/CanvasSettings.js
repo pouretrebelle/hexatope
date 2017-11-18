@@ -49,6 +49,11 @@ class CanvasSettings extends Component {
   render() {
     const { toolMode, gridRotation } = this.props.SettingsStore;
 
+    const settingsGroupToolsClasses = classNames([
+      [styles.settingsGroupWrapper],
+      [styles.withSectionBubble],
+    ]);
+
     const toolButtonClasses = (buttonMode) => classNames({
       [styles.button]: true,
       [styles.buttonActive]: toolMode === buttonMode,
@@ -61,7 +66,7 @@ class CanvasSettings extends Component {
 
     return (
       <div className={styles.settings}>
-        <div className={styles.settingsGroupWrapper} data-section={1}>
+        <div className={settingsGroupToolsClasses} data-section={1}>
           <legend className={styles.settingsGroupTitle}>
             Drawing modes
           </legend>

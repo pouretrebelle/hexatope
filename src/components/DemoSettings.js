@@ -42,8 +42,12 @@ class DemoSettings extends Component {
     this.props.system.demo.startChosingHangingPoint();
   }
 
+  onDownloadButtonClicked = () => {
+    this.props.system.exportTXT();
+  }
+
   render() {
-    const { SettingsStore, UIStore } = this.props;
+    const { SettingsStore, UIStore, kickstarterRewardPage } = this.props;
 
     const refreshButtonClasses = classNames({
       [styles.refreshButton]: true,
@@ -53,13 +57,21 @@ class DemoSettings extends Component {
 
     const settingsGroupMaterialClasses = classNames({
       [styles.settingsGroupWrapper]: true,
+      [styles.withSectionBubble]: true,
       [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
     });
 
     const settingsGroupDepthClasses = classNames({
       [styles.settingsGroupWrapper]: true,
       [styles.settingsGroupDepth]: true,
+      [styles.withSectionBubble]: true,
       [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating,
+    });
+
+    const settingsGroupDownloadClasses = classNames({
+      [styles.settingsGroupWrapper]: true,
+      [styles.settingsGroupDownload]: true,
+      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating ||UIStore.isChosingHangingPoint || SettingsStore.hangingPointAngle === undefined,
     });
 
     const materialButtonClasses = (material) => classNames({
@@ -146,6 +158,24 @@ class DemoSettings extends Component {
             </div>
           </div>
 
+          { kickstarterRewardPage &&
+            <div className={settingsGroupDownloadClasses}>
+              <div className={styles.withSectionBubble} data-section={5}>
+                <legend className={styles.settingsGroupTitle}>
+                  Complete
+                </legend>
+                <div className={styles.settingsGroup}>
+                  <button
+                    onClick={this.onDownloadButtonClicked}
+                    className={styles.button}
+                  >
+                    Download Design File
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+
         </div>
       </div>
     );
@@ -156,6 +186,7 @@ DemoSettings.propTypes = {
   system: PropTypes.object,
   SettingsStore: PropTypes.object,
   UIStore: PropTypes.object,
+  kickstarterRewardPage: PropTypes.bool,
 };
 
 export default DemoSettings;

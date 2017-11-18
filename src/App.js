@@ -36,6 +36,7 @@ class App extends Component {
 
     // show download buttons if url is /?buttons
     this.showDownloadButtons = /^\?buttons/.test(window.location.search);
+    this.kickstarterRewardPage = /^\?kickstarter-reward/.test(window.location.search);
 
     this.system = new System(this.props.UIStore, this.showDownloadButtons);
   }
@@ -70,6 +71,7 @@ class App extends Component {
             />
             <DemoWrapper
               system={this.system}
+              kickstarterRewardPage={this.kickstarterRewardPage}
             />
             { this.showDownloadButtons && <DownloadButtons
               system={this.system}
