@@ -1,5 +1,6 @@
 import { observable, computed, action } from 'mobx';
 import { TOOL_MODES, GRID_ROTATION, MATERIALS } from 'constants/options';
+import { roundToDecimalPlace } from 'utils/numberUtils';
 
 class SettingsStore {
 
@@ -22,10 +23,10 @@ class SettingsStore {
 
   @computed get exportSettings() {
     return {
-      'depthOverlapScalar': this.depthOverlapScalar,
-      'depthCurvatureScalar': this.depthCurvatureScalar,
+      'depthOverlapScalar': roundToDecimalPlace(this.depthOverlapScalar, 3),
+      'depthCurvatureScalar': roundToDecimalPlace(this.depthCurvatureScalar, 3),
       'material': this.material,
-      'hangingPointAngle': this.hangingPointAngle,
+      'hangingPointAngle': roundToDecimalPlace(this.hangingPointAngle, 3),
     };
   }
 
