@@ -484,25 +484,91 @@ class Demo {
   }
 
   addChain = () => {
-    const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
     let group = new THREE.Group();
+    // const tubeRadius = settings.tubeThickness / (2 * settings.hexRadius);
 
-    const jumpRing = new THREE.TorusGeometry(tubeRadius*3.3, tubeRadius*0.7, 10, 40);
-    let jumpRingMesh = new THREE.Mesh(jumpRing, this.getMaterial(false));
-    jumpRingMesh.rotation.y = Math.PI / 2;
+    // const jumpRing = new THREE.TorusGeometry(tubeRadius*3.3/1.8, tubeRadius*0.7/1.8, 10, 40);
+    // let jumpRingMesh = new THREE.Mesh(jumpRing, this.getMaterial(false));
+    // jumpRingMesh.rotation.y = Math.PI / 2;
 
     // bezier curve of chain
-    const bezier = new THREE.CubicBezierCurve3(
-      new THREE.Vector3(-10, 20, 0),
-      new THREE.Vector3(3, -6.5, 0),
-      new THREE.Vector3(-3, -6.5, 0),
-      new THREE.Vector3(10, 20, 0),
-    );
-    const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.1, 12, false);
-    const chainMesh = new THREE.Mesh(chain, this.getMaterial(true));
+    // const bezier = new THREE.CubicBezierCurve3(
+    //   new THREE.Vector3(-10, 20, 0),
+    //   new THREE.Vector3(3, -6.5, 0),
+    //   new THREE.Vector3(-3, -6.5, 0),
+    //   new THREE.Vector3(10, 20, 0),
+    // );
+    // const chain = new THREE.TubeBufferGeometry(bezier, 200, tubeRadius*1.1, 12, false);
+    // const chainMesh = new THREE.Mesh(chain, this.getMaterial(true));
 
-    group.add(jumpRingMesh);
-    group.add(chainMesh);
+
+    let hook = new THREE.Group();
+    const hookWireRadius = 0.2;
+
+    // bottom loop
+    const hookBaseBezier = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(1, 0.2, 0),
+      new THREE.Vector3(1, -1.6, 0),
+      new THREE.Vector3(-1, -1.6, 0),
+      new THREE.Vector3(-1, 0, 0),
+    );
+    const hookBase = new THREE.TubeBufferGeometry(hookBaseBezier, 200, hookWireRadius, 12, false);
+    const hookBaseMesh = new THREE.Mesh(hookBase, this.getMaterial(false));
+    hook.add(hookBaseMesh);
+
+    // arching upwards
+    const hookArchBezier = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-1, 0, 0),
+      new THREE.Vector3(-1, 1.8, 0),
+      new THREE.Vector3(2.2, 2, 0),
+      new THREE.Vector3(2.2, 4.7, 0),
+    );
+    const hookArch = new THREE.TubeBufferGeometry(hookArchBezier, 200, hookWireRadius, 12, false);
+    const hookArchMesh = new THREE.Mesh(hookArch, this.getMaterial(false));
+    hook.add(hookArchMesh);
+
+    // top arch
+    const hookTopBezier = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(2.2, 4.7, 0),
+      new THREE.Vector3(2.2, 7.4, 0),
+      new THREE.Vector3(-1.4, 8.4, 0),
+      new THREE.Vector3(-2.6, 5.8, 0),
+    );
+    const hookTop = new THREE.TubeBufferGeometry(hookTopBezier, 200, hookWireRadius, 12, false);
+    const hookTopMesh = new THREE.Mesh(hookTop, this.getMaterial(false));
+    hook.add(hookTopMesh);
+
+    // end
+    const hookEndBezier = new THREE.CubicBezierCurve3(
+      new THREE.Vector3(-2.6, 5.8, 0),
+      new THREE.Vector3(-5.8, -1.8, 0),
+      new THREE.Vector3(-5.2, -1.5, 0),
+      new THREE.Vector3(-7.2, -2.9, 0),
+    );
+    const hookEnd = new THREE.TubeBufferGeometry(hookEndBezier, 200, hookWireRadius, 12, false);
+    const hookEndMesh = new THREE.Mesh(hookEnd, this.getMaterial(false));
+    hook.add(hookEndMesh);
+
+    // cap
+    const cap = new THREE.SphereBufferGeometry(0.2, 10, 10);
+    cap.translate(-7.2, -2.9, 0);
+    const capMesh = new THREE.Mesh(cap, this.getMaterial(false));
+    hook.add(capMesh);
+
+    // ball
+    const sphere = new THREE.SphereBufferGeometry(0.6, 10, 10);
+    sphere.translate(1, 0.6, 0);
+    const sphereMesh = new THREE.Mesh(sphere, this.getMaterial(false));
+    hook.add(sphereMesh);
+    
+    hook.scale.set(1/3, 1/3, 1/3);
+    hook.rotation.y = -Math.PI / 2;    
+    hook.position.set(0, 0.1, 0);
+    group.add(hook);
+
+
+    // group.add(jumpRingMesh);
+    // group.add(chainMesh);
     group.visible = false;
 
     this.chain = group;
