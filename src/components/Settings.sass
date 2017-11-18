@@ -116,3 +116,36 @@
 .refreshButtonVisible
   opacity: 1
   pointer-events: auto
+
+.scale
+  position: absolute
+  right: 24px
+  top: 50%
+  transform: translateY(-50%)
+  border-right: 2px solid rgba(#555, 0.6)
+  transition: opacity 0.5s ease-out
+  &:before
+    content: 'cm'
+    position: absolute
+    top: -2em
+    right: -2px
+    font-size: 12px
+    text-align: center
+    font-weight: $font-weight-heavy
+    color: #555
+
+.scaleHidden
+  opacity: 0
+
+.scaleUnit
+  display: block
+  box-sizing: border-box
+  border-bottom: 2px solid rgba(#555, 0.6)
+  height: 91px
+  width: 12px
+  pointer-events: none
+  &:first-child
+    height: 2px
+  +bp(0, 'mobile')
+    &:last-child
+      display: none
