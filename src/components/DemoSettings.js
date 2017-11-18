@@ -76,7 +76,7 @@ class DemoSettings extends Component {
     const settingsGroupDownloadClasses = classNames({
       [styles.settingsGroupWrapper]: true,
       [styles.settingsGroupDownload]: true,
-      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating || UIStore.isChosingHangingPoint || SettingsStore.hangingPointAngle === undefined,
+      [styles.settingsGroupHidden]: !UIStore.rewardVolumeApproved || UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating || UIStore.isChosingHangingPoint || SettingsStore.hangingPointAngle === undefined,
     });
 
     const materialButtonClasses = (material) => classNames({
