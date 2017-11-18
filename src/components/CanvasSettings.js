@@ -61,7 +61,7 @@ class CanvasSettings extends Component {
 
     return (
       <div className={styles.settings}>
-        <div className={styles.settingsGroupWrapper}>
+        <div className={styles.settingsGroupWrapper} data-section={1}>
           <legend className={styles.settingsGroupTitle}>
             Drawing modes
           </legend>

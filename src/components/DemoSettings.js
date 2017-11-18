@@ -82,7 +82,7 @@ class DemoSettings extends Component {
         </button>
         <div className={styles.settings}>
 
-          <div className={settingsGroupMaterialClasses}>
+          <div className={settingsGroupMaterialClasses} data-section={2}>
             <legend className={styles.settingsGroupTitle}>
               Material
             </legend>
@@ -104,7 +104,7 @@ class DemoSettings extends Component {
             </div>
           </div>
 
-          <div className={settingsGroupDepthClasses}>
+          <div className={settingsGroupDepthClasses} data-section={3}>
             <legend className={styles.settingsGroupTitle}>
               Depth control
             </legend>
@@ -132,7 +132,10 @@ class DemoSettings extends Component {
             </div>
           </div>
 
-          <div className={settingsGroupDepthClasses}>
+          <div className={settingsGroupDepthClasses} data-section={4}>
+            <legend className={styles.settingsGroupTitle}>
+              Pendant
+            </legend>
             <div className={styles.settingsGroup}>
               <button
                 onClick={this.onHangingPointButtonClicked}
