@@ -85,12 +85,21 @@ class Demo extends Component {
   }
 
   reactToSettingsChange = () => {
-    this.props.system.demo.updateChainPosition(0, true);
+    const { system, UIStore } = this.props;
+
+    // don't update the chain or render anything if we're importing
+    if (UIStore.isImporting) return;
+    // use raycasting to position chain instead of edge points
+    system.demo.updateChainPosition(0, true);
     this.renderDemo(false);
   }
 
   reactToMaterialChange = () => {
-    this.props.system.demo.updateChainMaterial();
+    const { system, UIStore } = this.props;
+
+    // don't do anything if we're importing
+    if (UIStore.isImporting) return;
+    system.demo.updateChainMaterial();
     this.renderDemo(false);
   }
 

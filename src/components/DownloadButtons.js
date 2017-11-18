@@ -9,8 +9,12 @@ class DownloadButtons extends Component {
     super(props);
   }
 
-  onExportButtonClicked = () => {
-    this.props.system.exportJSON();
+  onExportTXTButtonClicked = () => {
+    this.props.system.exportTXT();
+  }
+
+  onExportJSONButtonClicked = (withSettings) => {
+    this.props.system.exportJSON(withSettings);
   }
 
   onSVGButtonClicked = () => {
@@ -28,7 +32,13 @@ class DownloadButtons extends Component {
   render() {
     return (
       <div className={styles.buttons}>
-        <button className={styles.button} onClick={this.onExportButtonClicked}>
+        <button className={styles.button} onClick={this.onExportTXTButtonClicked}>
+          Export TXT
+        </button>
+        <button className={styles.button} onClick={() => this.onExportJSONButtonClicked(true)}>
+          Export JSON w/settings
+        </button>
+        <button className={styles.button} onClick={() => this.onExportJSONButtonClicked(false)}>
           Export JSON
         </button>
         <button className={styles.button} onClick={this.onSVGButtonClicked}>

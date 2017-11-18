@@ -5,8 +5,8 @@ import Hexagon from './Hexagon';
 import GTMTracking from 'GTMTracking';
 import { saveAs } from 'file-saver';
 import { matchCurves, configureDepth, getTotalLength, isolateLargestShape } from 'utils/curveUtils';
-import { exportDesignData } from 'utils/exportUtils';
-import { getRandomExampleDesign, importDesignData } from 'utils/importUtils';
+import { exportCanvasData, exportDesignData } from 'utils/exportUtils';
+import { getRandomExampleDesign, importDesign } from 'utils/importUtils';
 
 class System {
   constructor(UIStore, preserveDrawingBuffer) {
@@ -165,8 +165,9 @@ class System {
     this.UIStore.curvesHaveChanged();
   }
 
-  exportJSON() {
-    const json = JSON.stringify(exportDesignData(this));
+  exportJSON(withSettings) {
+    const data = withSettings ? exportDesignData(this) : exportCanvasData(this);
+    const json = JSON.stringify(data);
 
     const blob = new Blob(
       [json],
@@ -177,12 +178,30 @@ class System {
     saveAs(blob, 'hexatope.json');
   }
 
-  importRandomDesign = () => {
-    this.importJSONDesign(getRandomExampleDesign());
+  exportTXT() {
+    let text;
+    text = '// this is design data from hexatope.io\n';
+    text += JSON.stringify(exportDesignData(this));
+
+    const blob = new Blob(
+      [text],
+      {
+        type: 'application/json',
+      }
+    );
+    saveAs(blob, 'hexatope.txt');
   }
 
-  importJSONDesign(json) {
-    importDesignData(this, json);
+  importJSON = (json) => {
+    this.importDesign(json.canvas, json.settings);
+  }
+
+  importRandomDesign = () => {
+    this.importDesign(getRandomExampleDesign());
+  }
+
+  importDesign(canvasJson, settings) {
+    importDesign(this, canvasJson, settings);
   }
 }
 

@@ -149,17 +149,19 @@ class Demo {
   updateCurves() {
     this.scene.remove(this.mesh);
     this.mesh = this.generateMeshes(demoModelSettings, false);
-    this.mesh.rotation.set(0, 0, UIStore.hangingPointAngle);
+    if (SettingsStore.hangingPointAngle !== undefined) {
+      this.mesh.rotation.set(0, 0, SettingsStore.hangingPointAngle);
+    }
 
     this.scene.add(this.mesh);
-    this.system.UIStore.demoHasBeenUpdated();
+    UIStore.demoHasBeenUpdated();
   }
 
   updateAndAnimateCurves() {
     // reset position and rotation of orbit controls
     this.controls.reset();
-    this.system.UIStore.resetDemo();
-    this.system.UIStore.demoHasBeenUpdated();
+    SettingsStore.updateHangingPointAngle(undefined);
+    UIStore.demoHasBeenUpdated();
 
     // hide chain until hanging position is chosen
     this.chain.visible = false;
@@ -170,6 +172,26 @@ class Demo {
 
     // hacky hack hack hack
     setTimeout(this.calculateEdgePoints, 0);
+  }
+
+  updateCurvesFromImport() {
+    this.scene.remove(this.mesh);
+    this.mesh = this.generateMeshes(demoModelSettings, false);
+
+    this.scene.add(this.mesh);
+    UIStore.demoHasBeenUpdated();
+
+    // reset camera
+    this.controls.resetAtAngle(0);
+    // make sure chain is the right material
+    this.updateChainMaterial();
+
+    // hacky hack hack
+    // TODO: learn promises
+    setTimeout(() => {
+      this.calculateEdgePoints();
+      this.updateHangingPointAngle(SettingsStore.hangingPointAngle);
+    }, 0);
   }
 
   generateMeshes(modelSettings, animate) {
@@ -494,14 +516,19 @@ class Demo {
     this.chain.children[1].material = this.getMaterial(true);
   }
 
-  updateHangingPointAngle = () => {
-    const angle = (UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle + Math.PI * 2) % (Math.PI * 2);
+  updateHangingPointAngle = (angle) => {
+    // angle is only sent when importing
+    if (!angle) angle = (UIStore.angleToCenterOfDemo - UIStore.initialHangingPointAngle + Math.PI * 2) % (Math.PI * 2);
     this.mesh.rotation.set(0, 0, angle);
-    UIStore.updateHangingPointAngle(angle);
+    SettingsStore.updateHangingPointAngle(angle);
     this.updateChainPosition(angle, false);
   }
 
   updateChainPosition = (angle, raycast) => {
+    // if there's no mesh return
+    // this could happen when importing settings
+    if (!this.mesh) return;
+
     let y = 0;
     let z = 0;
     let visibility = false;
@@ -537,7 +564,7 @@ class Demo {
 
     // use objectEdgePoints array
     else {
-      if (!this.objectEdgePoints.length) return;
+      if (!this.objectEdgePoints || !this.objectEdgePoints.length) return;
 
       const edgePointIndex = Math.round(angle * 50 / Math.PI) % 100;
       const edgePoint = this.objectEdgePoints[edgePointIndex];
@@ -549,7 +576,7 @@ class Demo {
       }
     }
 
-    this.chain.visible = UIStore.showChain ? visibility : false;
+    this.chain.visible = (SettingsStore.hangingPointAngle !== undefined) ? visibility : false;
     this.chain.position.y = y + 0.05; // puts piece hanging at the bottom of jump ring
     this.chain.position.z = z;
   }
