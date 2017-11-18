@@ -1,6 +1,14 @@
 import { roundToDecimalPlace } from 'utils/numberUtils';
+import SettingsStore from 'stores/SettingsStore';
 
-export const exportDesignData = ({ hexagons, columns, rows }) => {
+export const exportDesignData = (system) => {
+  return {
+    settings: SettingsStore.exportSettings,
+    canvas: exportCanvasData(system),
+  };
+};
+
+export const exportCanvasData = ({ hexagons, columns, rows }) => {
   let grid = [];
 
   for (let x = 0; x < columns; x++) {

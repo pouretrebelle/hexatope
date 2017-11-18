@@ -8,7 +8,7 @@ class SettingsStore {
   @observable toolMode = TOOL_MODES.DRAW;
   @observable gridRotation = GRID_ROTATION.VERTICAL;
   @observable material = MATERIALS.SILVER;
-  @observable hangingPoint = undefined;
+  @observable hangingPointAngle = undefined;
 
   @computed get trackableSettings() {
     return {
@@ -18,6 +18,23 @@ class SettingsStore {
       'gridRotation': this.gridRotation,
       'material': this.material,
     };
+  }
+
+  @computed get exportSettings() {
+    return {
+      'depthOverlapScalar': this.depthOverlapScalar,
+      'depthCurvatureScalar': this.depthCurvatureScalar,
+      'material': this.material,
+      'hangingPointAngle': this.hangingPointAngle,
+    };
+  }
+
+  @action
+  importSettings = (settings) => {
+    this.depthOverlapScalar = settings.depthOverlapScalar;
+    this.depthCurvatureScalar = settings.depthCurvatureScalar;
+    this.material = settings.material;
+    this.hangingPointAngle = settings.hangingPointAngle;
   }
 
   @action
@@ -61,8 +78,8 @@ class SettingsStore {
   }
 
   @action
-  choseHangingPoint = (curve) => {
-    this.hangingPoint = curve;
+  updateHangingPointAngle = (angle) => {
+    this.hangingPointAngle = angle;
   }
 
 }

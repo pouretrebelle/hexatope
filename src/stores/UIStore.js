@@ -18,10 +18,9 @@ class UIStore {
   @observable demoVisibleOnMobile = false;
   @observable rewardVolumeApproved = true;
   @observable drawMouseHexagon = true;
-  @observable showChain = false;
-  @observable hangingPointAngle = 0;
   @observable isChosingHangingPoint = false;
   initialHangingPointAngle = 0;
+  @observable isImporting = false;
 
   @observable lastMouseDownTimeTaken = 0;
   mouseDownStartTime = 0;
@@ -113,12 +112,6 @@ class UIStore {
   }
 
   @action
-  resetDemo = () => {
-    this.showChain = false;
-    this.hangingPointAngle = 0;
-  }
-
-  @action
   demoHasBeenUpdated = () => {
     this.demoIsEmpty = false;
     this.curvesChangedSinceDemoUpdate = false;
@@ -152,7 +145,6 @@ class UIStore {
   @action
   startChosingHangingPoint = () => {
     this.isChosingHangingPoint = true;
-    this.showChain = true;
     // update initial hanging point to avoid jerkiness
     this.initialHangingPointAngle = this.angleToCenterOfDemo;
 
@@ -168,13 +160,18 @@ class UIStore {
   }
 
   @action
-  updateHangingPointAngle = (angle) => {
-    this.hangingPointAngle = angle;
+  setRewardVolumeApproval = (approved) => {
+    this.rewardVolumeApproved = approved;
   }
 
   @action
-  setRewardVolumeApproval = (approved) => {
-    this.rewardVolumeApproved = approved;
+  startImport = () => {
+    this.isImporting = true;
+  }
+
+  @action
+  endImport = () => {
+    this.isImporting = false;
   }
 
   onWindowResized = () => this.updateDimensions();
