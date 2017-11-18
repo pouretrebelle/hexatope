@@ -55,6 +55,11 @@ class DemoSettings extends Component {
       [styles.refreshButtonVisible]: UIStore.curvesChangedSinceDemoUpdate && UIStore.curvesExist,
     });
 
+    const scaleClasses = classNames({
+      [styles.scale]: true,
+      [styles.scaleHidden]: !UIStore.isChosingHangingPoint && SettingsStore.hangingPointAngle === undefined,
+    });
+
     const settingsGroupMaterialClasses = classNames({
       [styles.settingsGroupWrapper]: true,
       [styles.withSectionBubble]: true,
@@ -71,7 +76,7 @@ class DemoSettings extends Component {
     const settingsGroupDownloadClasses = classNames({
       [styles.settingsGroupWrapper]: true,
       [styles.settingsGroupDownload]: true,
-      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating ||UIStore.isChosingHangingPoint || SettingsStore.hangingPointAngle === undefined,
+      [styles.settingsGroupHidden]: UIStore.curvesChangedSinceDemoUpdate || UIStore.demoIsAnimating || UIStore.isChosingHangingPoint || SettingsStore.hangingPointAngle === undefined,
     });
 
     const materialButtonClasses = (material) => classNames({
@@ -86,6 +91,15 @@ class DemoSettings extends Component {
 
     return (
       <div>
+
+        <div className={scaleClasses}>
+          <span className={styles.scaleUnit} />
+          <span className={styles.scaleUnit} />
+          <span className={styles.scaleUnit} />
+          <span className={styles.scaleUnit} />
+          <span className={styles.scaleUnit} />
+        </div>
+
         <button
           className={refreshButtonClasses}
           onClick={this.onAnimateButtonClicked}
