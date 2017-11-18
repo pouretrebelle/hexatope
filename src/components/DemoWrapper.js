@@ -122,7 +122,7 @@ class Demo extends Component {
   }
 
   render() {
-    const { system, UIStore } = this.props;
+    const { system, UIStore, kickstarterRewardPage } = this.props;
     const wrapperClasses = classNames({
       [styles.demoWrapper]: true,
       [styles.demoHiddenOnMobile]: !UIStore.demoVisibleOnMobile,
@@ -134,7 +134,10 @@ class Demo extends Component {
         ref={element => this.demoWrapperElement = element}
       >
         <NewsletterPopup />
-        <DemoSettings system={system} />
+        <DemoSettings
+          system={system}
+          kickstarterRewardPage={kickstarterRewardPage}
+        />
         <canvas
           ref={element => this.demoElement = element}
         />
@@ -147,6 +150,7 @@ Demo.propTypes = {
   UIStore: PropTypes.object,
   SettingsStore: PropTypes.object,
   system: PropTypes.object,
+  kickstarterRewardPage: PropTypes.bool,
 };
 
 export default Demo;

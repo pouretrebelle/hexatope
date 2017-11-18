@@ -21,7 +21,7 @@
   +bp('mobile')
     margin: -8px 0 16px 24px
 
-.settingsGroupWrapper[data-section]
+.withSectionBubble[data-section]
   &:before
     content: attr(data-section)
     display: block
@@ -83,6 +83,16 @@
 
 .settingsGroupDepth
   max-width: 200px
+
+.settingsGroupDownload
+  max-height: 160px
+  transition: all 0.8s ease-out
+  display: flex
+  flex-direction: column
+  justify-content: flex-end
+  &.settingsGroupHidden
+    max-height: 0
+    margin-bottom: 0
 
 .refreshButton
   +button--light
