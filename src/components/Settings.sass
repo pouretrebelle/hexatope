@@ -1,3 +1,4 @@
+@import '~styles/variables/typography'
 @import '~styles/mixins/responsive'
 @import '~styles/mixins/buttons'
 @import '~styles/mixins/inputs'
@@ -5,8 +6,8 @@
 .settings
   position: absolute
   display: flex
-  flex-wrap: wrap-reverse
-  align-items: flex-start
+  flex-wrap: wrap
+  align-items: flex-end
   left: 0
   bottom: 0
   width: 100%
@@ -19,6 +20,22 @@
   transition: opacity 0.5s ease-out
   +bp('mobile')
     margin: -8px 0 16px 24px
+
+.settingsGroupWrapper[data-section]
+  &:before
+    content: attr(data-section)
+    display: block
+    margin: 8px 0
+    height: 24px
+    width: 24px
+    pointer-events: none
+    background: rgba(#555, 0.6)
+    color: #fff
+    border-radius: 50%
+    font-size: 16px
+    line-height: 20px
+    text-align: center
+    font-weight: $font-weight-heavy
 
 .settingsGroup
   display: flex
