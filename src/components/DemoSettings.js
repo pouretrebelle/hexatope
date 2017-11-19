@@ -57,7 +57,7 @@ class DemoSettings extends Component {
 
     const scaleClasses = classNames({
       [styles.scale]: true,
-      [styles.scaleHidden]: !UIStore.isChosingHangingPoint && SettingsStore.hangingPointAngle === undefined,
+      [styles.scaleHidden]: !UIStore.isChosingHangingPoint,
     });
 
     const settingsGroupMaterialClasses = classNames({
