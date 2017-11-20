@@ -36,8 +36,8 @@ class Canvas {
 
   updateMousePos({ mouseX, mouseY, canvasBoundingBox }) {
     // pixel position of mouse relative to canvas wrapper
-    let absoluteMouseX = mouseX - canvasBoundingBox.x;
-    let absoluteMouseY = mouseY - canvasBoundingBox.y;
+    let absoluteMouseX = mouseX - canvasBoundingBox.left;
+    let absoluteMouseY = mouseY - canvasBoundingBox.top;
 
     // margin between the canvas and its wrapper (negative)
     const widthOverflowDiff = (canvasBoundingBox.width - this.externalWidth) / 2;
