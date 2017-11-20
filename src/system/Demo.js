@@ -32,14 +32,14 @@ class Demo {
     // camera
     // (fov, aspect, near, far)
     this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
-    this.camera.position.z = UIStore.windowHeight * 0.05;
+    this.camera.position.z = UIStore.windowHeight * 0.03;
     this.scene.add(this.camera);
 
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = true;
     this.controls.dampingFactor = settings.cameraDampingFactor;
-    this.controls.autoRotate = true;
+    this.controls.autoRotate = false;
     this.controls.autoRotateSpeed = settings.cameraRotateSpeed * settings.cameraDampingFactor;
     this.controls.rotateSpeed = settings.cameraDampingFactor;
     this.controls.minDistance = settings.cameraMinDistance;
@@ -503,7 +503,7 @@ class Demo {
 
 
     let hook = new THREE.Group();
-    const hookWireRadius = 0.2;
+    const hookWireRadius = 0.3;
 
     // bottom loop
     const hookBaseBezier = new THREE.CubicBezierCurve3(
@@ -550,7 +550,7 @@ class Demo {
     hook.add(hookEndMesh);
 
     // cap
-    const cap = new THREE.SphereBufferGeometry(0.2, 10, 10);
+    const cap = new THREE.SphereBufferGeometry(hookWireRadius, 10, 10);
     cap.translate(-7.2, -2.9, 0);
     const capMesh = new THREE.Mesh(cap, this.getMaterial(false));
     hook.add(capMesh);
@@ -560,10 +560,9 @@ class Demo {
     sphere.translate(1, 0.6, 0);
     const sphereMesh = new THREE.Mesh(sphere, this.getMaterial(false));
     hook.add(sphereMesh);
-    
-    hook.scale.set(1/3, 1/3, 1/3);
-    hook.rotation.y = -Math.PI / 2;    
-    hook.position.set(0, 0.1, 0);
+
+    hook.scale.set(0.22, 0.22, 0.22);
+    hook.rotation.y = -Math.PI / 2;
     group.add(hook);
 
 
@@ -652,6 +651,7 @@ class Demo {
 
     // start from facing forward
     this.controls.reset();
+    this.controls.resetAtAngle(0.7);
 
     this.updateHangingPointAngle();
   }
@@ -659,7 +659,7 @@ class Demo {
 
   render = () => {
     // autorotate when animating and when the mouse is over the canvas
-    this.controls.autoRotate = UIStore.demoIsAnimating || !UIStore.isMouseOverDemo;
+    // this.controls.autoRotate = UIStore.demoIsAnimating || !UIStore.isMouseOverDemo;
     this.controls.update();
 
     if (UIStore.demoIsAnimating) this.updateAnimation(true);
