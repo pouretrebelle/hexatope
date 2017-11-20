@@ -32,7 +32,7 @@ class Demo {
     // camera
     // (fov, aspect, near, far)
     this.camera = new THREE.PerspectiveCamera(20, (UIStore.windowWidth / 2) / UIStore.windowHeight, 1, 10000);
-    this.camera.position.z = UIStore.windowHeight * 0.03;
+    this.camera.position.z = UIStore.windowHeight * 0.05;
     this.scene.add(this.camera);
 
     // controls
@@ -561,7 +561,7 @@ class Demo {
     const sphereMesh = new THREE.Mesh(sphere, this.getMaterial(false));
     hook.add(sphereMesh);
 
-    hook.scale.set(0.22, 0.22, 0.22);
+    hook.scale.set(0.3*0.8, 0.3*0.8, 0.3*0.8);
     hook.rotation.y = -Math.PI / 2;
     group.add(hook);
 
