@@ -133,6 +133,8 @@ class Demo extends Component {
         className={wrapperClasses}
         ref={element => this.demoWrapperElement = element}
       >
+        <div style={{position: 'absolute', left: '35%', top: '30%', width: 2, height: 2, border: '1px solid crimson', zIndex: 100}} />
+        <div style={{position: 'absolute', left: '65%', top: '40%', width: 2, height: 2, border: '1px solid crimson', zIndex: 100}} />
         <NewsletterPopup />
         <DemoSettings
           system={system}
