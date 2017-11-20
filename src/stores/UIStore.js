@@ -81,13 +81,13 @@ class UIStore {
   startPoint = (e) => {
     this.lastMouseButton = e.button || 0; // default to left button
     this.isMouseDownOverCanvas = true;
-    this.mouseDownStartTime = performance.now();
+    this.mouseDownStartTime = now();
   }
 
   @action
   endPoint = () => {
     this.isMouseDownOverCanvas = false;
-    this.lastMouseDownTimeTaken = performance.now() - this.mouseDownStartTime;
+    this.lastMouseDownTimeTaken = now() - this.mouseDownStartTime;
   }
 
   @action
@@ -178,5 +178,10 @@ class UIStore {
   onMouseMoved = (e) => this.updateMousePosition(e);
   onTouchMoved = (e) => this.updateMousePosition(e.touches[0]);
 }
+
+const now = () => {
+  // Safari not supporting performance fucks up everything
+  return (typeof window.performance === 'undefined') ? Date.now() : window.performance.now;
+};
 
 export default new UIStore();
