@@ -570,15 +570,20 @@ class Demo {
     // group.add(chainMesh);
     group.visible = false;
 
-    this.chain = group;
+    this.chain = hook;
     this.scene.add(this.chain);
   }
 
   updateChainMaterial = () => {
     // jump ring
-    this.chain.children[0].material = this.getMaterial(false);
-    // chain
-    this.chain.children[1].material = this.getMaterial(true);
+    // this.chain.children[0].material = this.getMaterial(false);
+    // // chain
+    // this.chain.children[1].material = this.getMaterial(true);
+
+    // hook
+    this.chain.children.forEach(child => {
+      child.material = this.getMaterial(false);
+    });
   }
 
   updateHangingPointAngle = (angle) => {
