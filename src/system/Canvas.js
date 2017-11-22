@@ -20,6 +20,8 @@ class Canvas {
     this.relativeMousePos = new Vector2();
     this.isMouseInside = false;
     this.pixelRatio = window.devicePixelRatio || 1;
+
+    this.SettingsStore = SettingsStore;
   }
 
   setup(canvas, wrapperElement, UIStore) {
@@ -44,7 +46,7 @@ class Canvas {
     const heightOverflowDiff = (canvasBoundingBox.height - this.externalHeight) / 2;
 
     // this is confusing
-    const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
+    const isHorizontal = (this.SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
     let rotatedMouseX = isHorizontal ? absoluteMouseY - heightOverflowDiff : absoluteMouseX - widthOverflowDiff;
     let rotatedMouseY = isHorizontal ? canvasBoundingBox.width - absoluteMouseX - widthOverflowDiff : absoluteMouseY - heightOverflowDiff;
 
@@ -107,7 +109,7 @@ class Canvas {
   }
 
   drawMouseHexagon() {
-    switch (SettingsStore.toolMode) {
+    switch (this.SettingsStore.toolMode) {
       case TOOL_MODES.DRAW:
         this.c.fillStyle = this.system.isDrawing ? settings.mouseActiveColor : settings.mouseColor;
         break;
@@ -167,7 +169,7 @@ class Canvas {
       // fade the curves if in erase mode
       // or it's the old curve when in layout cycle mode
       if (curve.drawFaded ||
-          (hex === this.system.mouseTargetHex && SettingsStore.toolMode === TOOL_MODES.ERASE)) {
+          (hex === this.system.mouseTargetHex && this.SettingsStore.toolMode === TOOL_MODES.ERASE)) {
         c.strokeStyle = settings.lineColorFaded;
       }
       c.beginPath();

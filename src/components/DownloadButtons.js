@@ -7,6 +7,20 @@ class DownloadButtons extends Component {
 
   constructor(props) {
     super(props);
+
+    this.fileReader = new FileReader();
+    this.fileReader.onload = this.importFile;
+  }
+
+  onImportInputChanged = (e) => {
+    this.fileReader.readAsText(e.target.files[0]);
+  }
+
+  importFile = (e) => {
+    const json = JSON.parse(e.target.result);
+    if (!json || !json.canvas) return;
+
+    this.props.system.importJSON(json);
   }
 
   onExportTXTButtonClicked = () => {
@@ -32,6 +46,12 @@ class DownloadButtons extends Component {
   render() {
     return (
       <div className={styles.buttons}>
+        <input
+          type={'file'}
+          accept={'application/json'}
+          onChange={this.onImportInputChanged}
+          className={styles.button}
+        />
         <button className={styles.button} onClick={this.onExportTXTButtonClicked}>
           Export TXT
         </button>
