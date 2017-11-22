@@ -22,11 +22,13 @@ class SettingsStore {
   }
 
   @computed get exportSettings() {
+    // if being rendered as a vertical we have to remove a turn because it's imported as horizontal
+    const rotatedAngle = (this.gridRotation === GRID_ROTATION.VERTICAL) ? this.hangingPointAngle : (Math.PI * 1.5 + this.hangingPointAngle) % (Math.PI * 2);
     return {
       'depthOverlapScalar': roundToDecimalPlace(this.depthOverlapScalar, 3),
       'depthCurvatureScalar': roundToDecimalPlace(this.depthCurvatureScalar, 3),
       'material': this.material,
-      'hangingPointAngle': roundToDecimalPlace(this.hangingPointAngle, 3),
+      'hangingPointAngle': roundToDecimalPlace(rotatedAngle, 3),
     };
   }
 
