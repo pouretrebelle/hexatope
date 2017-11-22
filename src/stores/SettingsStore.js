@@ -59,6 +59,11 @@ class SettingsStore {
   }
 
   @action
+  resetGridRotation = () => {
+    this.gridRotation = GRID_ROTATION.VERTICAL;
+  }
+
+  @action
   setMaterialToGold = () => {
     this.material = MATERIALS.GOLD;
   }

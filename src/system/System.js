@@ -195,6 +195,9 @@ class System {
   }
 
   importJSON = (json) => {
+    // reset orientation so hanging point is right
+    this.canvas.SettingsStore.resetGridRotation();
+
     this.importDesign(json.canvas, json.settings);
   }
 
