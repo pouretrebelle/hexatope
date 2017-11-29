@@ -12,6 +12,21 @@ class DownloadButtons extends Component {
     this.fileReader.onload = this.importFile;
   }
 
+  componentDidMount() {
+    window.addEventListener('paste', this.onPasted);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(this.onPasted);
+  }
+
+  onPasted = (e) => {
+    const json = JSON.parse(e.clipboardData.getData('Text'));
+    if (!json || !json.canvas) return;
+
+    this.props.system.importJSON(json);
+  }
+
   onImportInputChanged = (e) => {
     this.fileReader.readAsText(e.target.files[0]);
   }
