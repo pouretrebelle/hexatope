@@ -35,7 +35,7 @@ class UIStore {
   createListeners() {
     window.addEventListener('resize', this.onWindowResized);
     window.addEventListener('mousemove', this.onMouseMoved);
-    window.addEventListener('touchmove', this.onTouchMoved);
+    window.addEventListener('touchmove', this.onTouchMoved, {passive: false});
 
     // don't open menu on right click, for manual dragging
     window.addEventListener('contextmenu', (e) => {
@@ -176,7 +176,10 @@ class UIStore {
 
   onWindowResized = () => this.updateDimensions();
   onMouseMoved = (e) => this.updateMousePosition(e);
-  onTouchMoved = (e) => this.updateMousePosition(e.touches[0]);
+  onTouchMoved = (e) => {
+    e.preventDefault(); // stop page dragging
+    this.updateMousePosition(e.touches[0]);
+  }
 }
 
 const now = () => {
