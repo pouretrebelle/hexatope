@@ -35,6 +35,8 @@ class Demo {
     this.camera.position.z = UIStore.windowHeight * 0.05;
     this.scene.add(this.camera);
 
+    // this.scene.add(new THREE.AxisHelper(1));
+
     // controls
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.enableDamping = true;
@@ -264,12 +266,20 @@ class Demo {
 
   getVec3PointMerge(one, two, scale, twoZ) {
     // we have to flip the x-axis, no idea why
-
     const isHorizontal = (SettingsStore.gridRotation === GRID_ROTATION.HORIZONTAL);
     const x = isHorizontal ? (-one.y - two.y) : (one.x + two.x);
     const y = isHorizontal ? (-one.x - two.x) : (-one.y - two.y);
-    const z = scale * (twoZ ? twoZ : two.z);
-    return new THREE.Vector3(scale * x, scale * y, z);
+    const z = twoZ ? twoZ : two.z;
+
+    let radius = 2;
+    const newZ = -y;
+    const farRound = x / radius;
+    if (z) radius += z;
+
+    const newX = Math.sin(farRound) * radius;
+    const newY = Math.cos(farRound) * radius;
+
+    return new THREE.Vector3(scale * newX, scale * newY, scale * newZ);
   }
 
   initialiseAnimation(startingCurve, curves, step, rangeMax) {
@@ -369,8 +379,8 @@ class Demo {
 
   triggerAnimationFromCap(cap) {
     if (cap.extenders.length === 0) {
-      // make the capping sphere visible
       cap.sphereMesh.visible = true;
+      // make the capping sphere visible
       return;
     }
 

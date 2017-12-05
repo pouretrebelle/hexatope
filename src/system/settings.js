@@ -21,7 +21,7 @@ export default {
   focusColor: '#f6f7f8',
   lineColor: '#000000',
   lineColorFaded: 'rgba(0, 0, 0, 0.2)',
-  tubeThickness: 5,
+  tubeThickness: 5*2,
   cameraRotateSpeed: 5,
   cameraDampingFactor: 0.2,
   cameraMinDistance: 5,
@@ -42,5 +42,5 @@ export const demoModelSettings = {
 export const exportModelSettings = {
   tubeSegments: 30,
   tubeRadiusSegments: 20,
-  scale: 5.88, // map to mm
+  scale: 5.88*0.5, // map to mm
 };
