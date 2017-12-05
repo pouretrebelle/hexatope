@@ -1,6 +1,6 @@
 # Hexatope
 
-[![Build Status](https://travis-ci.org/pouretrebelle/hexatope.svg?branch=master)](https://travis-ci.org/pouretrebelle/hexatope)
+[![Build Status](https://circleci.com/gh/pouretrebelle/hexatope.svg?style=shield&circle-token=0268eaecef5769dc4a1a8a515104ae2dce416a6b)](https://circleci.com/gh/pouretrebelle/hexatope)
 
 ## :raised_hands: Make it work locally
 
