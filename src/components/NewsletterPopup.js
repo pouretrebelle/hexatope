@@ -4,6 +4,7 @@ import { observable } from 'mobx';
 import { inject, observer } from 'mobx-react';
 import { withCookies, Cookies } from 'react-cookie';
 import classNames from 'classnames';
+import { MAILCHIMP_USER_ID, MAILCHIMP_LIST_ID } from 'constants/external';
 
 import styles from './NewsletterPopup.sass';
 
@@ -40,7 +41,7 @@ class NewsletterPopup extends Component {
     return (
       <div className={wrapperClasses}>
         <form
-          action={'https://hexatope.us17.list-manage.com/subscribe/post?u=4c51e43f1162adc62d41e6ea5&amp;id=7a87ac0c36'}
+          action={`https://hexatope.us17.list-manage.com/subscribe/post?u=${MAILCHIMP_USER_ID}&id=${MAILCHIMP_LIST_ID}`}
           method={'post'}
           target={'_blank'}
           className={styles.popupForm}

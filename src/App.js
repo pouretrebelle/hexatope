@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import Typekit from 'react-typekit';
 import TagManager from 'react-gtm-module';
 import { withCookies, Cookies } from 'react-cookie';
+import { GOOGLE_TAG_MANAGER_ID, TYPEKIT_KIT_ID } from 'constants/external';
 
 import styles from 'styles/application.sass';
 
@@ -24,7 +25,7 @@ class App extends Component {
     super(props);
 
     if (process.env.NODE_ENV === 'production') {
-      TagManager.initialize({ gtmId: 'GTM-5HJ5GVK' });
+      TagManager.initialize({ gtmId: GOOGLE_TAG_MANAGER_ID });
       GTMTracking.initialize(TagManager);
       window.fbq('track', 'ViewContent');
     }
@@ -98,7 +99,7 @@ class App extends Component {
               <VideoModal />
             }
           </div>
-          <Typekit kitId={'req1ouh'} />
+          <Typekit kitId={TYPEKIT_KIT_ID} />
         </div>
       </div>
     );
