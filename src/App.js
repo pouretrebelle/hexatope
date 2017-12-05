@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { inject, observer } from 'mobx-react';
+import { reaction } from 'mobx';
 import { Helmet } from 'react-helmet';
 import Typekit from 'react-typekit';
 import TagManager from 'react-gtm-module';
@@ -39,6 +40,23 @@ class App extends Component {
     this.kickstarterRewardPage = /^\?kickstarter-reward/.test(window.location.search);
 
     this.system = new System(this.props.UIStore, this.showDownloadButtons);
+
+    this.pageWrapperElement = undefined;
+  }
+
+  componentDidMount() {
+    this.windowHeightReaction = reaction(
+      () => this.props.UIStore.windowHeight,
+      (windowHeight) => this.reactToWindowHeightChange(windowHeight),
+      {
+        fireImmediately: true,
+      },
+    );
+  }
+
+  reactToWindowHeightChange = (windowHeight) => {
+    // hard set page height to stop mobile 100vh bug
+    if (this.pageWrapperElement) this.pageWrapperElement.style.height = `${windowHeight}px`;
   }
 
   render() {
@@ -63,7 +81,7 @@ class App extends Component {
           <meta name={'twitter:image'} content={this.metaTwitterCard}/>
         </Helmet>
 
-        <div className={styles.page}>
+        <div className={styles.page} ref={element => this.pageWrapperElement = element}>
           <Header />
           <div className={styles.content}>
             <CanvasWrapper
