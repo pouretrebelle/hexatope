@@ -142,6 +142,7 @@ class System {
   calculateVolume(curves) {
     const volumeCm3 = getTotalLength(curves) / settings.wireLengthPerCm3;
     this.UIStore.setRewardVolumeApproval(volumeCm3 < settings.maxRewardVolumeCm3);
+    this.UIStore.setPrice(volumeCm3);
 
     GTMTracking.trackEvent(
       'volumeCalculated',

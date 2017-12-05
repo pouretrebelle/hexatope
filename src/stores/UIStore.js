@@ -21,6 +21,7 @@ class UIStore {
   @observable isChosingHangingPoint = false;
   initialHangingPointAngle = 0;
   @observable isImporting = false;
+  @observable price = 0;
 
   @observable lastMouseDownTimeTaken = 0;
   mouseDownStartTime = 0;
@@ -49,6 +50,14 @@ class UIStore {
       this.mouseY - (this.demoBoundingBox.top + this.demoBoundingBox.height / 2),
       this.mouseX - (this.demoBoundingBox.left + this.demoBoundingBox.width / 2),
     ) - Math.PI / 2;
+  }
+
+  @computed
+  get formattedPrice() {
+    let roundedPrice = Math.ceil(this.price);
+    // don't let any prices end in a one, just round down
+    if (roundedPrice.toString().slice(-1) == 1) roundedPrice--;
+    return `£${roundedPrice}.00`;
   }
 
   @action
@@ -162,6 +171,12 @@ class UIStore {
   @action
   setRewardVolumeApproval = (approved) => {
     this.rewardVolumeApproved = approved;
+  }
+
+  @action
+  setPrice = (volume) => {
+    // magic number price formula
+    this.price = 40 + volume*140;
   }
 
   @action
