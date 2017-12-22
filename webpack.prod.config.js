@@ -10,7 +10,7 @@ module.exports = {
     path.join(__dirname, 'src/main.js'),
   ],
   output: {
-    path: path.join(__dirname, '/docs/'),
+    path: path.join(__dirname, '/docs/app/'),
     filename: '[name]-[hash].min.js',
   },
   plugins: [
@@ -60,7 +60,7 @@ module.exports = {
         options: {
           name(file) {
             if (/.+(favicon)|(opengraph)|(twittercard)\.(jpg)|(png)/.test(file)) {
-              return 'assets/[name].[ext]';
+              return '../assets/[name].[ext]';
             }
             return '[hash].[ext]';
           },
