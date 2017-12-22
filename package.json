@@ -5,7 +5,7 @@
   "repository": "https://github.com/pouretrebelle/hexatope",
   "scripts": {
     "start": "cross-env NODE_ENV=development node server",
-    "build": "rimraf docs && cross-env NODE_ENV=production webpack --config ./webpack.prod.config.js --progress --profile --colors",
+    "build": "rimraf docs/app && cross-env NODE_ENV=production webpack --config ./webpack.prod.config.js --progress --profile --colors",
     "clean": "rm -rf docs",
     "lint": "eslint --ext js src",
     "test": "eslint --ext js src"
