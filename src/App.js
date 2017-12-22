@@ -38,7 +38,7 @@ class App extends Component {
 
     // show download buttons if url is /?buttons
     this.showDownloadButtons = /^\?buttons/.test(window.location.search);
-    this.kickstarterRewardPage = /^\?kickstarter-reward/.test(window.location.search);
+    this.kickstarterRewardPage = /^\?kickstarter-reward/.test(window.location.search) || /^\?gift/.test(window.location.search);
 
     this.system = new System(this.props.UIStore, this.showDownloadButtons);
 

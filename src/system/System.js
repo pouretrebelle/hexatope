@@ -181,8 +181,7 @@ class System {
   exportTXT() {
     let text;
     text = '// this is a Hexatope design file\r\n';
-    text += '// generated on http://hexatope.io?kickstarter-reward\r\n';
-    text += '// please paste the contents of this file into your backer survey\r\n\r\n';
+    text += '// please paste the contents of this file into your questionnaire\r\n\r\n';
     text += JSON.stringify(exportDesignData(this));
 
     const blob = new Blob(
